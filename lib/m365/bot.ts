@@ -19,13 +19,21 @@ async function botToken() {
   return cached.token;
 }
 
+/** Teams and Bot Framework connector hosts. Cards (and the bot's token) only ever go to these. */
+export function isBotServiceUrl(u: string) {
+  try {
+    const { protocol, hostname } = new URL(u);
+    return protocol === "https:" && /(^|\.)(trafficmanager\.net|botframework\.com|botframework\.azure\.us|teams\.microsoft\.com)$/i.test(hostname);
+  } catch { return false; }
+}
+
 export async function sendPersonalCard(profileId: string, card: unknown) {
   const { id, password } = env.bot();
   if (!id || !password) return;
   const { data } = await supabaseAdmin().from("profiles").select("teams_ref").eq("id", profileId).maybeSingle();
   const ref = (data as { teams_ref?: { serviceUrl: string; conversationId: string } } | null)?.teams_ref;
-  if (!ref?.serviceUrl || !ref.conversationId) return;
-  await fetch(`${ref.serviceUrl.replace(/\/$/, "")}/v3/conversations/${ref.conversationId}/activities`, {
+  if (!ref?.serviceUrl || !ref.conversationId || !isBotServiceUrl(ref.serviceUrl)) return;
+  await fetch(`${ref.serviceUrl.replace(/\/$/, "")}/v3/conversations/${encodeURIComponent(ref.conversationId)}/activities`, {
     method: "POST",
     headers: { authorization: `Bearer ${await botToken()}`, "content-type": "application/json" },
     body: JSON.stringify({ type: "message", attachments: [{ contentType: "application/vnd.microsoft.card.adaptive", content: card }] }),

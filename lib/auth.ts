@@ -34,31 +34,41 @@ export async function requireAdmin(): Promise<Me> {
 
 export const isAdmin = (me: Me) => me.team_role === "owner" || me.team_role === "admin";
 
-const GROUP_ROLE: Record<string, Me["team_role"]> = { "suhail-owners": "owner", "suhail-admins": "admin", "suhail-team": "member" };
 const RANK = { owner: 3, admin: 2, member: 1 } as const;
 
-type Graph = { me: { displayName?: string; jobTitle?: string; mail?: string; userPrincipalName?: string; id: string }; groups: string[]; photo?: Buffer };
+/**
+ * Role from Entra security group object IDs (AZURE_GROUP_OWNERS / _ADMINS / _TEAM). Never from display names: any
+ * tenant user can create a group called "suhail-owners".
+ */
+export function roleFromGroups(ids: string[]): Me["team_role"] | null {
+  const g = env.azureGroups();
+  const map: [string, Me["team_role"]][] = [[g.owners, "owner"], [g.admins, "admin"], [g.team, "member"]];
+  return map.filter(([id]) => id && ids.includes(id)).map(([, r]) => r).sort((a, b) => RANK[b] - RANK[a])[0] ?? null;
+}
+
+type Graph = { me: { displayName?: string; jobTitle?: string; mail?: string; userPrincipalName?: string; id: string }; groups: string[]; groupIds: string[]; photo?: Buffer };
 
 async function readGraph(token: string): Promise<Graph | null> {
   const g = (p: string) => fetch(`https://graph.microsoft.com/v1.0${p}`, { headers: { authorization: `Bearer ${token}` } });
   const meRes = await g("/me?$select=id,displayName,jobTitle,mail,userPrincipalName");
   if (!meRes.ok) return null;
   const me = await meRes.json();
-  const groups: string[] = [];
-  let next: string | null = "/me/memberOf/microsoft.graph.group?$select=displayName&$top=100";
+  const groups: string[] = [], groupIds: string[] = [];
+  let next: string | null = "/me/memberOf/microsoft.graph.group?$select=id,displayName&$top=100";
   while (next) {
     const r = await g(next);
     if (!r.ok) break;
-    const j = (await r.json()) as { value: { displayName: string }[]; "@odata.nextLink"?: string };
+    const j = (await r.json()) as { value: { id: string; displayName: string }[]; "@odata.nextLink"?: string };
     groups.push(...j.value.map((x) => x.displayName));
+    groupIds.push(...j.value.map((x) => x.id));
     next = j["@odata.nextLink"]?.replace("https://graph.microsoft.com/v1.0", "") ?? null;
   }
   const ph = await g("/me/photos/96x96/$value");
-  return { me, groups, photo: ph.ok ? Buffer.from(await ph.arrayBuffer()) : undefined };
+  return { me, groups, groupIds, photo: ph.ok ? Buffer.from(await ph.arrayBuffer()) : undefined };
 }
 
 /**
- * Runs on every sign-in. Microsoft: role from Entra group membership (no group, no access). Owner magic link
+ * Runs on every sign-in. Microsoft: role from Entra group membership by object ID (no group, no access). Owner magic link
  * (DEV_LOGIN): only OWNER_EMAIL, as owner. Returns where to send the person next.
  */
 export async function provision(user: User, providerToken?: string | null, providerRefresh?: string | null): Promise<string> {
@@ -71,7 +81,7 @@ export async function provision(user: User, providerToken?: string | null, provi
   if (user.app_metadata?.provider === "azure" && providerToken) {
     const g = await readGraph(providerToken);
     if (!g) return "/team/sign-in?e=graph";
-    role = g.groups.map((n) => GROUP_ROLE[n]).filter(Boolean).sort((a, b) => RANK[b] - RANK[a])[0] ?? null;
+    role = roleFromGroups(g.groupIds);
     Object.assign(patch, { name: g.me.displayName || email, job_title: g.me.jobTitle || "", ms_oid: g.me.id, ms_groups: g.groups });
     if (g.photo) {
       const path = `${user.id}/photo.jpg`;
@@ -94,4 +104,27 @@ export async function provision(user: User, providerToken?: string | null, provi
   if (existing) await db.from("profiles").update(patch).eq("id", user.id);
   else await db.from("profiles").insert({ id: user.id, ...patch });
   return existing?.onboarded_at ? "/team" : "/team/welcome";
+}
+
+/**
+ * Daily (from the cron): re-reads each Microsoft-linked teammate's account and groups with the app token, so someone
+ * removed from the groups or disabled in Entra loses access within a day instead of keeping their session.
+ * requireMe checks `active` on every request, so this takes effect immediately.
+ */
+export async function recheckAccess(appToken: string): Promise<number> {
+  const db = supabaseAdmin();
+  const { data } = await db.from("profiles").select("id,ms_oid,team_role").eq("active", true).not("ms_oid", "is", null);
+  let off = 0;
+  for (const p of (data ?? []) as { id: string; ms_oid: string; team_role: Me["team_role"] }[]) {
+    const h = { authorization: `Bearer ${appToken}` };
+    const u = await fetch(`https://graph.microsoft.com/v1.0/users/${p.ms_oid}?$select=accountEnabled`, { headers: h });
+    const r = await fetch(`https://graph.microsoft.com/v1.0/users/${p.ms_oid}/memberOf/microsoft.graph.group?$select=id&$top=999`, { headers: h });
+    if (u.status === 404) { await db.from("profiles").update({ active: false }).eq("id", p.id); off++; continue; }
+    if (!u.ok || !r.ok) continue; // Graph hiccup: try again tomorrow rather than locking people out
+    const enabled = ((await u.json()) as { accountEnabled?: boolean }).accountEnabled !== false;
+    const role = enabled ? roleFromGroups(((await r.json()) as { value: { id: string }[] }).value.map((x) => x.id)) : null;
+    if (!role) { await db.from("profiles").update({ active: false }).eq("id", p.id); off++; }
+    else if (role !== p.team_role) await db.from("profiles").update({ team_role: role }).eq("id", p.id);
+  }
+  return off;
 }

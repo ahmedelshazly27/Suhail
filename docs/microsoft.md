@@ -24,10 +24,12 @@ Create three security groups and add people to them:
 | `suhail-admins` | admin: everything except changing owners |
 | `suhail-team` | member: all dashboard work, no settings |
 
-The dashboard reads group membership (`/me/memberOf`) on every sign-in and sets the role. Someone in none of the groups is refused and their profile is switched off. RLS enforces the role in the database, not only in the interface.
+Copy each group's **Object ID** (Groups, then the group, then Overview) into `AZURE_GROUP_OWNERS`, `AZURE_GROUP_ADMINS` and `AZURE_GROUP_TEAM`. Roles come from these IDs, never from group names, because anyone in the tenant can create a group with the same name.
+
+The dashboard reads group membership (`/me/memberOf`) on every sign-in and sets the role. It checks again every day, so someone removed from the groups, or disabled in Entra, loses access within a day even if they never sign out. Someone in none of the groups is refused and their profile is switched off. RLS enforces the role in the database, not only in the interface.
 
 - **Add a teammate:** add them to `suhail-team` in Microsoft 365. They click "Sign in with Microsoft" once and see the "You're in" screen. Because admin consent is granted, there's no permissions prompt.
-- **Remove a teammate:** remove them from the group, or disable their account. Their next sign-in is refused, and an owner can switch them off right away in Settings, Members.
+- **Remove a teammate:** remove them from the group, or disable their account. The daily check switches them off, and an owner can switch them off right away in Settings, Members.
 
 ## 3. Permissions and why each one is needed
 
@@ -49,6 +51,8 @@ Grant all of these, then press **Grant admin consent for Suhail** once, so teamm
 | `Presence.Read.All` | Delegated | Teams presence on avatars (v2) |
 | `Mail.Read` | Application | Email to ticket on `tasks@` (a change subscription has no signed-in user). Restrict it to `tasks@` with an Exchange application access policy. |
 | `Mail.Send` | Application | Reply to the sender of a `tasks@` email with the ticket link. Restricted by the same policy. |
+| `User.Read.All` | Application | Daily access check: is the account still enabled |
+| `GroupMember.Read.All` | Application | Daily access check: is the person still in a `suhail-*` group |
 
 Graph tokens are encrypted (AES-256-GCM, `TOKEN_ENCRYPTION_KEY`) in `graph_tokens`, which only server code can read, and refreshed silently.
 

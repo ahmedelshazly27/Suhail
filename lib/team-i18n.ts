@@ -117,3 +117,10 @@ export const tt = (lang: TLang, k: TKey) => dicts[lang][k] ?? en[k];
 export const STATUSES = ["backlog", "todo", "in_progress", "in_review", "done", "cancelled"] as const;
 export type Status = (typeof STATUSES)[number];
 export const PRIORITIES = ["none", "low", "med", "high", "urgent"] as const;
+
+/** Arabic labels for the seeded application stages. Stages are editable data, so anything else shows as stored. */
+const STAGE_AR: Record<string, string> = {
+  New: "جديد", Reviewing: "قيد المراجعة", "Task review": "مراجعة المهمة", Interview: "مقابلة", Offer: "عرض", Joined: "انضم",
+  Accepted: "مقبول", Waitlist: "قائمة الانتظار", Call: "مكالمة", "Trial week": "أسبوع تجربة", "Moved in": "سكن", Contacted: "تواصلنا", Done: "خلص", "Not now": "مو الحين",
+};
+export const stageLabel = (lang: TLang, s: string) => (lang === "ar" ? STAGE_AR[s] ?? s : s);

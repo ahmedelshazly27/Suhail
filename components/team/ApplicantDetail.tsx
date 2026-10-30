@@ -6,7 +6,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { ago } from "@/lib/dates";
 import { resolveOpts } from "@/lib/forms";
-import { tt, type TLang } from "@/lib/team-i18n";
+import { stageLabel, tt, type TLang } from "@/lib/team-i18n";
 import { Feed } from "./Feed";
 import type { Person } from "@/lib/data/shell";
 
@@ -49,7 +49,7 @@ export function ApplicantDetail({ data, lang, people, templates, onChanged }: { 
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem" }}>
         <label className="b quiet" style={{ gap: ".375rem" }}>{tt(lang, "stage")}:
-          <select value={a.stage} onChange={(e) => start(async () => { await moveStage({ ids: [a.id], stage: e.target.value }); refresh(); })} style={{ border: 0, background: "transparent", appearance: "none" }} aria-label={tt(lang, "stage")}>{stages.map((s) => <option key={s}>{s}</option>)}</select></label>
+          <select value={a.stage} onChange={(e) => start(async () => { await moveStage({ ids: [a.id], stage: e.target.value }); refresh(); })} style={{ border: 0, background: "transparent", appearance: "none" }} aria-label={tt(lang, "stage")}>{stages.map((s) => <option key={s} value={s}>{stageLabel(lang, s)}</option>)}</select></label>
         <label className="b quiet" style={{ gap: ".375rem" }}>{lang === "ar" ? "المراجع" : "Reviewer"}:
           <select value={a.assignee_id ?? ""} onChange={(e) => start(async () => { await assignApplications({ ids: [a.id], assignee: e.target.value || null }); refresh(); })} style={{ border: 0, background: "transparent", appearance: "none" }} aria-label={lang === "ar" ? "المراجع" : "Reviewer"}>
             <option value="">{tt(lang, "unassigned")}</option>{people.map((p) => <option key={p.id} value={p.id}>{p.name.split(" ")[0]}</option>)}</select></label>
@@ -94,7 +94,7 @@ export function ApplicantDetail({ data, lang, people, templates, onChanged }: { 
       {data.emails.length ? <div className="feed">{data.emails.map((e) => <div key={e.id} className="ev">✉ {e.subject} · {e.status} · {ago(lang, e.created_at)}</div>)}</div> : null}
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", marginTop: "auto", paddingTop: ".5rem" }}>
-        {next && next !== "Not now" ? <button type="button" className="b" onClick={() => start(async () => { await moveStage({ ids: [a.id], stage: next }); refresh(); })}>{lang === "ar" ? `انقل إلى ${next}` : `Move to ${next}`}</button> : null}
+        {next && next !== "Not now" ? <button type="button" className="b" onClick={() => start(async () => { await moveStage({ ids: [a.id], stage: next }); refresh(); })}>{lang === "ar" ? `انقل إلى ${stageLabel(lang, next)}` : `Move to ${next}`}</button> : null}
         <label className="b ghost" style={{ gap: ".375rem" }}>{lang === "ar" ? "إيميل من قالب" : "Email from template"}
           <select value="" aria-label={tt(lang, "template")} style={{ border: 0, background: "transparent", appearance: "none", width: "1rem" }} onChange={(e) => { const key = e.target.value; if (key) start(async () => setPreview({ key, ...(await previewTemplate({ id: a.id, key })) })); }}>
             <option value="">▾</option>{templates.map((t) => <option key={t.key} value={t.key}>{t.name}</option>)}</select></label>

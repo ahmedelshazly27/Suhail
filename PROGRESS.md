@@ -57,3 +57,15 @@
   - SEO: 100 in Production. Outside Production it's lower because robots is noindex there on purpose.
   - Mobile performance (simulated slow 4G with 4× CPU) is 64 to 90. With real throttling, LCP is about 1.9s and the remaining cost is React hydration plus the canvas scenes.
   - Reaching 95 on every page needs structural work: server-only static sections, and a glyph-atlas renderer for the scenes. That's listed as the top next step.
+- **Security review (independent pass over every RLS policy, server action and route).** Fixed:
+  - Roles now come from Entra group object IDs, not display names.
+  - A daily access re-check switches off anyone removed from the groups or disabled in Entra.
+  - Identity and integration columns on profiles (email, Microsoft IDs, Teams reference, calendar token) are server-managed.
+  - Postgres's default PUBLIC execute grant is revoked on the helper functions and the rate limiter.
+  - Teammates can no longer insert notifications for each other.
+  - Finance can't approve their own expenses (owners can), in RLS and in the Teams bot.
+  - The Teams bot only trusts a `serviceUrl` that matches its signed token and is a Bot Framework host.
+  - Graph change notifications use an HMAC-derived `clientState`, compared in constant time.
+  - Application confirmation emails include only a letters-only first name.
+  - Covered by a new RLS e2e test. The migration is applied to staging and production.
+- **Turnstile stays on Cloudflare's test keys until real ones are set.** Failing closed would break the live forms today. Production logs a warning instead, and it's in BLOCKERS.

@@ -16,6 +16,7 @@ export const env = {
   devLogin: () => v("DEV_LOGIN") === "1" && v("VERCEL_ENV") !== "production",
   ownerEmail: () => (v("OWNER_EMAIL") || "admin@afterwave.org").toLowerCase(),
   azure: () => ({ tenant: v("AZURE_TENANT_ID"), clientId: v("AZURE_CLIENT_ID"), secret: v("AZURE_CLIENT_SECRET") }),
+  azureGroups: () => ({ owners: v("AZURE_GROUP_OWNERS"), admins: v("AZURE_GROUP_ADMINS"), team: v("AZURE_GROUP_TEAM") }),
   azureReady: () => Boolean(v("AZURE_TENANT_ID") && v("AZURE_CLIENT_ID") && v("AZURE_CLIENT_SECRET")),
   teamsWebhook: () => v("TEAMS_WEBHOOK_URL"),
   bot: () => ({ id: v("MICROSOFT_BOT_ID"), password: v("MICROSOFT_BOT_PASSWORD") }),

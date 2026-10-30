@@ -3,7 +3,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireAdmin, requireMe } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
-import { supabaseServer } from "@/lib/supabase/server";
+import { supabaseAdmin, supabaseServer } from "@/lib/supabase/server";
 
 const done = () => revalidatePath("/team", "layout");
 
@@ -17,7 +17,7 @@ export async function saveMe(input: { digest_email?: boolean; standup_enabled?: 
 export async function regenerateIcs() {
   const me = await requireMe();
   const token = Array.from(crypto.getRandomValues(new Uint8Array(18)), (b) => b.toString(16).padStart(2, "0")).join("");
-  await (await supabaseServer()).from("profiles").update({ ics_token: token }).eq("id", me.id);
+  await supabaseAdmin().from("profiles").update({ ics_token: token }).eq("id", me.id); // ics_token is server-managed (identity guard)
   done();
 }
 

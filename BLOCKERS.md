@@ -13,9 +13,9 @@ The full walkthrough, with every permission and why it's needed, is in `docs/mic
 3. Under Certificates & secrets, create a new client secret (24 months) and copy its value.
 4. Under API permissions, add the delegated and application permissions listed in `docs/microsoft.md`, then choose **Grant admin consent**.
 5. Under Token configuration, add a groups claim for security groups.
-6. Create the security groups `suhail-owners`, `suhail-admins` and `suhail-team`, and add yourself to `suhail-owners`.
+6. Create the security groups `suhail-owners`, `suhail-admins` and `suhail-team`, and add yourself to `suhail-owners`. Copy each group's Object ID.
 7. In Supabase (both projects), go to Authentication, then Providers, then Azure. Turn it on and paste the client ID, the secret and the tenant URL `https://login.microsoftonline.com/<tenant-id>`.
-8. In Vercel (Production and Preview), add `AZURE_TENANT_ID`, `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET`, then redeploy.
+8. In Vercel (Production and Preview), add `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and the three group Object IDs as `AZURE_GROUP_OWNERS`, `AZURE_GROUP_ADMINS` and `AZURE_GROUP_TEAM`. Then redeploy.
 
 **Until then:** the "Sign in with Microsoft" button is hidden. On previews, the owner signs in at `/team/sign-in` with an email link sent only to admin@afterwave.org (flag `DEV_LOGIN`, which is forced off in Production). Drive, Mail, Calendar, Directory and Teams use clearly labelled sample data.
 
@@ -30,7 +30,7 @@ These need item 1 first.
 2. For the bot, which takes commands like `ticket <title>`: create an Azure Bot resource (the free F0 tier) with messaging endpoint `https://suhail-lemon.vercel.app/api/teams/messages`. Set `MICROSOFT_BOT_ID` and `MICROSOFT_BOT_PASSWORD`, then install the app in Teams.
 
 ## 4. Cloudflare Turnstile real keys
-Right now the forms use Cloudflare's published test keys, which always pass. To switch to real keys:
+Right now the forms use Cloudflare's published test keys, which always pass, so bots are held back only by the per-IP rate limits. Production logs a warning until real keys are set. Please do this one soon. To switch to real keys:
 1. In the Cloudflare dashboard, go to Turnstile and add a site (it's free). Add the domain `suhail-lemon.vercel.app` and your custom domain later.
 2. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in Vercel (Production), then redeploy.
 

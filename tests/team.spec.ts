@@ -93,3 +93,38 @@ test("RLS: anonymous and signed-in non-team users read nothing", async () => {
   await s.auth.signInWithPassword({ email, password: "a-long-test-password-1" });
   for (const t of ["applications", "profiles", "tickets", "roles"]) expect((await s.from(t).select("id").limit(1)).data ?? []).toEqual([]);
 });
+
+test("RLS: a signed-in teammate cannot escalate, spoof or redirect", async () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!, anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const admin = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
+  const email = `member-${Date.now()}@example.com`, password = "a-long-test-password-2";
+  const { data: u } = await admin.auth.admin.createUser({ email, password, email_confirm: true });
+  const id = u.user!.id;
+  await admin.from("profiles").insert({ id, email, name: "E2E Member", team_role: "member", functions: ["finance"], active: true });
+  const m = createClient(url, anon, { auth: { persistSession: false } });
+  await m.auth.signInWithPassword({ email, password });
+  try {
+    // ordinary profile edits still work
+    expect((await m.from("profiles").update({ lang: "ar" }).eq("id", id)).error).toBeNull();
+    // identity and integration fields are server-managed
+    for (const patch of [{ teams_ref: { serviceUrl: "https://evil.example", conversationId: "x" } }, { email: "outside@example.com" }, { ics_token: "aaaa" }, { ms_groups: ["x"] }])
+      expect((await m.from("profiles").update(patch).eq("id", id)).error).not.toBeNull();
+    // no role escalation
+    await m.from("profiles").update({ team_role: "owner" }).eq("id", id);
+    expect((await admin.from("profiles").select("team_role").eq("id", id).single()).data?.team_role).toBe("member");
+    // no spoofed notifications for teammates
+    expect((await m.from("notifications").insert({ profile_id: id, kind: "mention", title: "x" })).error).not.toBeNull();
+    // finance cannot approve their own expense
+    const { data: ex } = await admin.from("expenses").insert({ description: "E2E taxi", amount: 10, currency: "SAR", created_by: id, status: "pending" }).select("id").single();
+    await m.from("expenses").update({ status: "approved", approver_id: id }).eq("id", ex!.id);
+    expect((await admin.from("expenses").select("status").eq("id", ex!.id).single()).data?.status).toBe("pending");
+    await admin.from("expenses").delete().eq("id", ex!.id);
+    // the rate-limit counter is service-only
+    const a = createClient(url, anon, { auth: { persistSession: false } });
+    expect((await a.rpc("hit_rate_limit", { p_bucket: "x", p_key: "y", p_limit: 1, p_window_seconds: 1 })).error).not.toBeNull();
+    expect((await m.rpc("hit_rate_limit", { p_bucket: "x", p_key: "y", p_limit: 1, p_window_seconds: 1 })).error).not.toBeNull();
+  } finally {
+    await admin.from("profiles").delete().eq("id", id);
+    await admin.auth.admin.deleteUser(id);
+  }
+});

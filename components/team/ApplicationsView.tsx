@@ -7,7 +7,7 @@ import { saveView } from "@/app/actions/views";
 import { Avatar } from "@/components/ui/Avatar";
 import { Peek } from "@/components/ui/Peek";
 import { useToast } from "@/components/ui/Toast";
-import { tt, type TLang } from "@/lib/team-i18n";
+import { stageLabel, tt, type TLang } from "@/lib/team-i18n";
 import { ApplicantDetail } from "./ApplicantDetail";
 import { Board, type Col } from "./Board";
 import type { AppRow, FormRow, RoleRow } from "@/lib/data/applications";
@@ -38,7 +38,7 @@ export function ApplicationsView({ lang, form, forms, roles, apps, people, templ
   const open = (aid: string) => { const q = new URLSearchParams(sp); q.set("a", aid); router.push(`${path}?${q}`, { scroll: false }); };
   const close = useCallback(() => { const q = new URLSearchParams(sp); q.delete("a"); router.push(`${path}?${q}`, { scroll: false }); }, [sp, path, router]);
 
-  const cols: Col<App>[] = f.stages.filter((s) => s !== "Not now" || rows.some((a) => a.stage === s)).map((s) => ({ id: s, title: s, items: rows.filter((a) => a.stage === s) }));
+  const cols: Col<App>[] = f.stages.filter((s) => s !== "Not now" || rows.some((a) => a.stage === s)).map((s) => ({ id: s, title: stageLabel(lang, s), items: rows.filter((a) => a.stage === s) }));
   const card = (a: App, dragging?: boolean) => {
     const r = roleOf(a);
     return (
@@ -76,7 +76,7 @@ export function ApplicationsView({ lang, form, forms, roles, apps, people, templ
           {sel.size ? (
             <div className="card soft" style={{ display: "flex", flexWrap: "wrap", gap: ".5rem", alignItems: "center", padding: ".625rem .875rem" }} role="toolbar" aria-label="Bulk actions">
               <span className="key">{sel.size} {tt(lang, "selected")}</span>
-              <select className="inp" style={{ width: "auto" }} value="" aria-label={tt(lang, "moveTo")} onChange={(e) => e.target.value && bulk(() => moveStage({ ids, stage: e.target.value }), tt(lang, "saved"))}><option value="">{tt(lang, "moveTo")}…</option>{f.stages.map((s) => <option key={s}>{s}</option>)}</select>
+              <select className="inp" style={{ width: "auto" }} value="" aria-label={tt(lang, "moveTo")} onChange={(e) => e.target.value && bulk(() => moveStage({ ids, stage: e.target.value }), tt(lang, "saved"))}><option value="">{tt(lang, "moveTo")}…</option>{f.stages.map((s) => <option key={s} value={s}>{stageLabel(lang, s)}</option>)}</select>
               <select className="inp" style={{ width: "auto" }} value="" aria-label={tt(lang, "assign")} onChange={(e) => e.target.value && bulk(() => assignApplications({ ids, assignee: e.target.value }), tt(lang, "saved"))}><option value="">{tt(lang, "assign")}…</option>{people.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select>
               <button type="button" className="b quiet" onClick={() => { const t = prompt(tt(lang, "tag")); if (t) bulk(() => tagApplications({ ids, tag: t }), tt(lang, "saved")); }}>{tt(lang, "tag")}</button>
               <select className="inp" style={{ width: "auto" }} value="" aria-label={tt(lang, "emailApplicant")} onChange={(e) => { const k = e.target.value; if (k && confirm(lang === "ar" ? `ترسل «${k}» إلى ${ids.length}؟` : `Send "${k}" to ${ids.length} applicant(s)?`)) bulk(() => emailApplicants({ ids, key: k }), tt(lang, "emailSent")); }}><option value="">{tt(lang, "emailApplicant")}…</option>{templates.map((t) => <option key={t.key} value={t.key}>{t.name}</option>)}</select>
@@ -90,7 +90,7 @@ export function ApplicationsView({ lang, form, forms, roles, apps, people, templ
                 <td className="chk" onClick={(e) => e.stopPropagation()}><input type="checkbox" aria-label={a.name} checked={sel.has(a.id)} onChange={(e) => { const s = new Set(sel); if (e.target.checked) s.add(a.id); else s.delete(a.id); setSel(s); }} /></td>
                 <td><span style={{ display: "inline-flex", gap: ".5rem", alignItems: "center" }}>{a.name || a.email}{a.duplicate ? <span className="chip dashed">2×</span> : null}</span></td>
                 {form === "careers" ? <td>{roleOf(a) ? (lang === "ar" ? roleOf(a)!.title_ar : roleOf(a)!.title_en) : ""}</td> : null}
-                <td><span className={`chip${a.stage === "New" ? " attn" : ""}`}>{a.stage}</span></td>
+                <td><span className={`chip${a.stage === "New" ? " attn" : ""}`}>{stageLabel(lang, a.stage)}</span></td>
                 <td>{people.find((p) => p.id === a.assignee_id)?.name.split(" ")[0] ?? ""}</td>
                 <td className="n">{a.score != null ? a.score.toFixed(1) : ""}</td><td>{a.lang.toUpperCase()}</td><td className="n">{age(a.created_at)}</td>
               </tr>))}</tbody>

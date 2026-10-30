@@ -72,7 +72,9 @@ export async function submitForm(raw: unknown): Promise<Result> {
   }
 
   const email = String(answers.email || "").toLowerCase();
-  const name = String(answers.name || answers.company || "");
+  const name = String(answers.name || answers.company || "").slice(0, 120);
+  // Only letters go into the email we send from our domain, so the form can't be used to mail links to strangers.
+  const firstName = (name.split(/\s+/)[0] || "").replace(/[^\p{L}\p{M}'-]/gu, "").slice(0, 40);
   const hack = formKey === "hack" ? await db.from("hackathons").select("id").eq("slug", String(answers.event)).maybeSingle() : null;
   const { data: app, error } = await db.from("applications").insert({
     form_key: formKey, role_id: roleId, hackathon_id: hack?.data?.id ?? null, answers, email, name, lang,
@@ -90,7 +92,7 @@ export async function submitForm(raw: unknown): Promise<Result> {
     if (tpl) {
       await sendEmail({
         to: email, subject: lang === "ar" ? `${tpl.subject_ar} · ${tpl.subject_en}` : `${tpl.subject_en} · ${tpl.subject_ar}`,
-        react: createElement(Templated, { lang, bodyAr: tpl.body_ar, bodyEn: tpl.body_en, vars: { name: name.split(" ")[0] || "", role: what }, bilingual: true }),
+        react: createElement(Templated, { lang, bodyAr: tpl.body_ar, bodyEn: tpl.body_en, vars: { name: firstName, role: what }, bilingual: true }),
         log: { template: "received", entity_type: "application", entity_id: app.id },
       });
     }

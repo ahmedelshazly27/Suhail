@@ -5,6 +5,7 @@ import { addDays, todayISO } from "@/lib/dates";
 import { sendEmail } from "@/lib/email/send";
 import { teams } from "@/lib/m365";
 import { appToken, graph, m365Live } from "@/lib/m365/graph";
+import { graphClientState } from "@/lib/security";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { Templated } from "@/emails/Templated";
 
@@ -92,6 +93,6 @@ export async function renewMailSubscription(log: Log) {
   const { value } = await graph<{ value: { id: string; resource: string }[] }>(token, "/subscriptions");
   const sub = value.find((s) => s.resource.includes(env.tasksMailbox()));
   if (sub) await graph(token, `/subscriptions/${sub.id}`, { method: "PATCH", body: JSON.stringify({ expirationDateTime: expires }) });
-  else await graph(token, "/subscriptions", { method: "POST", body: JSON.stringify({ changeType: "created", notificationUrl: `${env.siteUrl()}/api/graph/notifications`, resource: `/users/${env.tasksMailbox()}/mailFolders('inbox')/messages`, expirationDateTime: expires, clientState: env.cronSecret() }) });
+  else await graph(token, "/subscriptions", { method: "POST", body: JSON.stringify({ changeType: "created", notificationUrl: `${env.siteUrl()}/api/graph/notifications`, resource: `/users/${env.tasksMailbox()}/mailFolders('inbox')/messages`, expirationDateTime: expires, clientState: graphClientState() }) });
   log.push("tasks@ subscription renewed");
 }

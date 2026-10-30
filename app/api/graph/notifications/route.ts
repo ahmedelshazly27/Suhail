@@ -1,5 +1,6 @@
 import { env } from "@/lib/env";
 import { appToken, graph } from "@/lib/m365/graph";
+import { graphClientState, sameSecret } from "@/lib/security";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { teams } from "@/lib/m365";
 
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
   const token = await appToken();
   const db = supabaseAdmin();
   for (const n of body.value || []) {
-    if (n.clientState !== env.cronSecret() || !n.resourceData?.id) continue;
+    if (!sameSecret(n.clientState, graphClientState()) || !n.resourceData?.id) continue;
     const id = n.resourceData.id;
     if ((await db.from("mail_links").select("id").eq("message_id", id).maybeSingle()).data) continue; // already handled
     const m = await graph<{ subject: string; webLink: string; receivedDateTime: string; hasAttachments: boolean; from: { emailAddress: { address: string; name: string } }; body: { content: string } }>(token, `/users/${mailbox}/messages/${id}?$select=subject,webLink,receivedDateTime,hasAttachments,from,body`, { headers: { Prefer: 'outlook.body-content-type="text"' } });
