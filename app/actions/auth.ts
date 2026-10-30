@@ -17,7 +17,7 @@ export async function signInWithMicrosoft() {
   const supabase = await supabaseServer();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "azure",
-    options: { scopes: SCOPES, redirectTo: `${env.siteUrl()}/auth/callback`, queryParams: { prompt: "select_account" } },
+    options: { scopes: SCOPES, redirectTo: `${env.teamUrl()}/auth/callback`, queryParams: { prompt: "select_account" } },
   });
   if (error || !data.url) redirect("/team/sign-in?e=oauth");
   redirect(data.url);
@@ -33,7 +33,7 @@ export async function sendOwnerLink(_: unknown, form: FormData): Promise<{ ok: b
   await admin.createUser({ email: email.data, email_confirm: true }).catch(() => null); // already exists is fine
   const { data, error } = await admin.generateLink({ type: "magiclink", email: email.data });
   if (error || !data.properties?.hashed_token) return { ok: false, msg: "error" };
-  const url = `${env.siteUrl()}/auth/confirm?token_hash=${data.properties.hashed_token}`;
+  const url = `${env.teamUrl()}/auth/confirm?token_hash=${data.properties.hashed_token}`;
   const body = `Your sign-in link for the Suhail dashboard:\n\n${url}\n\nIt works once and expires in an hour.`;
   const r = await sendEmail({ to: email.data, subject: "Sign in to Suhail", react: createElement(Templated, { lang: "en", bodyAr: body, bodyEn: body, vars: {} }) });
   return r.ok || r.error === "no_key" ? { ok: true, msg: "linkSent" } : { ok: false, msg: "error" };

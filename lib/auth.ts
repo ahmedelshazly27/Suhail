@@ -8,7 +8,7 @@ import { supabaseAdmin, supabaseServer } from "@/lib/supabase/server";
 
 export type Me = {
   id: string; email: string; name: string; job_title: string; avatar_url: string | null; team_role: "owner" | "admin" | "member";
-  functions: string[]; lang: "ar" | "en"; ics_token: string; onboarded_at: string | null; active: boolean; digest_email: boolean; standup_enabled: boolean;
+  functions: string[]; lang: "ar" | "en"; ics_token: string; onboarded_at: string | null; toured_at: string | null; active: boolean; digest_email: boolean; standup_enabled: boolean;
 };
 
 /** The signed-in teammate, or null. Cached per request. */

@@ -44,7 +44,7 @@ export async function emailDigest(log: Log) {
       db().from("notifications").select("title").eq("profile_id", p.id).is("read_at", null).limit(10),
     ]);
     if (!t?.length && !n?.length) continue;
-    const body = [`Hi ${p.name.split(" ")[0]},`, "", ...(t?.length ? ["Due this week:", ...t.map((x) => `${x.due_on} ${x.key} ${x.title}`), ""] : []), ...(n?.length ? ["Unread:", ...n.map((x) => x.title), ""] : []), `${env.siteUrl()}/team`].join("\n");
+    const body = [`Hi ${p.name.split(" ")[0]},`, "", ...(t?.length ? ["Due this week:", ...t.map((x) => `${x.due_on} ${x.key} ${x.title}`), ""] : []), ...(n?.length ? ["Unread:", ...n.map((x) => x.title), ""] : []), `${env.teamUrl()}/team`].join("\n");
     await sendEmail({ to: p.email, subject: "Your Suhail day", react: createElement(Templated, { lang: "en", bodyAr: body, bodyEn: body, vars: {} }) });
   }
   log.push(`digests: ${people?.length ?? 0}`);

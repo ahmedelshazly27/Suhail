@@ -11,7 +11,7 @@ import { supabaseAdmin } from "@/lib/supabase/server";
  * intended recipient in the subject. It is set in every environment until the owner lifts it (see BLOCKERS.md).
  */
 export function deliverTo(to: string): { to: string; redirected: boolean } {
-  const allow = (process.env.MAIL_ALLOWLIST ?? "admin@afterwave.org").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  const allow = (process.env.MAIL_ALLOWLIST ?? "a.elshazly@suhail.build").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
   if (process.env.MAIL_ALLOWLIST === "*") return { to, redirected: false };
   if (allow.includes(to.toLowerCase())) return { to, redirected: false };
   return { to: env.mailSafeTo(), redirected: true };

@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-// 1. team.<domain> serves the dashboard: /x on that host is /team/x in the app.
+// 1. team.<domain> serves the dashboard: /x on that host is /team/x in the app, and /team on the public host
+//    redirects there.
 // 2. Public pages: Arabic lives at /, English at /en. Un-prefixed paths are rewritten to /ar internally.
 // 3. Dashboard requests refresh the Supabase session cookie.
 export async function proxy(req: NextRequest) {
@@ -12,6 +13,9 @@ export async function proxy(req: NextRequest) {
   if (teamHost && host === teamHost && !url.pathname.startsWith("/team") && !url.pathname.startsWith("/api") && !url.pathname.startsWith("/auth")) {
     url.pathname = url.pathname === "/" ? "/team" : `/team${url.pathname}`;
     return withSession(req, NextResponse.rewrite(url));
+  }
+  if (teamHost && host !== teamHost && url.pathname.startsWith("/team") && !host.endsWith(".vercel.app") && host !== "localhost") {
+    return NextResponse.redirect(`https://${teamHost}${url.pathname}${url.search}`, 308); // one host, so one session cookie
   }
   if (url.pathname.startsWith("/team") || url.pathname.startsWith("/auth")) return withSession(req, NextResponse.next({ request: req }));
   if (url.pathname.startsWith("/api")) return NextResponse.next();

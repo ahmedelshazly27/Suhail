@@ -17,7 +17,7 @@ export function Sidebar({ lang, me, counts, projects, m365 }: Props) {
   const path = usePathname();
   const cur = (href: string) => (href === "/team" ? path === "/team" : path === href || path.startsWith(href + "/"));
   const item = ([k, href, c]: [TKey, string, string?]) => (
-    <Link key={href} href={href} className="side-item" aria-current={cur(href) ? "page" : undefined}>
+    <Link key={href} href={href} className="side-item" data-tour={k} aria-current={cur(href) ? "page" : undefined}>
       <span>{tt(lang, k)}</span>{c && counts[c] ? <span className="n">{counts[c]}</span> : null}
     </Link>
   );
@@ -25,10 +25,10 @@ export function Sidebar({ lang, me, counts, projects, m365 }: Props) {
     <nav className="side" aria-label={lang === "ar" ? "لوحة الفريق" : "Dashboard"}>
       <div className="side-top">
         <Link href="/team" style={{ textDecoration: "none" }}><Brand lang={lang} /></Link>
-        <button type="button" className="kbd" onClick={() => openPalette()}>⌘K<span className="vh-sr"> {tt(lang, "search")}</span></button>
+        <button type="button" className="kbd" data-tour="search" onClick={() => openPalette()}>⌘K<span className="vh-sr"> {tt(lang, "search")}</span></button>
       </div>
       <div className="side-group">{TOP.map(item)}</div>
-      <div className="side-group"><span className="side-label">{tt(lang, "workspace")}</span>{WORK.map(item)}</div>
+      <div className="side-group" data-tour="workspace"><span className="side-label">{tt(lang, "workspace")}</span>{WORK.map(item)}</div>
       {projects.length ? (
         <div className="side-group">
           <span className="side-label">{tt(lang, "projects")}</span>
@@ -45,7 +45,7 @@ export function Sidebar({ lang, me, counts, projects, m365 }: Props) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M4 7h10v10H4z" /><path d="M14 10l6-3v10l-6-3" /></svg>
           <span>{tt(lang, m365 ? "m365on" : "m365off")}</span><span className={m365 ? "on" : "off"} />
         </Link>
-        <Link href="/team/settings" className="side-me">
+        <Link href="/team/settings" className="side-me" data-tour="settings">
           <Avatar name={me.name} src={me.avatar_url} size="lg" ink me />
           <span className="nm"><b>{me.name.split(" ")[0]}</b><span>{tt(lang, me.team_role === "owner" ? "owner" : me.team_role === "admin" ? "admin" : "member")} · {tt(lang, "available")}</span></span>
           <span className="st">{tt(lang, "settings")}</span>

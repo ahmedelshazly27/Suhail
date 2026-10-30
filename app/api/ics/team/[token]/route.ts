@@ -11,7 +11,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
     db.from("sprints").select("id,number,starts_on,ends_on").neq("status", "done"),
     db.from("content_items").select("id,title,channel,publish_on").in("status", ["approved", "scheduled", "published"]).not("publish_on", "is", null),
   ]);
-  const base = env.siteUrl();
+  const base = env.teamUrl();
   return new Response(ics("Suhail team", [
     ...(p.data || []).map((x) => ({ uid: `p-${x.id}`, date: x.target_date!, title: x.name, url: `${base}/team/projects/${x.slug}` })),
     ...(s.data || []).map((x) => ({ uid: `s-${x.id}`, date: x.starts_on, end: x.ends_on, title: `Sprint ${x.number}` })),

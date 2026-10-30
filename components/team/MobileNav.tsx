@@ -28,15 +28,15 @@ export function MobileNav({ lang, me, inbox }: { lang: TLang; me: { name: string
         <Mark />
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}><span className="sub">{lang === "ar" ? "سهيل" : "Suhail"}</span><h1>{tt(lang, title)}</h1></div>
         <span className="spacer" />
-        <button type="button" className="iconbtn" aria-label={tt(lang, "search")} onClick={() => openPalette()}>
+        <button type="button" className="iconbtn" data-tour="search" aria-label={tt(lang, "search")} onClick={() => openPalette()}>
           <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.4" /><path d="M11 11l4 4" stroke="currentColor" strokeWidth="1.4" /></svg>
         </button>
-        <Link href="/team/settings"><Avatar name={me.name} src={me.avatar_url} size="lg" /><span className="vh-sr">{tt(lang, "settings")}</span></Link>
+        <Link href="/team/settings" data-tour="settings"><Avatar name={me.name} src={me.avatar_url} size="lg" /><span className="vh-sr">{tt(lang, "settings")}</span></Link>
       </header>
       <nav className="m-tabs" aria-label={lang === "ar" ? "التنقل" : "Navigation"}>
         <div className="in">
           {TABS.map(([k, href, ic]) => (
-            <Link key={href} href={href} className="m-tab" aria-current={cur(href) ? "page" : undefined}>
+            <Link key={href} href={href} className="m-tab" data-tour={k === "work" ? "myWork" : k} aria-current={cur(href) ? "page" : undefined}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">{I[ic]}</svg>
               {tt(lang, k)}
               {k === "inbox" && inbox ? <span className="badge">{inbox}</span> : null}

@@ -2,7 +2,7 @@
 -- Mirrors the people and records in reference/dashboard-mockup. Run after the owner has signed in once.
 do $$
 declare
-  owner uuid := (select id from public.profiles where email = 'admin@afterwave.org');
+  owner uuid := (select id from public.profiles where email = 'a.elshazly@suhail.build');
   sara uuid := '00000000-0000-4000-8000-0000000000a1'; layla uuid := '00000000-0000-4000-8000-0000000000a2';
   yousef uuid := '00000000-0000-4000-8000-0000000000a3'; fin uuid := '00000000-0000-4000-8000-0000000000a4';
   hk uuid; mj uuid; bm uuid; nl uuid; web uuid; s4 uuid; t142 uuid; partnerships uuid; events uuid; editorial uuid; engineering uuid; financer uuid;

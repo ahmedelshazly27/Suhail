@@ -13,7 +13,7 @@ export interface TeamsNotifier {
 
 /** Adaptive Card 1.5 with Open and the card's own actions. Actions post back to /api/teams/messages via the bot. */
 export function adaptiveCard(card: Card) {
-  const base = env.siteUrl();
+  const base = env.teamUrl();
   return {
     type: "AdaptiveCard", $schema: "http://adaptivecards.io/schemas/adaptive-card.json", version: "1.5",
     body: [
