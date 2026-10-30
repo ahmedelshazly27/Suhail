@@ -26,6 +26,7 @@
 .brandmark .w { font-weight: 500; font-size: .9375rem; }
 .brandmark .t { font: 400 .625rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--st-review); }
 :root[lang="ar"] .brandmark .w { font: 700 1.25rem/1 var(--f-display); }
+.brandmark .wm { display: block; width: 1.692em; height: 1em; overflow: visible; }
 :root[lang="ar"] .brandmark .t { letter-spacing: 0; font-family: var(--f-body); font-size: .75rem; }
 .kbd { display: inline-flex; align-items: center; gap: .25rem; font: 400 .6875rem/1 var(--f-mono); color: var(--st-review); border: 1px solid var(--line); background: var(--bg); padding: .25rem .375rem; text-decoration: none; cursor: pointer; }
 .side-group { display: flex; flex-direction: column; gap: 1px; }
@@ -273,6 +274,22 @@
 .slash { position: absolute; z-index: 40; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-float); min-width: 13rem; padding: .25rem 0; }
 .slash button { display: flex; width: 100%; gap: .5rem; padding: .375rem .75rem; background: none; border: 0; text-align: start; cursor: pointer; font-size: .8125rem; }
 .slash button[aria-selected="true"] { background: var(--soft); }
+
+/* ---------- first-sign-in tour (components/team/Tour.tsx) ---------- */
+.tour { position: fixed; inset: 0; z-index: 70; }
+.tour-veil { position: absolute; inset: 0; background: var(--backdrop); }
+.tour-veil.clear { background: transparent; }
+.tour-hole { position: fixed; border-radius: var(--r-sm-md); box-shadow: 0 0 0 200vmax var(--backdrop), 0 0 0 2px var(--accent); pointer-events: none; transition: all var(--t-base) var(--ease); }
+.tour-card { position: fixed; width: min(20rem, calc(100vw - 2rem)); background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-float); padding: 1.25rem; display: flex; flex-direction: column; gap: .5rem; }
+.tour-card.centred { inset-block-start: 50%; inset-inline-start: 50%; translate: -50% -50%; }
+:root[dir="rtl"] .tour-card.centred { translate: 50% -50%; }
+.tour-card h2 { margin: 0; font: 400 1.375rem/1.3 var(--f-display); }
+.tour-card p { margin: 0; color: var(--muted); font-size: .875rem; line-height: 1.6; }
+.tour-n { font: 400 .6875rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--st-review); }
+:root[lang="ar"] .tour-n { letter-spacing: 0; font-family: var(--f-body); font-size: .75rem; }
+.tour-f { display: flex; align-items: center; gap: .5rem; padding-top: .5rem; }
+.tour-f .spacer { flex: 1; }
+@media (prefers-reduced-motion: reduce) { .tour-hole { transition: none; } }
 
 /* ---------- command palette, modal, toast ---------- */
 .overlay { position: fixed; inset: 0; z-index: 50; background: var(--backdrop); display: grid; justify-items: center; align-items: start; padding: 12vh 1rem 1rem; }

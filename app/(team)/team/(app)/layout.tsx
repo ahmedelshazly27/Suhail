@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { MobileNav } from "@/components/team/MobileNav";
 import { Palette } from "@/components/team/Palette";
 import { Sidebar } from "@/components/team/Sidebar";
+import { Tour } from "@/components/team/Tour";
 import { ToastProvider } from "@/components/ui/Toast";
 import { requireMe } from "@/lib/auth";
 import { getShell } from "@/lib/data/shell";
@@ -23,6 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </main>
       </div>
       <Palette lang={lang} projects={shell.projects} />
+      {me.toured_at === null ? <Tour lang={lang} /> : null /* undefined until the toured_at migration is applied */}
     </ToastProvider>
   );
 }

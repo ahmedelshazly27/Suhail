@@ -1,6 +1,6 @@
 import type { Viewport } from "next";
 import { notFound } from "next/navigation";
-import { fontVars } from "@/lib/fonts";
+import { fontVars, preloadDisplayFont } from "@/lib/fonts";
 import { dir, isLang, LANGS } from "@/lib/i18n";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -17,6 +17,7 @@ export const viewport: Viewport = {
 export default async function SiteLayout({ children, params }: LayoutProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
+  preloadDisplayFont(lang);
   return (
     <html lang={lang} dir={dir(lang)} className={fontVars}>
       <body>

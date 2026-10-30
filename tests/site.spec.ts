@@ -19,7 +19,7 @@ for (const lang of ["ar", "en"] as const) {
       await expect(page.locator('link[rel="alternate"][hreflang="ar"]')).toHaveCount(1);
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(1);
       const axe = await new AxeBuilder({ page }).analyze();
-      expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id)).toEqual([]);
+      expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => `${v.id}: ${v.nodes.map((n) => `${n.target} ${n.any[0]?.message ?? ""}`).join(" | ")}`)).toEqual([]);
     });
   }
 }

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     await db.from("mail_links").insert({ mailbox, message_id: id, subject: m.subject, from_email: sender, received_at: m.receivedDateTime, web_link: m.webLink, entity_type: "ticket", entity_id: t.id, created_by: who.id });
     if (m.hasAttachments) await db.from("file_links").insert({ web_url: m.webLink, name: "Attachments in the original email", kind: "EMAIL", entity_type: "ticket", entity_id: t.id, created_by: who.id });
     await db.from("activity").insert({ entity_type: "ticket", entity_id: t.id, actor_id: who.id, verb: "created", data: { via: "email", mailbox } });
-    const link = `${env.siteUrl()}/team/tickets/${t.key}`;
+    const link = `${env.teamUrl()}/team/tickets/${t.key}`;
     await graph(token, `/users/${mailbox}/messages/${id}/reply`, { method: "POST", body: JSON.stringify({ comment: `Created ${t.key}: ${link}` }) }).catch(() => {});
     await teams().personal(who.id, { title: `${t.key} created from your email`, text: title, href: `/team/tickets/${t.key}` }).catch(() => {});
   }

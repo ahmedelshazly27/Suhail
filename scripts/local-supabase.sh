@@ -55,7 +55,7 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=$(jwt anon)
 SUPABASE_SERVICE_ROLE_KEY=$(jwt service_role)
 DEV_LOGIN=1
-OWNER_EMAIL=admin@afterwave.org
-MAIL_ALLOWLIST=admin@afterwave.org
+OWNER_EMAIL=a.elshazly@suhail.build
+MAIL_ALLOWLIST=a.elshazly@suhail.build
 ENV
 sleep 2; curl -sf -o /dev/null http://127.0.0.1:54321/rest/v1/ -H "apikey: $(jwt anon)" && echo "local supabase ready on :54321"

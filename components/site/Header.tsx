@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { href, t, type Lang } from "@/lib/i18n";
 import { Star } from "./Star";
+import { WordmarkAr } from "@/components/ui/Wordmark";
 
 // The prototype hides the nav links for pages that are coming soon; only these two show.
 const NAV = [["/manifesto", "nav_manifesto"], ["/careers", "nav_careers"]] as const;
@@ -14,7 +15,7 @@ export function Header({ lang }: { lang: Lang }) {
     <header className="top">
       <div className="wrap">
         <Link className="brand" href={href(lang)} aria-label={t(lang, "home")}>
-          <Star /><span className="w">{t(lang, "brand")}</span>
+          <Star /><span className="w">{lang === "ar" ? <WordmarkAr /> : t(lang, "brand")}</span>
         </Link>
         <nav className="links" aria-label={lang === "ar" ? "الصفحات" : "Pages"}>
           {NAV.map(([p, k]) => (
