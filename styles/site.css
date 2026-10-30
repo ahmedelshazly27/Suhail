@@ -34,6 +34,7 @@ header.top{position:sticky; top:env(safe-area-inset-top, 0px); z-index:9; backgr
 .brand svg{width:15px; height:15px; color:var(--accent)}
 .brand .w{font-family:var(--f-display); font-size:1.2rem; font-weight:400; line-height:1}
 :root[lang="ar"] .brand .w{font-family:var(--f-display); font-weight:700; font-size:1.4rem}
+.brand .wm{display:block; width:1.692em; height:1em; overflow:visible; color:inherit}
 nav.links{display:flex; gap:1.5rem; overflow-x:auto; scrollbar-width:none; flex:1; min-width:0; justify-content:flex-end}
 nav.links::-webkit-scrollbar{display:none}
 nav.links a{text-decoration:none; color:var(--muted); font-size:.88rem; white-space:nowrap}

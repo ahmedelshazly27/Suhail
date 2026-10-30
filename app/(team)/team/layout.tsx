@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { fontVars } from "@/lib/fonts";
+import { fontVars, preloadDisplayFont } from "@/lib/fonts";
 import { teamPrefs } from "@/lib/team-prefs";
 import "../../globals.css";
 import "@/styles/team.css";
@@ -13,6 +13,7 @@ export const viewport: Viewport = {
 
 export default async function TeamRoot({ children }: { children: React.ReactNode }) {
   const { lang, theme } = await teamPrefs();
+  preloadDisplayFont(lang);
   return (
     <html lang={lang} dir={lang === "ar" ? "rtl" : "ltr"} className={fontVars} data-theme={theme === "system" ? undefined : theme}>
       <body className="team">{children}</body>

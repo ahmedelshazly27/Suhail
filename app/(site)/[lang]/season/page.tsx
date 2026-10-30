@@ -31,9 +31,10 @@ export default async function Season({ params }: PageProps<"/[lang]/season">) {
           <div><QuickSubscribe lang={lang} source="season" variant="pillform" label={t(lang, "updates")} /></div>
         </div>
         <div className="polaroids" aria-hidden="true">
-          <figure className="p2"><Image src="/season/builders.jpg" alt="" width={720} height={480} priority /></figure>
-          <figure className="p3"><Image src="/season/capital.jpg" alt="" width={720} height={480} priority /></figure>
-          <figure className="p1"><Image src="/season/main.jpg" alt="" width={720} height={480} priority /></figure>
+          {/* Sizes follow .polaroids: each photo is 38% or 46% of the hero column, which is half the page above 860px. */}
+          <figure className="p2"><Image src="/season/builders.jpg" alt="" width={720} height={480} sizes="(max-width: 860px) 38vw, 19vw" loading="eager" /></figure>
+          <figure className="p3"><Image src="/season/capital.jpg" alt="" width={720} height={480} sizes="(max-width: 860px) 38vw, 19vw" loading="eager" /></figure>
+          <figure className="p1"><Image src="/season/main.jpg" alt="" width={720} height={480} sizes="(max-width: 860px) 46vw, 23vw" preload /></figure>
           <figure className="p4"><div className="ascii"><Scene kind="rise" /><b>{t(lang, "season_short")}</b></div></figure>
         </div>
       </div>

@@ -26,6 +26,7 @@
 .brandmark .w { font-weight: 500; font-size: .9375rem; }
 .brandmark .t { font: 400 .625rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--st-review); }
 :root[lang="ar"] .brandmark .w { font: 700 1.25rem/1 var(--f-display); }
+.brandmark .wm { display: block; width: 1.692em; height: 1em; overflow: visible; }
 :root[lang="ar"] .brandmark .t { letter-spacing: 0; font-family: var(--f-body); font-size: .75rem; }
 .kbd { display: inline-flex; align-items: center; gap: .25rem; font: 400 .6875rem/1 var(--f-mono); color: var(--st-review); border: 1px solid var(--line); background: var(--bg); padding: .25rem .375rem; text-decoration: none; cursor: pointer; }
 .side-group { display: flex; flex-direction: column; gap: 1px; }
