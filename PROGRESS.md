@@ -22,7 +22,14 @@
   - 207 Playwright tests cover desktop 1440 and phone 390, light and dark, AR and EN, with axe and overflow checks on every screen, plus RLS tests.
 
 ## Next
-- Mobile Lighthouse performance (see the note under Decisions), the RTL review of every screen, and the security review of RLS and server actions.
+- Production: apply the tour migration, merge this branch to main and redeploy (BLOCKERS item 1).
+- `/season` mobile performance (it varies between about 72 and 94 from run to run), then the visual RTL review of every Arabic screen.
+
+## Done on 30 October
+- **Fonts.** Newsreader, Amiri and IBM Plex Sans Arabic are self-hosted (`styles/fonts.css`), and each language preloads only its own H1 face. The Arabic files are subset to the core Arabic block (`scripts/subset-fonts.py`), about a third smaller. The Arabic wordmark is an SVG of the same Amiri Bold glyphs. Mobile Lighthouse on the Arabic home went from 80 to 95 to 97, and most other pages score 93 to 99.
+- **First-sign-in tour** (`components/team/Tour.tsx`) after the "You're in" screen. It can be replayed from Settings. Tested in both languages on desktop and phone.
+- **Hosts.** `suhail.build` is the public site and `team.suhail.build` the dashboard. Sign-in callbacks and dashboard links use `env.teamUrl()`.
+- **Microsoft Entra** is configured through Graph with the owner's approval (BLOCKERS item 1). The owner address is now a.elshazly@suhail.build.
 
 ## Decisions
 - **Supabase account.** The MCP connector points at a personal account whose Free plan was full. I use the Suhail account from the network settings, as you said.
