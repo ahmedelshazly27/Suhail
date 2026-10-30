@@ -33,11 +33,11 @@ const kindOf = (name: string, folder?: boolean): DriveItem["kind"] => {
 type GItem = { id: string; name: string; webUrl: string; folder?: { childCount: number }; lastModifiedDateTime: string; lastModifiedBy?: { user?: { displayName?: string } }; size?: number; parentReference?: { path?: string } };
 const toItem = (g: GItem): DriveItem => ({ id: g.id, name: g.name, kind: kindOf(g.name, !!g.folder), webUrl: g.webUrl, path: (g.parentReference?.path || "").replace(/^.*root:/, ""), modified: g.lastModifiedDateTime, by: g.lastModifiedBy?.user?.displayName || "", size: g.size, children: g.folder?.childCount });
 
-/** The "Suhail" SharePoint team site document library. SHAREPOINT_DRIVE_ID is set during setup. */
+/** The "Suhail" SharePoint team site document library (SHAREPOINT_DRIVE_ID), or your own OneDrive until it's set. */
 class GraphDrive implements DriveProvider {
   live = true;
   constructor(private token: string, private driveId = process.env.SHAREPOINT_DRIVE_ID || "") {}
-  private base = () => `/drives/${this.driveId}`;
+  private base = () => (this.driveId ? `/drives/${this.driveId}` : "/me/drive");
   async folders() {
     const j = await graph<{ value: GItem[] }>(this.token, `${this.base()}/root/children?$filter=folder ne null`);
     return j.value.map((g) => ({ id: g.id, name: g.name, restricted: g.name === "Finance", access: DRIVE_FOLDERS.find((f) => f.name === g.name)?.access ?? "" }));

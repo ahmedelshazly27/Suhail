@@ -128,3 +128,16 @@ test("RLS: a signed-in teammate cannot escalate, spoof or redirect", async () =>
     await admin.auth.admin.deleteUser(id);
   }
 });
+
+test("[en] on a phone the inbox opens on the list, and Back returns to it", async ({ page }, info) => {
+  test.skip(!info.project.name.startsWith("phone"), "phone layout only");
+  await page.goto("/team/inbox");
+  const list = page.locator(".mlist"), reader = page.locator(".rd-col");
+  await expect(list).toBeVisible();
+  await expect(reader).toBeHidden();
+  await list.locator(".mlist-item").first().click();
+  await expect(reader).toBeVisible();
+  await page.getByRole("link", { name: "← Back" }).click();
+  await expect(list).toBeVisible();
+  await expect(reader).toBeHidden();
+});

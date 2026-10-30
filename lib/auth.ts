@@ -14,9 +14,12 @@ export type Me = {
 /** The signed-in teammate, or null. Cached per request. */
 export const getMe = cache(async (): Promise<Me | null> => {
   const supabase = await supabaseServer();
-  const { data: { user } } = await supabase.auth.getUser().catch(() => ({ data: { user: null } }));
-  if (!user) return null;
-  const { data } = await supabaseAdmin().from("profiles").select("*").eq("id", user.id).maybeSingle();
+  // getClaims verifies the session JWT locally against the project's signing keys (no Auth round trip per request);
+  // it falls back to asking Auth when a project still signs with a shared secret, as the local test stack does.
+  const { data: auth } = await supabase.auth.getClaims().catch(() => ({ data: null }));
+  const uid = auth?.claims?.sub;
+  if (!uid) return null;
+  const { data } = await supabaseAdmin().from("profiles").select("*").eq("id", uid).maybeSingle();
   return (data as Me | null) ?? null;
 });
 

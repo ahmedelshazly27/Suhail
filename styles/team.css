@@ -275,6 +275,16 @@
 .slash button { display: flex; width: 100%; gap: .5rem; padding: .375rem .75rem; background: none; border: 0; text-align: start; cursor: pointer; font-size: .8125rem; }
 .slash button[aria-selected="true"] { background: var(--soft); }
 
+/* ---------- loading skeleton ((app)/loading.tsx) ---------- */
+.skel-page { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; }
+.skel { background: var(--soft); border-radius: var(--r-sm); animation: skel 1.2s var(--ease) infinite alternate; }
+.skel-eb { width: 6rem; height: .75rem; }
+.skel-h { width: min(18rem, 70%); height: 2rem; }
+.skel-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; padding-top: .5rem; }
+.skel-card { height: 9rem; border-radius: var(--r-card); }
+@keyframes skel { from { opacity: 1; } to { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+
 /* ---------- first-sign-in tour (components/team/Tour.tsx) ---------- */
 .tour { position: fixed; inset: 0; z-index: 70; }
 .tour-veil { position: absolute; inset: 0; background: var(--backdrop); }
