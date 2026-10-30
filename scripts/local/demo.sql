@@ -10,7 +10,7 @@ declare
 begin
   if owner is null then raise exception 'sign in as the owner first'; end if;
   if exists (select 1 from public.projects where slug = 'hackathon-kuwait') then return; end if;
-  update public.profiles set name = 'Ahmed El Shazly', job_title = 'Founder', onboarded_at = coalesce(onboarded_at, now()) where id = owner;
+  update public.profiles set name = 'Ahmed El Shazly', job_title = 'Founder', capacity = 10, onboarded_at = coalesce(onboarded_at, now()) where id = owner;
 
   insert into auth.users (id, email, aud, role, email_confirmed_at, created_at, updated_at) values
     (sara, 'sara@suhail.build', 'authenticated', 'authenticated', now(), now(), now()), (layla, 'layla@suhail.build', 'authenticated', 'authenticated', now(), now(), now()),
@@ -27,7 +27,7 @@ begin
   insert into public.projects (slug, name, lead_id, status, sort) values ('newsletter', 'Newsletter', layla, 'active', 4) returning id into nl;
   insert into public.projects (slug, name, lead_id, status, sort) values ('website', 'Website', owner, 'planned', 5) returning id into web;
 
-  insert into public.sprints (number, starts_on, ends_on, status, capacity) values (3, d - 19, d - 6, 'done', '{}'), (4, d - 5, d + 8, 'active', '{}') ;
+  insert into public.sprints (number, starts_on, ends_on, status, capacity) values (3, d - 19, d - 6, 'done', '{}'), (4, d - 5, d + 8, 'active', '{}'), (5, d + 9, d + 22, 'planned', '{}');
   select id into s4 from public.sprints where number = 4;
 
   insert into public.tickets (number, title, status, priority, assignee_id, project_id, sprint_id, due_on, estimate, labels, description, created_by) values
