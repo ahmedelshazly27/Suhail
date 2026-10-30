@@ -29,10 +29,13 @@ type Box = { top: number; start: number; width: number; height: number };
 const PAD = 6, GAP = 12, EDGE = 16;
 
 const noop = () => () => {};
+// Set on close, so a quick client-side navigation can't re-show the tour while the save is still in flight.
+let dismissed = false;
+export const allowTourAgain = () => { dismissed = false; }; // Settings, "Replay the tour"
 
 export function Tour({ lang }: { lang: TLang }) {
   const client = useSyncExternalStore(noop, () => true, () => false); // steps read the DOM, so nothing on the server
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(() => !dismissed);
   const [i, setI] = useState(0);
   const [hole, setHole] = useState<Box | null>(null);
   const [pos, setPos] = useState<{ top: number; start: number } | null>(null);
@@ -40,7 +43,7 @@ export function Tour({ lang }: { lang: TLang }) {
   const rtl = lang === "ar";
   const step = STEPS[i], last = i === STEPS.length - 1;
 
-  const close = useCallback(() => { setOpen(false); finishTour().catch(() => {}); }, []);
+  const close = useCallback(() => { dismissed = true; setOpen(false); finishTour().catch(() => {}); }, []);
   const go = useCallback((d: 1 | -1) => {
     let j = i + d;
     while (j > 0 && j < STEPS.length - 1 && !usable(STEPS[j])) j += d; // controls that aren't on this screen size

@@ -34,11 +34,13 @@ for (const lang of ["en", "ar"] as const) {
 
 test("[en] Escape skips the tour and Settings replays it", async ({ page, context }) => {
   await context.addCookies([{ name: "team-lang", value: "en", url: "http://localhost:3000" }]);
-  await signInNewTeammate(page, "en");
+  const { id, admin } = await signInNewTeammate(page, "en");
   await page.goto("/team/my-work");
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toBeHidden();
+  // Skipping saves in the background; a full page load before it lands would show the tour again.
+  await expect.poll(async () => (await admin.from("profiles").select("toured_at").eq("id", id).single()).data?.toured_at).not.toBeNull();
   await page.goto("/team/settings");
   await page.getByRole("button", { name: "Replay the tour" }).click();
   await expect(page).toHaveURL(/\/team$/);

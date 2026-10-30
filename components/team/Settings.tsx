@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { replayTour } from "@/app/actions/me";
+import { allowTourAgain } from "./Tour";
 import { copyRole, regenerateIcs, saveCategory, saveLabel, saveMe, saveMember, saveProjectTemplate, saveRole, saveSettings, saveStages, saveTemplate, setTeamPrefAction } from "@/app/actions/settings";
 import { FormBox } from "@/components/site/forms/FormBox";
 import { useToast } from "@/components/ui/Toast";
@@ -34,7 +35,7 @@ export function MeSettings({ lang, theme, me, icsUrl, teamIcsUrl }: { lang: TLan
         <button type="button" className="b quiet" style={{ alignSelf: "flex-start" }} disabled={pending} onClick={() => confirm(lang === "ar" ? "الرابط القديم بيوقف. تكمل؟" : "The old link will stop working. Continue?") && run(() => regenerateIcs(), lang)}>{lang === "ar" ? "رابط جديد" : "New link"}</button>
       </div>
       <div style={{ display: "flex", gap: ".5rem", flexWrap: "wrap" }}>
-        <form action={replayTour}><button className="b quiet" type="submit">{lang === "ar" ? "أعد الجولة التعريفية" : "Replay the tour"}</button></form>
+        <form action={replayTour}><button className="b quiet" type="submit" onClick={allowTourAgain}>{lang === "ar" ? "أعد الجولة التعريفية" : "Replay the tour"}</button></form>
         <form action="/auth/signout" method="post"><button className="b quiet" type="submit">{tt(lang, "signOut")}</button></form>
       </div>
     </div>
