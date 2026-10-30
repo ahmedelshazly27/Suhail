@@ -21,9 +21,9 @@ export function Header({ lang }: { lang: Lang }) {
             <Link key={p} href={href(lang, p)} aria-current={path === p || path.startsWith(p + "/") ? "page" : undefined}>{t(lang, k)}</Link>
           ))}
         </nav>
-        <Link className="lang" href={href(other, path)} hrefLang={other} aria-label={t(lang, "langlabel")} prefetch={false}
+        <Link className="lang" href={href(other, path)} hrefLang={other} prefetch={false}
           onClick={() => { try { document.cookie = `suhail-lang=${other};path=/;max-age=31536000;samesite=lax`; } catch {} }}>
-          {lang === "ar" ? "EN" : <span className="ar" lang="ar">عربي</span>}
+          {lang === "ar" ? "EN" : <span className="ar" lang="ar">عربي</span>}<span className="vh-sr"> · {t(lang, "langlabel")}</span>
         </Link>
       </div>
     </header>
