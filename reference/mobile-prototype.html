@@ -1,0 +1,386 @@
+<title>Suhail Team</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#F7F6F2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400&display=swap">
+<style>
+/* Suhail team app, phone first: one column, sticky header, bottom tab bar, bottom sheets for detail */
+:root{
+  --bg:#F7F6F2; --fg:#171513; --muted:#6B645B; --faint:#B7B0A6; --line:#E4E0D8; --soft:#EFECE6; --soft2:#F3F1EC;
+  --accent:#E8461C; --on-accent:#FFFFFF; --ink-band:#0B0A09; --on-band:#ECE8E1;
+  --st-todo:#B7B0A6; --st-progress:#E8461C; --st-review:#6B645B; --st-done:#171513; --st-danger:#C2361B;
+  --scrim:rgba(10,9,8,.45); --shadow:0 -8px 30px rgba(10,9,8,.14);
+  --f-display:"Newsreader", Georgia, serif; --f-body:"IBM Plex Sans", system-ui, sans-serif; --f-mono:"IBM Plex Mono", ui-monospace, monospace;
+  --t-clay:#FBE4DB; --c-clay:#A8341A; --t-sea:var(--soft); --c-sea:var(--fg); --t-saffron:var(--soft); --c-saffron:var(--fg);
+  --t-indigo:var(--soft); --c-indigo:var(--fg); --t-palm:var(--soft); --c-palm:var(--fg); --t-rose:var(--soft); --c-rose:var(--fg); --t-stone:var(--soft); --c-stone:var(--fg);
+  --eyebrow:#A8341A; --bar:#E8461C;
+  --f-ar-body:"IBM Plex Sans Arabic", "Geeza Pro", system-ui, sans-serif; --f-ar-display:"Amiri", "Geeza Pro", serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0B0A09; --fg:#ECE8E1; --muted:#9A9288; --faint:#4A453F; --line:#24211D; --soft:#141210; --soft2:#181613;
+  --accent:#FF5A2A; --on-accent:#0B0A09; --ink-band:#1A1815; --on-band:#ECE8E1;
+  --st-todo:#4A453F; --st-progress:#FF5A2A; --st-review:#9A9288; --st-done:#ECE8E1; --st-danger:#FF6A4A;
+  --t-clay:#3A1D14; --c-clay:#FFA68A; --t-sea:var(--soft); --c-sea:var(--fg); --t-saffron:var(--soft); --c-saffron:var(--fg);
+  --t-indigo:var(--soft); --c-indigo:var(--fg); --t-palm:var(--soft); --c-palm:var(--fg); --t-rose:var(--soft); --c-rose:var(--fg); --t-stone:var(--soft); --c-stone:var(--fg);
+  --eyebrow:#FF8A66; --bar:#FF5A2A;
+  --scrim:rgba(0,0,0,.6); --shadow:0 -8px 30px rgba(0,0,0,.5); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --t-clay:#3A1D14; --c-clay:#FFA68A; --t-sea:var(--soft); --c-sea:var(--fg); --t-saffron:var(--soft); --c-saffron:var(--fg);
+  --t-indigo:var(--soft); --c-indigo:var(--fg); --t-palm:var(--soft); --c-palm:var(--fg); --t-rose:var(--soft); --c-rose:var(--fg); --t-stone:var(--soft); --c-stone:var(--fg);
+  --eyebrow:#FF8A66; --bar:#FF5A2A;
+  --bg:#0B0A09; --fg:#ECE8E1; --muted:#9A9288; --faint:#4A453F; --line:#24211D; --soft:#141210; --soft2:#181613;
+  --accent:#FF5A2A; --on-accent:#0B0A09; --ink-band:#1A1815; --on-band:#ECE8E1;
+  --st-todo:#4A453F; --st-progress:#FF5A2A; --st-review:#9A9288; --st-done:#ECE8E1; --st-danger:#FF6A4A;
+  --scrim:rgba(0,0,0,.6); --shadow:0 -8px 30px rgba(0,0,0,.5); color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg); color:var(--fg); font:300 15px/1.5 var(--f-body); -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:30; background:var(--bg)}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.app{max-width:520px; margin:0 auto; min-height:100%; padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:0 calc(84px + env(safe-area-inset-bottom,0px))}
+
+/* header */
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); display:flex; align-items:center; gap:10px; padding-block:12px 10px; border-bottom:1px solid var(--line); margin-inline:calc(-1 * max(16px, env(safe-area-inset-left,0px))); padding-inline:max(16px, env(safe-area-inset-left,0px))}
+.top .mark{width:18px; height:18px; flex:none}
+.top h1{margin:0; font:400 1.05rem/1.2 var(--f-body)}
+.top .sub{font:400 .7rem/1 var(--f-mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.avatar{position:relative; width:32px; height:32px; border-radius:50%; background:var(--t-clay); color:var(--c-clay); display:grid; place-items:center; font:500 .7rem/1 var(--f-mono); flex:none; border:0; cursor:pointer}
+.avatar::after{content:""; position:absolute; inset-inline-end:-1px; bottom:-1px; width:9px; height:9px; border-radius:50%; background:var(--st-done); border:2px solid var(--bg)}
+.iconbtn{width:40px; height:40px; display:grid; place-items:center; background:none; border:1px solid var(--line); cursor:pointer; flex:none}
+.spacer{flex:1}
+
+/* type */
+.eyebrow{font:400 .7rem/1.2 var(--f-mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.display{font:300 2rem/1.12 var(--f-display); letter-spacing:-.01em; margin:0; text-wrap:balance}
+h2.sec{margin:0; font:500 .95rem/1.3 var(--f-body)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono)}
+.small{font-size:.82rem}
+
+/* blocks */
+.stack{display:flex; flex-direction:column; gap:14px}
+.screen{display:flex; flex-direction:column; gap:22px; padding-top:18px}
+.card{border:1px solid var(--line); border-radius:14px; background:var(--bg)}
+.card-h{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; border-bottom:1px solid var(--line)}
+.row{display:grid; grid-template-columns:10px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); background:none; border-inline:0; border-top:0; width:100%; text-align:start; cursor:pointer; min-height:56px}
+.row:last-child{border-bottom:0}
+.row .t{display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.row .m{display:block; font-size:.8rem; color:var(--muted)}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--st-todo); display:inline-block}
+.due{font:400 .75rem/1 var(--f-mono); color:var(--muted); white-space:nowrap}
+.due.late{color:var(--st-danger)}
+.pills{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex:none; font:500 .82rem/1 var(--f-body); padding:9px 14px; border:1px solid var(--line); border-radius:999px; background:var(--bg); cursor:pointer; min-height:36px}
+.pill[aria-pressed="true"]{border-color:var(--fg)}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; font:400 .92rem/1 var(--f-body); padding:13px 16px; border:1px solid var(--fg); background:var(--fg); color:var(--bg); cursor:pointer; min-height:46px}
+.btn.ghost{background:transparent; color:var(--fg)}
+.btn.quiet{border-color:var(--line); background:transparent; color:var(--fg)}
+.btn:active{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.btns{display:flex; gap:8px; flex-wrap:wrap}
+.btns .btn{flex:1 1 auto}
+.bar{height:4px; background:var(--line)}
+.bar > span{display:block; height:4px; background:var(--fg)}
+.field{display:grid; gap:6px; font-size:.8rem; color:var(--muted)}
+.field input, .field textarea{font:400 1rem/1.4 var(--f-body); color:var(--fg); padding:12px; border:1px solid var(--line); background:var(--bg); border-radius:0; width:100%; resize:vertical}
+.field input:focus, .field textarea:focus{border-color:var(--fg); outline:none}
+.quote{border-inline-start:2px solid var(--fg); padding-inline-start:12px; color:var(--muted)}
+.ini{width:28px; height:28px; border-radius:50%; background:var(--soft); display:grid; place-items:center; font:400 .68rem/1 var(--f-mono); flex:none; color:var(--fg)}
+
+
+/* accent tints: one colour family per project, status, person and channel */
+.chip{display:inline-block; font:500 .7rem/1 var(--f-body); padding:4px 8px; border-radius:999px; white-space:nowrap}
+.k-clay{background:var(--t-clay); color:var(--c-clay)} .k-sea{background:var(--t-sea); color:var(--c-sea)} .k-saffron{background:var(--t-saffron); color:var(--c-saffron)}
+.k-indigo{background:var(--t-indigo); color:var(--c-indigo)} .k-palm{background:var(--t-palm); color:var(--c-palm)} .k-rose{background:var(--t-rose); color:var(--c-rose)} .k-stone{background:var(--t-stone); color:var(--c-stone)}
+.eyebrow, .top .sub{color:var(--eyebrow)}
+.bar > span{background:var(--bar)}
+.tabs .tab[aria-current="page"]::before{background:var(--bar)}
+.tabs .tab[aria-current="page"]{color:var(--c-clay)}
+.grp{display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:8px}
+
+/* dither: the brand's dot texture, used in a few places only */
+.dither{pointer-events:none; background-image:radial-gradient(circle, var(--dot) 0 1px, transparent 1.25px), radial-gradient(circle, var(--dot) 0 .6px, transparent .85px); background-size:6px 6px, 6px 6px; background-position:0 0, 3px 3px}
+.dither-hero{--dot:var(--accent); height:30px; margin-bottom:-14px; opacity:.45; -webkit-mask-image:linear-gradient(90deg, transparent 30%, #000); mask-image:linear-gradient(90deg, transparent 30%, #000)}
+.band{position:relative; overflow:hidden; isolation:isolate; background:var(--ink-band); color:var(--on-band); border-color:transparent !important}
+.band .muted, .band .due{color:#B7B0A6}
+.band .bar{background:#3A3530}
+.band::after{content:""; position:absolute; inset:0 0 0 30%; z-index:-1; opacity:.55; --dot:var(--accent); background-image:radial-gradient(circle, var(--dot) 0 1px, transparent 1.25px), radial-gradient(circle, var(--dot) 0 .6px, transparent .85px); background-size:6px 6px, 6px 6px; background-position:0 0, 3px 3px; -webkit-mask-image:linear-gradient(110deg, transparent 10%, #000 85%); mask-image:linear-gradient(110deg, transparent 10%, #000 85%)}
+.signin{position:relative; isolation:isolate}
+.signin::after{content:""; position:absolute; z-index:-1; left:calc(-1 * max(16px, env(safe-area-inset-left,0px))); right:calc(-1 * max(16px, env(safe-area-inset-right,0px))); bottom:0; height:45%; opacity:.45; background-image:radial-gradient(circle, var(--accent) 0 1px, transparent 1.25px), radial-gradient(circle, var(--accent) 0 .6px, transparent .85px); background-size:7px 7px, 7px 7px; background-position:0 0, 3.5px 3.5px; -webkit-mask-image:radial-gradient(120% 90% at 50% 120%, #000 20%, transparent 70%); mask-image:radial-gradient(120% 90% at 50% 120%, #000 20%, transparent 70%)}
+/* bottom nav */
+.tabs{position:fixed; left:0; right:0; bottom:0; z-index:25; background:var(--bg); border-top:1px solid var(--line); padding:6px max(8px, env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px, env(safe-area-inset-left,0px))}
+.tabs-in{max-width:520px; margin:0 auto; display:grid; grid-template-columns:repeat(5, minmax(0,1fr))}
+.tab{display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 2px; background:none; border:0; cursor:pointer; color:var(--muted); font:400 .7rem/1 var(--f-body); min-height:50px; position:relative}
+.tab svg{width:22px; height:22px}
+.tab[aria-current="page"]{color:var(--fg); font-weight:500}
+.tab[aria-current="page"]::before{content:""; position:absolute; top:-7px; left:30%; right:30%; height:2px; background:var(--fg)}
+.badge{position:absolute; top:2px; inset-inline-start:calc(50% + 6px); font:500 .62rem/1 var(--f-mono); background:var(--fg); color:var(--bg); padding:2px 4px; border-radius:999px}
+
+/* sheet */
+.scrim{position:fixed; inset:0; z-index:40; background:var(--scrim); display:flex; align-items:flex-end; justify-content:center}
+.sheet{width:100%; max-width:560px; max-height:88%; overflow:auto; background:var(--bg); border-radius:16px 16px 0 0; box-shadow:var(--shadow); padding:10px max(18px, env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(18px, env(safe-area-inset-left,0px)); display:flex; flex-direction:column; gap:16px}
+.grab{width:40px; height:4px; border-radius:2px; background:var(--line); margin:0 auto 4px}
+.sheet h3{margin:0; font:400 1.5rem/1.25 var(--f-display); text-wrap:balance}
+dl.kv{margin:0; display:grid; grid-template-columns:88px minmax(0,1fr); gap:8px 12px; font-size:.9rem}
+dl.kv dt{color:var(--muted)} dl.kv dd{margin:0}
+.check{display:flex; gap:10px; align-items:center; min-height:40px}
+.check input{width:20px; height:20px; accent-color:var(--fg)}
+
+/* toast */
+.toast{position:fixed; z-index:60; left:50%; transform:translateX(-50%); bottom:calc(84px + env(safe-area-inset-bottom,0px)); background:var(--fg); color:var(--bg); padding:12px 16px; font-size:.88rem; max-width:calc(100% - 32px)}
+
+/* sign-in */
+.signin{min-height:100%; display:flex; flex-direction:column; justify-content:center; align-items:stretch; gap:22px; padding-block:40px}
+@media (prefers-reduced-motion: no-preference){ .sheet{animation:up .22s cubic-bezier(.2,.7,.2,1)} @keyframes up{from{transform:translateY(24px); opacity:.6}} }
+</style>
+
+<div class="app" id="app"></div>
+<nav class="tabs" id="tabs" aria-label="Sections" hidden>
+  <div class="tabs-in">
+    <button class="tab" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-6h6v6"/></svg>Home</button>
+    <button class="tab" data-tab="inbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h18v14H3z"/><path d="M3 13h5l1.5 2h5L16 13h5"/></svg>Inbox<span class="badge" id="mailBadge">3</span></button>
+    <button class="tab" data-tab="work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v13h-4z"/></svg>Work</button>
+    <button class="tab" data-tab="drive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 6h7l2 2h9v11H3z"/></svg>Drive</button>
+    <button class="tab" data-tab="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>More</button>
+  </div>
+</nav>
+<div id="layer"></div>
+
+<script>
+(() => {
+const STAR = '<svg class="mark" viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M10 0 L11.6 8.4 L20 10 L11.6 11.6 L10 20 L8.4 11.6 L0 10 L8.4 8.4 Z"/></svg>';
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = (s, r = document) => r.querySelector(s);
+const KS = { 'Todo':'stone', 'In progress':'saffron', 'In review':'indigo', 'Done':'palm' };
+const KP = { 'Hackathon Kuwait':'clay', 'The Majlis, season 1':'indigo', 'The Majlis':'indigo', 'Newsletter':'sea', 'Arabic benchmark v0':'palm' };
+const KW = { AE:'clay', SA:'sea', LY:'rose', YO:'indigo', FN:'palm', NO:'saffron', UN:'indigo', VB:'sea', MK:'clay', HA:'indigo', YH:'rose', NB:'palm' };
+const ini = (x) => `<span class="ini k-${KW[x] || 'saffron'}">${x}</span>`;
+const ST = { 'Todo':'--st-todo', 'In progress':'--st-progress', 'In review':'--st-review', 'Done':'--st-done' };
+
+// example data, all made up for the prototype
+const data = {
+  tickets: [
+    { key:'SUH-142', title:'Confirm venue for Hackathon Kuwait', project:'Hackathon Kuwait', status:'In progress', due:'Today', late:true, pts:3, who:'AE', mine:true,
+      desc:'Hold the main hall for 14 and 15 November. Deposit is KWD 600 within seven days. Check power for 250 laptops.', subs:[['Get floor plan',1],['Compare two backup venues',1],['Walkthrough with Sara',0],['Pay deposit',0]],
+      comments:[['SA','Sara','@Ahmed can we move the walkthrough to Sunday? The hall is booked Saturday.']] },
+    { key:'SUH-151', title:'Sponsor deck v2 with tier pricing', project:'Hackathon Kuwait', status:'Todo', due:'Fri', pts:3, who:'AE', mine:true, desc:'Add Gold, Silver and Community tiers with what each gets.', subs:[], comments:[] },
+    { key:'SUH-118', title:'Final edit, Majlis episode 3', project:'The Majlis, season 1', status:'In review', due:'Sat', pts:2, who:'AE', mine:true, desc:'Cut to 42 minutes, add chapter markers.', subs:[], comments:[] },
+    { key:'SUH-160', title:'Outline newsletter issue 2', project:'Newsletter', status:'Todo', due:'Sun', pts:2, who:'LY', mine:true, desc:'Six teams we met, hackathon, proverb.', subs:[], comments:[] },
+    { key:'SUH-149', title:'Challenge tracks and briefs', project:'Hackathon Kuwait', status:'In progress', due:'Sun', pts:5, who:'YO', desc:'Three tracks, one per sponsor.', subs:[], comments:[] },
+    { key:'SUH-147', title:'Registration form copy, AR and EN', project:'Hackathon Kuwait', status:'In review', due:'Thu', pts:2, who:'LY', desc:'', subs:[], comments:[] },
+    { key:'SUH-155', title:'Judges shortlist, 8 names', project:'Hackathon Kuwait', status:'Todo', due:'Mon', pts:2, who:'LY', desc:'', subs:[], comments:[] },
+    { key:'SUH-139', title:'Pick date and city', project:'Hackathon Kuwait', status:'Done', due:'', pts:1, who:'AE', desc:'', subs:[], comments:[] }
+  ],
+  mail: [
+    { box:'partners@', from:'Noura, [Sponsor company]', ini:'NO', time:'09:12', unread:true, subject:'Sponsorship tiers for Hackathon Kuwait', body:'Hi Sara,\n\nThanks for sending the deck. We are interested in the Gold tier, on two conditions: a branded challenge track, and two of our engineers as mentors on the day.\n\nCould you share the final venue and expected attendance by next week? Our budget closes on the 10th.\n\nBest,\nNoura', partner:'[Sponsor company] · In talks', ticket:'SUH-151' },
+    { box:'hello@', from:'[University] Innovation Office', ini:'UN', time:'08:40', unread:true, subject:'Student teams for November', body:'Dear Suhail team,\n\nAround 40 of our engineering students would like to take part in the November hackathon. Is there a way to register as a group?\n\nKind regards', partner:'[University] · Prospect', ticket:'' },
+    { box:'Inbox', from:'Yousef', ini:'YO', time:'Yesterday', unread:true, subject:'Benchmark dataset licence question', body:'Two of the sources are CC BY-NC, so we may need to drop them or ask permission. Can we decide this week?', partner:'Internal', ticket:'' },
+    { box:'partners@', from:'Venue bookings', ini:'VB', time:'Mon', unread:false, subject:'Hall availability 14 to 15 November', body:'The main hall is available for up to 250 people. A deposit of KWD 600 is due within seven days.', partner:'[Venue] · Confirmed', ticket:'SUH-142' }
+  ],
+  expenses: [
+    { id:1, what:'Venue deposit, main hall', by:'Ahmed', project:'Hackathon Kuwait', amount:'KWD 600', status:'Pending' },
+    { id:2, what:'Studio hire, episode 4', by:'Layla', project:'The Majlis', amount:'KWD 160', status:'Pending' },
+    { id:3, what:'Printed banners', by:'Sara', project:'Hackathon Kuwait', amount:'KWD 85', status:'Pending' }
+  ],
+  apps: [
+    { ini:'MK', name:'Mariam K.', where:'Riyadh', role:'Partnerships', stage:'Task review', score:'●●●●○' },
+    { ini:'HA', name:'Hassan A.', where:'Cairo', role:'Engineering', stage:'New', score:'Not scored' },
+    { ini:'YH', name:'Yara H.', where:'Beirut', role:'Editorial', stage:'Task review', score:'●●●●●' },
+    { ini:'NB', name:'Nada B.', where:'Kuwait', role:'Finance', stage:'Reviewing', score:'●●●●○' }
+  ]
+};
+
+const S = { signedIn:false, tab:'home', workFilter:'mine', mailBox:'All', folder:'all', more:null };
+try { const v = sessionStorage.getItem('suhail-signed'); if (v === '1') S.signedIn = true; } catch (e) {}
+
+function toast(msg){ const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role','status'); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2400); }
+function header(title, sub, extra = ''){ return `<header class="top">${STAR}<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><span class="sub">${esc(sub)}</span><h1>${esc(title)}</h1></div><span class="spacer"></span>${extra}<button class="avatar" data-act="me" aria-label="Your account">AE</button></header>`; }
+const dot = (status) => `<span class="dot" style="background:var(${ST[status] || '--st-todo'})"></span>`;
+
+/* ---------- screens ---------- */
+function signIn(){
+  return `<div class="signin">
+    <div style="display:flex;align-items:center;gap:10px">${STAR.replace('class="mark"','class="mark" style="width:22px;height:22px"')}<span style="font-weight:500;font-size:1.1rem">Suhail</span><span class="eyebrow">Team</span></div>
+    <h1 class="display">Welcome back</h1>
+    <p class="muted" style="margin:0">Use your Suhail Microsoft 365 account. No new password.</p>
+    <button class="btn" data-act="signin">Sign in with Microsoft</button>
+    <p class="small muted" style="margin:0">Only accounts in the Suhail organisation can sign in. In this prototype the button signs you in as Ahmed.</p>
+  </div>`;
+}
+
+function home(){
+  const mine = data.tickets.filter((t) => t.mine && t.status !== 'Done');
+  const pending = data.expenses.filter((e) => e.status === 'Pending').length;
+  return header('Home', 'Thursday 30 October') + `<div class="screen">
+    <div class="dither dither-hero" aria-hidden="true"></div>
+    <h2 class="display">Good morning, Ahmed</h2>
+    <section class="card"><div class="card-h"><h2 class="sec">My work</h2><span class="due">${mine.length} open</span></div>
+      ${mine.map((t) => `<button class="row" data-ticket="${t.key}">${dot(t.status)}<span style="min-width:0"><span class="t">${esc(t.title)}</span><span class="m" style="display:flex;gap:6px;align-items:center;margin-top:3px"><span class="chip k-${KP[t.project] || 'stone'}">${esc(t.project)}</span><span class="chip k-${KS[t.status]}">${t.status}</span></span></span><span class="due ${t.late ? 'late' : ''}">${esc(t.due)}</span></button>`).join('')}
+    </section>
+    ${pending ? `<button class="card" data-go="more:finance" style="display:flex;align-items:center;gap:12px;padding:14px;text-align:start;cursor:pointer"><span class="dot" style="background:var(--st-progress)"></span><span style="flex:1">${pending} expenses waiting for you</span><span class="due">Review</span></button>` : ''}
+    <section class="card" style="padding:14px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><h2 class="sec">Stand-up</h2><span class="due">4 of 6 answered</span></div>
+      <label class="field" for="su1">Done yesterday<input id="su1" value="Sent sponsor deck to two leads"></label>
+      <label class="field" for="su2">Next<input id="su2" placeholder="What are you on today?"></label>
+      <label class="field" for="su3">Blockers<input id="su3" placeholder="Anything in your way?"></label>
+      <button class="btn" data-act="standup">Post stand-up</button>
+    </section>
+    <section class="card band" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="sec">Sprint 4</h2><span class="due">day 6 of 10</span></div>
+      <div style="display:flex;align-items:baseline;gap:8px"><span style="font:300 2.4rem/1 var(--f-display)">18</span><span class="muted small">of 31 points done</span></div>
+      <div class="bar"><span style="width:58%"></span></div>
+    </section>
+    <section class="card"><div class="card-h"><h2 class="sec">This week</h2></div>
+      ${[['Thu 16:00','Sprint 4 review','Teams meeting'],['Sat 19:00','Majlis episode 4 recording','Studio, Kuwait City'],['Sun 11:00','Venue walkthrough','Hackathon Kuwait'],['14 Nov','Hackathon Kuwait','15 days to go']].map(([w,a,b]) => `<div style="display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)"><span class="due" style="padding-top:3px">${w}</span><span><span style="display:block">${a}</span><span class="small muted">${b}</span></span></div>`).join('')}
+    </section>
+  </div>`;
+}
+
+function inbox(){
+  const boxes = ['All','Inbox','hello@','partners@'];
+  const list = data.mail.filter((m) => S.mailBox === 'All' || m.box === S.mailBox);
+  return header('Inbox', 'Synced from Outlook') + `<div class="screen" style="gap:14px">
+    <div class="pills" role="group" aria-label="Mailbox">${boxes.map((b) => `<button class="pill" aria-pressed="${S.mailBox === b}" data-box="${b}">${b}</button>`).join('')}</div>
+    <section class="card">
+      ${list.map((m) => { const i = data.mail.indexOf(m); return `<button class="row" data-mail="${i}" style="grid-template-columns:28px minmax(0,1fr) auto;align-items:start">${ini(m.ini)}<span style="min-width:0"><span class="t" style="font-weight:${m.unread ? 600 : 400}">${esc(m.from)}</span><span class="t small">${esc(m.subject)}</span><span class="m">${esc(m.box)}</span></span><span class="due">${m.time}</span></button>`; }).join('') || '<p class="muted" style="padding:16px;margin:0">Nothing here.</p>'}
+    </section>
+  </div>`;
+}
+
+function work(){
+  const filters = [['mine','Mine'],['hackathon','Hackathon Kuwait'],['review','In review'],['all','All']];
+  let list = data.tickets;
+  if (S.workFilter === 'mine') list = list.filter((t) => t.mine);
+  if (S.workFilter === 'hackathon') list = list.filter((t) => t.project === 'Hackathon Kuwait');
+  if (S.workFilter === 'review') list = list.filter((t) => t.status === 'In review');
+  const groups = ['In progress','Todo','In review','Done'];
+  return header('Work', 'Sprint 4', `<button class="iconbtn" data-act="newticket" aria-label="New ticket"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>`) + `<div class="screen" style="gap:16px">
+    <div class="pills" role="group" aria-label="Filter">${filters.map(([k,l]) => `<button class="pill" aria-pressed="${S.workFilter === k}" data-filter="${k}">${l}</button>`).join('')}</div>
+    ${groups.map((g) => { const items = list.filter((t) => t.status === g); if (!items.length) return ''; return `<section class="stack" style="gap:8px"><div class="grp k-${KS[g]}">${dot(g)}<span style="font:500 .78rem/1 var(--f-body)">${g}</span><span class="due" style="color:inherit">${items.length}</span></div><div class="card">${items.map((t) => `<button class="row" data-ticket="${t.key}" style="grid-template-columns:minmax(0,1fr) auto"><span style="min-width:0"><span class="t">${esc(t.title)}</span><span class="m" style="display:flex;gap:6px;align-items:center;margin-top:3px"><span class="chip k-${KP[t.project] || 'stone'}">${esc(t.project)}</span><span>${t.key} · ${t.pts} pt</span></span></span><span class="due ${t.late ? 'late' : ''}">${esc(t.due)}</span></button>`).join('')}</div></section>`; }).join('')}
+  </div>`;
+}
+
+const DRIVE = {
+  all:{ name:'Shared drive', access:'Everyone in the Suhail team', items:[['DIR','Brand','24 files','brand'],['DIR','Templates','12 files','templates'],['DIR','Partnerships','31 files','partnerships'],['DIR','Events','18 files','events'],['DIR','Finance','Restricted','finance'],['DIR','Team','Onboarding and how we work','team'],['DIR','Projects','One folder per project','projects']] },
+  brand:{ name:'Brand', access:'Everyone · edit: Layla, Ahmed', items:[['ZIP','Suhail logo pack','Layla · 2 d'],['ZIP','Fonts: Newsreader, IBM Plex, Amiri','Ahmed · 3 w'],['PDF','Suhail brand guide','Ahmed · 1 w'],['IMG','Photo library, Majlis 1 to 3','Layla · 4 d'],['PPT','Suhail master deck','Ahmed · 5 d']] },
+  templates:{ name:'Templates', access:'Everyone in the Suhail team', items:[['PPT','Sponsor deck template','Sara · 1 w'],['DOC','Partnership agreement template','Ahmed · 2 w'],['DOC','Event run sheet template','Sara · 1 w'],['XLS','Event budget template','Finance · 2 w']] },
+  partnerships:{ name:'Partnerships', access:'Everyone in the Suhail team', items:[['PPT','Sponsor deck v2','Sara · today'],['PDF','sponsorship-requirements.pdf','partners@ · today'],['DOC','MoU, [University]','Ahmed · 3 d']] },
+  events:{ name:'Events', access:'Everyone in the Suhail team', items:[['XLS','Venue options','Sara · yesterday'],['PDF','hall-floorplan.pdf','partners@ · Mon'],['DOC','Judging criteria','Yousef · 4 d']] },
+  finance:{ name:'Finance', access:'Restricted: owners and Finance', items:[['XLS','Budget 2026','Finance · today'],['PDF','invoice-venue-deposit.pdf','Ahmed · today'],['IMG','receipt-studio-ep4.jpg','Layla · yesterday']] },
+  team:{ name:'Team', access:'Everyone in the Suhail team', items:[['DOC','Onboarding: start here','Ahmed · 2 w'],['DOC','How we work: sprints and stand-up','Ahmed · 2 w']] },
+  projects:{ name:'Projects', access:'Created automatically for each project', items:[['DIR','Hackathon Kuwait','21 tickets',''],['DIR','The Majlis, season 1','9 tickets',''],['DIR','Arabic benchmark v0','7 tickets',''],['DIR','Newsletter','5 tickets','']] }
+};
+const KC = { DOC:'--st-review', XLS:'--st-done', PPT:'--st-progress', PDF:'--st-danger', IMG:'--muted', ZIP:'--muted', DIR:'--fg' };
+function drive(){
+  const f = DRIVE[S.folder] || DRIVE.all; const root = S.folder === 'all';
+  const backBtn = root ? '' : `<button class="iconbtn" data-folder="all" aria-label="Back to the shared drive"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>`;
+  return header(f.name, 'Drive · SharePoint', backBtn) + `<div class="screen" style="gap:14px">
+    <label class="field" for="dsearch"><span style="position:absolute;width:1px;height:1px;overflow:hidden">Search the drive</span><input id="dsearch" type="search" placeholder="Search every file"></label>
+    <span class="small muted">${esc(f.access)}</span>
+    ${root ? `<section class="stack" style="gap:8px"><span class="eyebrow">Recent</span><div class="pills">${[['PPT','Sponsor deck v2'],['XLS','Venue options'],['DOC','Judging criteria'],['ZIP','Logo pack']].map(([k,n]) => `<button class="pill" data-act="openfile" style="display:flex;gap:8px;align-items:center"><span class="mono" style="font-size:.62rem;color:var(${KC[k]})">${k}</span>${n}</button>`).join('')}</div></section>` : ''}
+    <section class="card">${f.items.map(([k,n,m,go]) => `<button class="row" ${k === 'DIR' && go ? `data-folder="${go}"` : 'data-act="openfile"'} style="grid-template-columns:40px minmax(0,1fr) auto"><span class="mono" style="font-size:.62rem;text-align:center;padding:4px 0;border:1px solid var(${KC[k]});color:var(${KC[k]})">${k === 'DIR' ? 'DIR' : k}</span><span style="min-width:0"><span class="t">${esc(n)}</span><span class="m">${esc(m)}</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`).join('')}</section>
+    <div class="btns"><button class="btn quiet" data-act="newfolder">New folder</button><button class="btn" data-act="upload">Upload</button></div>
+    <p class="small muted" style="margin:0">Files open in Word, Excel or PowerPoint, and can be attached to any ticket or email without copying.</p>
+  </div>`;
+}
+
+function more(){
+  if (S.more === 'finance') return finance();
+  if (S.more === 'apps') return applications();
+  const items = [['apps','Applications','34 open, 2 need your review'],['finance','Budget and expenses',`${data.expenses.filter((e) => e.status === 'Pending').length} waiting for approval`],['','Relationships','3 next steps overdue'],['','Content calendar','2 posts need review'],['','Newsletter','Issue 2 scheduled for Wed'],['','Settings','Microsoft 365, Teams, notifications']];
+  return header('More', 'Everything else') + `<div class="screen"><section class="card">${items.map(([k,l,m]) => `<button class="row" ${k ? `data-more="${k}"` : 'data-act="soon"'} style="grid-template-columns:minmax(0,1fr) auto"><span><span class="t">${l}</span><span class="m">${m}</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" style="transform:scaleX(var(--flip,1))"><path d="M9 6l6 6-6 6"/></svg></button>`).join('')}</section>
+    <section class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px"><span class="eyebrow">Microsoft 365</span>${['Outlook mail and calendar','Teams notifications and stand-up','OneDrive and SharePoint files','Directory and groups'].map((x) => `<span class="okline"><span class="dot"></span>${x}</span>`).join('')}<span class="small muted">Signed in as ahmed@[your domain] · Owner</span><button class="btn quiet" data-act="signout">Sign out</button></section></div>`;
+}
+const back = `<button class="iconbtn" data-more="" aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>`;
+function finance(){
+  return header('Budget and expenses', 'Finance', back) + `<div class="screen" style="gap:16px">
+    ${[['Hackathon Kuwait','2,310','4,000',58],['The Majlis','640','800',80]].map(([n,s,t,p]) => `<section class="card" style="padding:14px;display:flex;flex-direction:column;gap:8px"><span style="font-weight:500">${n}</span><span><span style="font:300 1.6rem/1 var(--f-display)">${s}</span> <span class="small muted">of KWD ${t}</span></span><div class="bar"><span style="width:${p}%;${p > 75 ? 'background:var(--st-progress)' : ''}"></span></div></section>`).join('')}
+    <h2 class="sec">Waiting for approval</h2>
+    ${data.expenses.map((e) => `<section class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;gap:10px"><span><span style="display:block">${esc(e.what)}</span><span class="small muted">${esc(e.by)} · ${esc(e.project)} · receipt attached</span></span><span class="mono" style="white-space:nowrap">${e.amount}</span></div>${e.status === 'Pending' ? `<div class="btns"><button class="btn" data-approve="${e.id}">Approve</button><button class="btn quiet" data-reject="${e.id}">Reject</button></div>` : `<span class="okline"><span class="dot" style="background:var(${e.status === 'Approved' ? '--st-done' : '--st-danger'})"></span>${e.status}</span>`}</section>`).join('')}
+  </div>`;
+}
+function applications(){
+  return header('Applications', 'Team roles', back) + `<div class="screen" style="gap:14px">
+    <div class="pills"><button class="pill" aria-pressed="true">All 34</button><button class="pill">Partnerships</button><button class="pill">Engineering</button><button class="pill">Editorial</button><button class="pill">Finance</button></div>
+    <section class="card">${data.apps.map((a) => `<button class="row" data-act="applicant" style="grid-template-columns:28px minmax(0,1fr) auto">${ini(a.ini)}<span style="min-width:0"><span class="t">${a.name}</span><span class="m" style="display:flex;gap:6px;align-items:center;margin-top:3px"><span class="chip k-${({Partnerships:'clay',Engineering:'indigo',Editorial:'rose',Finance:'palm'})[a.role]}">${a.role}</span><span>${a.stage}</span></span></span><span class="due">${a.score}</span></button>`).join('')}</section>
+  </div>`;
+}
+
+/* ---------- sheets ---------- */
+function openSheet(html){
+  const L = $('#layer');
+  L.innerHTML = `<div class="scrim" data-close="1"><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div></div>`;
+  const first = L.querySelector('.sheet button, .sheet input, .sheet textarea'); if (first) first.focus({ preventScroll:true });
+}
+function closeSheet(){ $('#layer').innerHTML = ''; }
+function ticketSheet(key){
+  const t = data.tickets.find((x) => x.key === key);
+  openSheet(`<span class="eyebrow">${t.key} · ${esc(t.project)}</span><h3>${esc(t.title)}</h3>
+    <dl class="kv"><dt>Status</dt><dd><span class="chip k-${KS[t.status]}">${t.status}</span></dd><dt>Assignee</dt><dd>${t.who === 'AE' ? 'You' : t.who}</dd><dt>Due</dt><dd style="${t.late ? 'color:var(--st-danger)' : ''}">${t.due || 'Done'}</dd><dt>Points</dt><dd>${t.pts}</dd></dl>
+    ${t.desc ? `<p style="margin:0">${esc(t.desc)}</p>` : ''}
+    ${t.subs.length ? `<div>${t.subs.map(([s,d],i) => `<label class="check" for="sub${i}"><input type="checkbox" id="sub${i}" ${d ? 'checked' : ''}> ${esc(s)}</label>`).join('')}</div>` : ''}
+    ${t.comments.map(([i,n,c]) => `<div style="display:flex;gap:10px">${ini(i)}<span class="small"><b style="font-weight:500">${n}</b><br>${esc(c)}</span></div>`).join('')}
+    <label class="field" for="cmt">Comment<input id="cmt" placeholder="Write a comment or @mention"></label>
+    <div class="btns">${t.status !== 'Done' ? `<button class="btn" data-done="${t.key}">Mark done</button>` : ''}<button class="btn quiet" data-close="1">Close</button></div>`);
+}
+function mailSheet(i){
+  const m = data.mail[i]; m.unread = false; updateBadge();
+  openSheet(`<span class="eyebrow">${esc(m.box)} · ${m.time}</span><h3>${esc(m.subject)}</h3>
+    <div style="display:flex;gap:10px;align-items:center">${ini(m.ini)}<span class="small"><b style="font-weight:500">${esc(m.from)}</b><br><span class="muted">Linked: ${esc(m.partner)}${m.ticket ? ' · ' + m.ticket : ''}</span></span></div>
+    <p style="margin:0;white-space:pre-line">${esc(m.body)}</p>
+    <label class="field" for="reply">Reply<textarea id="reply" rows="3" placeholder="Write a reply…"></textarea></label>
+    <div class="btns"><button class="btn" data-act="send">Send</button><button class="btn quiet" data-act="toticket">Create ticket</button></div>`);
+}
+
+/* ---------- render + events ---------- */
+function updateBadge(){ const n = data.mail.filter((m) => m.unread).length; const b = $('#mailBadge'); b.textContent = n; b.hidden = !n; }
+function render(){
+  const app = $('#app'); const tabs = $('#tabs');
+  if (!S.signedIn){ tabs.hidden = true; app.innerHTML = signIn(); return; }
+  tabs.hidden = false; updateBadge();
+  document.querySelectorAll('.tab').forEach((b) => { if (b.dataset.tab === S.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  app.innerHTML = ({ home, inbox, work, drive, more })[S.tab]();
+  document.documentElement.style.setProperty('--flip', document.dir === 'rtl' ? -1 : 1);
+}
+function go(tab, keepScroll){ S.tab = tab; if (tab !== 'more') S.more = null; if (location.hash.slice(1) !== tab) history.replaceState(null, '', '#' + tab); render(); if (!keepScroll) window.scrollTo(0, 0); }
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList && e.target.classList.contains('scrim')) { closeSheet(); return; }
+  const el = e.target.closest('button'); if (!el) return;
+  const d = el.dataset;
+  if (d.tab) { closeSheet(); go(d.tab); return; }
+  if (d.ticket) { ticketSheet(d.ticket); return; }
+  if (d.mail !== undefined && d.mail !== '') { mailSheet(+d.mail); render(); return; }
+  if (d.box) { S.mailBox = d.box; render(); return; }
+  if (d.folder) { S.folder = d.folder; render(); window.scrollTo(0, 0); return; }
+  if (d.filter) { S.workFilter = d.filter; render(); return; }
+  if (d.more !== undefined) { S.more = d.more || null; render(); window.scrollTo(0, 0); return; }
+  if (d.go) { const [t, m] = d.go.split(':'); S.tab = t; S.more = m; history.replaceState(null, '', '#' + t); render(); window.scrollTo(0, 0); return; }
+  if (d.done) { const t = data.tickets.find((x) => x.key === d.done); t.status = 'Done'; t.late = false; t.due = ''; closeSheet(); render(); toast(t.key + ' marked done'); return; }
+  if (d.approve || d.reject) { const x = data.expenses.find((y) => y.id === +(d.approve || d.reject)); x.status = d.approve ? 'Approved' : 'Rejected'; render(); toast(x.what + ' ' + x.status.toLowerCase()); return; }
+  if (d.close) { closeSheet(); return; }
+  switch (d.act) {
+    case 'signin': S.signedIn = true; try { sessionStorage.setItem('suhail-signed','1'); } catch (er) {} go(location.hash.slice(1) && ['home','inbox','work','drive','more'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home'); toast('Signed in with Microsoft'); break;
+    case 'signout': S.signedIn = false; try { sessionStorage.removeItem('suhail-signed'); } catch (er) {} render(); break;
+    case 'me': go('more'); break;
+    case 'standup': toast('Stand-up posted to the Teams channel'); break;
+    case 'send': closeSheet(); toast('Reply sent through Outlook'); break;
+    case 'toticket': closeSheet(); toast('Ticket created in Hackathon Kuwait'); break;
+    case 'newticket': openSheet(`<h3>New ticket</h3><label class="field" for="nt">Title<input id="nt" placeholder="What needs doing?"></label><div class="pills"><button class="pill" aria-pressed="true">Hackathon Kuwait</button><button class="pill">The Majlis</button><button class="pill">Newsletter</button></div><div class="btns"><button class="btn" data-act="create">Create</button><button class="btn quiet" data-close="1">Cancel</button></div>`); break;
+    case 'create': { const v = ($('#nt') || {}).value || 'New ticket'; data.tickets.unshift({ key:'SUH-180', title:v, project:'Hackathon Kuwait', status:'Todo', due:'', pts:1, who:'AE', mine:true, desc:'', subs:[], comments:[] }); closeSheet(); render(); toast('SUH-180 created'); break; }
+    case 'applicant': openSheet(`<span class="eyebrow">Partnerships · Task review</span><h3>Mariam K.</h3><p class="small muted" style="margin:0">Riyadh · applied 2 days ago</p><div class="quote small">To the Head of Developer Relations at [company]: we're running the first hackathon in Kuwait for Arab builders on 14 November. We're asking for KWD 2,000 to sponsor a challenge track your engineers design…</div><div class="btns"><button class="btn" data-act="moved">Move to Interview</button><button class="btn quiet" data-close="1">Close</button></div>`); break;
+    case 'moved': closeSheet(); toast('Mariam moved to Interview'); break;
+    case 'openfile': toast('Opens in Office on the web'); break;
+    case 'upload': toast('Choose files to upload to ' + (DRIVE[S.folder] || DRIVE.all).name); break;
+    case 'newfolder': toast('New folder created'); break;
+    case 'soon': toast('Same screen as on desktop, shown here as a list'); break;
+  }
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheet(); });
+window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (S.signedIn && ['home','inbox','work','drive','more'].includes(h) && h !== S.tab) go(h); });
+const h0 = location.hash.slice(1); if (['home','inbox','work','drive','more'].includes(h0)) S.tab = h0;
+render();
+})();
+</script>

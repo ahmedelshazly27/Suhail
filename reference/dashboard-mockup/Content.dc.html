@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Content calendar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#171513}a:hover{color:#E8461C}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 980px; background: #F7F6F2; color: #171513; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+  <div style="flex: 1 1 220px; max-width: 240px; min-width: 0;"><dc-import name="Sidebar" active="content" hint-size="240px,980px"></dc-import></div>
+
+  <main style="position: relative; isolation: isolate; flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap;">
+    <div aria-hidden="true" style="position: absolute; z-index: -1; top: 0; inset-inline-end: 0; width: 320px; height: 110px; pointer-events: none; opacity: .38; background-image: radial-gradient(circle, #E8461C 0 1px, transparent 1.25px), radial-gradient(circle, #E8461C 0 .6px, transparent .85px); background-size: 6px 6px, 6px 6px; background-position: 0 0, 3.0px 3.0px; -webkit-mask-image: linear-gradient(200deg, #000 0%, transparent 70%); mask-image: linear-gradient(200deg, #000 0%, transparent 70%);"></div>
+    <div style="flex: 999 1 640px; min-width: 0; box-sizing: border-box; padding: 24px 28px; display: flex; flex-direction: column; gap: 14px;">
+      <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #A8341A;">Editorial</span>
+          <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 34px; line-height: 1.1;">November 2026</h1>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 12.5px;">
+          <sc-for list="{{ channels }}" as="c" hint-placeholder-count="5"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid #E4E0D8; border-radius: 999px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #6B645B;">{{ c.code }}</span>{{ c.name }}</span></sc-for>
+        </div>
+      </header>
+      <div style="overflow-x: auto;">
+        <div style="min-width: 760px; border: 1px solid #E4E0D8; border-radius: 14px; overflow: hidden;">
+          <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-bottom: 1px solid #E4E0D8;">
+            <sc-for list="{{ dows }}" as="d" hint-placeholder-count="7"><span style="padding: 8px 10px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B;">{{ d }}</span></sc-for>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));">
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="35">
+              <div style="{{ d.style }}">
+                <span style="{{ d.numStyle }}">{{ d.n }}</span>
+                <sc-for list="{{ d.items }}" as="it" hint-placeholder-count="1">
+                  <span style="{{ it.style }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: #6B645B;">{{ it.code }}</span> {{ it.title }}</span>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <span style="font-size: 12px; color: #6B645B;">Solid edge: approved or scheduled. Dashed: draft or in review. Dates also show in everyone's Outlook calendar.</span>
+    </div>
+
+    <aside style="flex: 1 1 300px; max-width: 360px; min-width: 0; box-sizing: border-box; border-inline-start: 1px solid #E4E0D8; padding: 24px 22px; display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="margin: 0; font-size: 14px; font-weight: 500;">Needs review</h2>
+      <sc-for list="{{ review }}" as="r" hint-placeholder-count="3">
+        <div style="border: 1px solid #E4E0D8; border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B645B;"><span>{{ r.channel }}</span><span>{{ r.when }}</span></span>
+          <span style="font-size: 13.5px;">{{ r.title }}</span>
+          <span style="font-size: 12px; color: #6B645B;">{{ r.by }}</span>
+          <span style="display: flex; gap: 6px;"><button type="button" style="font: inherit; font-size: 12px; padding: 5px 10px; background: #171513; color: #F7F6F2; border: 1px solid #171513; cursor: pointer;">Approve</button><button type="button" style="font: inherit; font-size: 12px; padding: 5px 10px; border: 1px solid #E4E0D8; background: transparent; cursor: pointer;">Comment</button></span>
+        </div>
+      </sc-for>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TINT = { clay: ['#FBE4DB', '#A8341A'], sea: ['#EFECE6', '#3A3530'], saffron: ['#EFECE6', '#3A3530'], indigo: ['#EFECE6', '#171513'], palm: ['#EFECE6', '#171513'], rose: ['#EFECE6', '#3A3530'], stone: ['#EFECE6', '#4A443D'] };
+    const chip = (c) => 'font-size: 11px; padding: 2px 8px; border-radius: 999px; background: ' + TINT[c][0] + '; color: ' + TINT[c][1] + ';';
+    const PEOPLE = { AE: 'clay', SA: 'sea', LY: 'rose', YO: 'indigo', FN: 'palm' };
+    const av = (ini, size) => 'flex: none; width: ' + (size || 22) + 'px; height: ' + (size || 22) + 'px; border-radius: 50%; display: grid; place-items: center; font-family: "IBM Plex Mono", monospace; font-size: 9.5px; background: ' + TINT[PEOPLE[ini] || 'saffron'][0] + '; color: ' + TINT[PEOPLE[ini] || 'saffron'][1] + ';';
+    const items = {
+      2: [['LI', 'Why we are building Suhail', 1]],
+      4: [['NL', 'Issue 2 goes out', 0]],
+      5: [['IG', 'Majlis ep. 3 clip', 1]],
+      7: [['PC', 'Majlis episode 3', 1]],
+      9: [['LI', 'Call for builders, last week', 0]],
+      10: [['X', 'Judges announced', 0]],
+      12: [['IG', 'Venue reveal', 0]],
+      14: [['LI', 'Hackathon day 1 live', 0], ['IG', 'Day 1 stories', 0]],
+      15: [['X', 'Winners thread', 0]],
+      18: [['NL', 'Issue 3: hackathon recap', 0]],
+      21: [['PC', 'Majlis episode 4', 0]],
+      25: [['LI', 'Benchmark v0 release', 0]]
+    };
+    const days = [];
+    for (let i = 0; i < 35; i++) {
+      const n = i + 1; const inMonth = n <= 30; const today = n === 0;
+      const CH = { LI: 'indigo', IG: 'rose', X: 'stone', NL: 'sea', PC: 'saffron' };
+      const list = (items[n] || []).map(([code, title, ok]) => ({
+        code, title,
+        style: 'display: block; font-size: 11.5px; line-height: 1.3; padding: 4px 6px; border-radius: 4px; background: ' + TINT[CH[code]][0] + '; color: ' + TINT[CH[code]][1] + '; border: 1px ' + (ok ? 'solid ' + TINT[CH[code]][1] : 'dashed ' + TINT[CH[code]][1] + '66') + '; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'
+      }));
+      days.push({
+        n: inMonth ? String(n) : String(n - 30),
+        items: inMonth ? list : [],
+        style: 'min-height: 128px; box-sizing: border-box; padding: 8px; display: flex; flex-direction: column; gap: 5px; border-inline-end: 1px solid #E4E0D8; border-bottom: 1px solid #E4E0D8; background: ' + (n === 14 || n === 15 ? '#FBE4DB' : 'transparent') + ';',
+        numStyle: 'font-family: "IBM Plex Mono", monospace; font-size: 11px; color: ' + (inMonth ? '#3A3530' : '#B7B0A6') + ';'
+      });
+    }
+    return {
+      dows: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      days,
+      channels: [{ code: 'LI', name: 'LinkedIn' }, { code: 'IG', name: 'Instagram' }, { code: 'X', name: 'X' }, { code: 'NL', name: 'Newsletter' }, { code: 'PC', name: 'Podcast' }],
+      review: [
+        { channel: 'LinkedIn', when: '9 Nov', title: 'Call for builders, last week to apply', by: 'Layla asked you · Arabic and English' },
+        { channel: 'Newsletter', when: '4 Nov', title: 'Issue 2: who is building in the Gulf', by: 'Layla · Arabic draft ready' },
+        { channel: 'X', when: '10 Nov', title: 'Judges announced', by: 'Sara · needs photos' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Relationships</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#171513}a:hover{color:#E8461C}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 980px; background: #F7F6F2; color: #171513; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+  <div style="flex: 1 1 220px; max-width: 240px; min-width: 0;"><dc-import name="Sidebar" active="relationships" hint-size="240px,980px"></dc-import></div>
+
+  <main style="position: relative; isolation: isolate; flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap;">
+    <div aria-hidden="true" style="position: absolute; z-index: -1; top: 0; inset-inline-end: 0; width: 320px; height: 110px; pointer-events: none; opacity: .38; background-image: radial-gradient(circle, #E8461C 0 1px, transparent 1.25px), radial-gradient(circle, #E8461C 0 .6px, transparent .85px); background-size: 6px 6px, 6px 6px; background-position: 0 0, 3.0px 3.0px; -webkit-mask-image: linear-gradient(200deg, #000 0%, transparent 70%); mask-image: linear-gradient(200deg, #000 0%, transparent 70%);"></div>
+    <div style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px;">
+      <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #A8341A;">Partners, sponsors, speakers, guests, venues</span>
+          <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 34px; line-height: 1.1;">Relationships</h1>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 12.5px; padding: 6px 10px; border: 1px solid #171513;">Table</span>
+          <span style="font-size: 12.5px; padding: 6px 10px; border: 1px solid #E4E0D8; color: #6B645B;">Pipeline</span>
+          <button type="button" style="font: inherit; font-size: 13px; padding: 7px 12px; background: #171513; color: #F7F6F2; border: 1px solid #171513; cursor: pointer;">Add</button>
+        </div>
+      </header>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <span style="font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid #171513;">All 46</span>
+        <span style="font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid #E4E0D8;">Sponsors 12</span>
+        <span style="font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid #E4E0D8;">Partners 9</span>
+        <span style="font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid #E4E0D8;">Speakers 11</span>
+        <span style="font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid #E4E0D8;">Podcast guests 8</span>
+        <span style="font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid #E4E0D8;">Venues 6</span>
+        <span style="font-size: 12.5px; padding: 4px 10px; border-radius: 999px; border: 1px solid #E4E0D8; color: #C2361B;">Next step overdue 3</span>
+      </div>
+      <div style="overflow-x: auto; border: 1px solid #E4E0D8; border-radius: 14px;">
+        <table style="width: 100%; min-width: 820px; border-collapse: collapse; font-size: 13px;">
+          <thead><tr style="text-align: start;">
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 14px; border-bottom: 1px solid #E4E0D8;">Name</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 14px; border-bottom: 1px solid #E4E0D8;">Type</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 14px; border-bottom: 1px solid #E4E0D8;">Stage</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 14px; border-bottom: 1px solid #E4E0D8;">Owner</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 14px; border-bottom: 1px solid #E4E0D8;">Next step</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 14px; border-bottom: 1px solid #E4E0D8;">Last contact</th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+              <tr style="{{ r.rowStyle }}">
+                <td style="padding: 10px 14px; border-bottom: 1px solid #E4E0D8;"><span style="display: flex; flex-direction: column; line-height: 1.3;"><span style="font-weight: 500;">{{ r.name }}</span><span style="font-size: 11.5px; color: #6B645B;">{{ r.project }}</span></span></td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #E4E0D8; color: #3A3530;">{{ r.type }}</td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #E4E0D8;"><span style="{{ r.stagePill }}">{{ r.stage }}</span></td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #E4E0D8;">{{ r.owner }}</td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #E4E0D8;"><span style="display: flex; flex-direction: column; line-height: 1.3;"><span>{{ r.next }}</span><span style="{{ r.dueStyle }}">{{ r.due }}</span></span></td>
+                <td style="padding: 10px 14px; border-bottom: 1px solid #E4E0D8; color: #6B645B; font-size: 12px;">{{ r.last }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside aria-label="Relationship detail" style="flex: 1 1 360px; max-width: 440px; min-width: 0; box-sizing: border-box; border-inline-start: 1px solid #E4E0D8; box-shadow: 0 8px 30px rgba(10,9,8,.10); padding: 22px 24px; display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; justify-content: space-between; font-size: 12.5px; color: #6B645B;"><span>Sponsor</span><span>Expand · Close</span></div>
+      <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400; font-size: 26px;">[Sponsor company]</h2>
+      <dl style="margin: 0; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px 12px; font-size: 13px;">
+        <dt style="color: #6B645B;">Stage</dt><dd style="margin: 0;">In talks · Gold tier</dd>
+        <dt style="color: #6B645B;">Value</dt><dd style="margin: 0;">KWD 2,000</dd>
+        <dt style="color: #6B645B;">Owner</dt><dd style="margin: 0;">Sara</dd>
+        <dt style="color: #6B645B;">Contact</dt><dd style="margin: 0;">Noura, Partnerships Lead</dd>
+        <dt style="color: #6B645B;">Project</dt><dd style="margin: 0;"><a href="Board.dc.html">Hackathon Kuwait</a></dd>
+      </dl>
+      <div style="padding: 12px 14px; border: 1px solid #171513; display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Next step · due 6 Nov</span>
+        <span style="font-size: 13.5px;">Send final venue and attendance before their budget closes on the 10th</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Timeline · pulled from Outlook and Teams</span>
+        <sc-for list="{{ timeline }}" as="t" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; font-size: 13px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #6B645B; padding-top: 1px;">{{ t.when }}</span>
+            <span style="display: flex; flex-direction: column; line-height: 1.35;"><span>{{ t.what }}</span><span style="font-size: 12px; color: #6B645B;">{{ t.via }}</span></span>
+          </div>
+        </sc-for>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TINT = { clay: ['#FBE4DB', '#A8341A'], sea: ['#EFECE6', '#3A3530'], saffron: ['#EFECE6', '#3A3530'], indigo: ['#EFECE6', '#171513'], palm: ['#EFECE6', '#171513'], rose: ['#EFECE6', '#3A3530'], stone: ['#EFECE6', '#4A443D'] };
+    const chip = (c) => 'font-size: 11px; padding: 2px 8px; border-radius: 999px; background: ' + TINT[c][0] + '; color: ' + TINT[c][1] + ';';
+    const PEOPLE = { AE: 'clay', SA: 'sea', LY: 'rose', YO: 'indigo', FN: 'palm' };
+    const av = (ini, size) => 'flex: none; width: ' + (size || 22) + 'px; height: ' + (size || 22) + 'px; border-radius: 50%; display: grid; place-items: center; font-family: "IBM Plex Mono", monospace; font-size: 9.5px; background: ' + TINT[PEOPLE[ini] || 'saffron'][0] + '; color: ' + TINT[PEOPLE[ini] || 'saffron'][1] + ';';
+    const colors = { Prospect: '#B7B0A6', Contacted: '#7A736A', 'In talks': '#E8461C', Confirmed: '#6B645B', Active: '#171513' };
+    const r = (name, project, type, stage, owner, next, due, late, last, on) => ({
+      name, project, type, stage, owner, next, due, last,
+      dot: 'width: 8px; height: 8px; border-radius: 50%; background: ' + colors[stage] + ';',
+      dueStyle: 'font-family: "IBM Plex Mono", monospace; font-size: 11px; color: ' + (late ? '#C2361B' : '#6B645B') + ';',
+      stagePill: chip({ Prospect: 'stone', Contacted: 'sea', 'In talks': 'saffron', Confirmed: 'indigo', Active: 'palm' }[stage]),
+      rowStyle: on ? 'background: #EFECE6;' : ''
+    });
+    return {
+      rows: [
+        r('[Sponsor company]', 'Hackathon Kuwait', 'Sponsor', 'In talks', 'Sara', 'Send venue and attendance', '6 Nov', false, 'Email · today', true),
+        r('[Venue]', 'Hackathon Kuwait', 'Venue', 'Confirmed', 'Ahmed', 'Pay deposit', 'Today', true, 'Email · Mon'),
+        r('[University]', 'Hackathon Kuwait', 'Partner', 'Prospect', 'Unassigned', 'Reply about student teams', 'Tomorrow', false, 'Email · today'),
+        r('[Cloud provider]', 'Hackathon Kuwait', 'Sponsor', 'Contacted', 'Sara', 'Follow up on credits', 'Overdue 2 d', true, 'Email · 12 d ago'),
+        r('[Founder, Riyadh]', 'The Majlis, season 1', 'Podcast guest', 'Contacted', 'Layla', 'Book recording slot', '8 Nov', false, 'Teams call · Tue'),
+        r('[Research lab]', 'Arabic benchmark v0', 'Partner', 'In talks', 'Yousef', 'Data sharing terms', '12 Nov', false, 'Email · Fri'),
+        r('[Investor]', 'Hackathon Kuwait', 'Judge', 'Confirmed', 'Ahmed', 'Send judging brief', '10 Nov', false, 'Email · Wed'),
+        r('[Media outlet]', 'Hackathon Kuwait', 'Partner', 'Prospect', 'Layla', 'Pitch coverage', 'Overdue 1 d', true, 'Never')
+      ],
+      timeline: [
+        { when: 'Today', what: 'Noura: interested in Gold, two conditions', via: 'Email to partners@ · linked automatically' },
+        { when: '24 Oct', what: 'Sent sponsor deck v1', via: 'Email from Sara' },
+        { when: '21 Oct', what: 'Intro call, 30 min', via: 'Teams meeting · notes in Docs' },
+        { when: '18 Oct', what: 'First contact', via: 'Email from Sara' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

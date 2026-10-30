@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#171513}a:hover{color:#E8461C}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 980px; background: #F7F6F2; color: #171513; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+  <div style="flex: 1 1 220px; max-width: 240px; min-width: 0;"><dc-import name="Sidebar" active="home" hint-size="240px,980px"></dc-import></div>
+
+  <main style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 28px 40px 40px; display: flex; flex-direction: column; gap: 28px;">
+    <div aria-hidden="true" style="height: 34px; margin-bottom: -22px; opacity: .5; background-image: radial-gradient(circle, #E8461C 0 1px, transparent 1.25px), radial-gradient(circle, #E8461C 0 .6px, transparent .85px); background-size: 6px 6px, 6px 6px; background-position: 0 0, 3.0px 3.0px; -webkit-mask-image: linear-gradient(90deg, transparent 35%, #000 100%); mask-image: linear-gradient(90deg, transparent 35%, #000 100%);"></div>
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #A8341A;">Thursday 30 October</span>
+        <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 40px; line-height: 1.1; letter-spacing: -.01em;">Good morning, Ahmed</h1>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <a href="Palette.dc.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #E4E0D8; background: #F7F6F2; text-decoration: none; color: #6B645B; font-size: 13px; min-width: 220px;">Search or jump to… <span style="margin-inline-start: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px;">⌘K</span></a>
+        <a href="Board.dc.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; background: #171513; color: #F7F6F2; text-decoration: none; font-size: 13px;">New ticket <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; opacity: .7;">C</span></a>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start;">
+
+      <section style="grid-column: span 2; display: flex; flex-direction: column; gap: 20px; min-width: 0;">
+        <div style="border: 1px solid #E4E0D8; border-radius: 14px; background: #F7F6F2;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #E4E0D8;">
+            <h2 style="margin: 0; font-size: 14px; font-weight: 500;">My work</h2>
+            <div style="display: flex; gap: 6px;">
+              <span style="font-size: 12px; padding: 4px 10px; border: 1px solid #171513; border-radius: 999px;">Due this week</span>
+              <span style="font-size: 12px; padding: 4px 10px; border: 1px solid #E4E0D8; border-radius: 999px; color: #6B645B;">All assigned</span>
+            </div>
+          </div>
+          <sc-for list="{{ work }}" as="t" hint-placeholder-count="6">
+            <a href="Board.dc.html" style="display: grid; grid-template-columns: 14px 64px minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 10px 18px; border-bottom: 1px solid #E4E0D8; text-decoration: none; color: #171513;">
+              <span style="{{ t.dot }}"></span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6B645B;">{{ t.key }}</span>
+              <span style="display: flex; flex-direction: column; min-width: 0;"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ t.title }}</span><span style="font-size: 12px; color: #6B645B;">{{ t.project }}</span></span>
+              <span style="{{ t.stStyle }}">{{ t.status }}</span>
+              <span style="{{ t.dueStyle }}">{{ t.due }}</span>
+            </a>
+          </sc-for>
+          <div style="padding: 10px 18px; font-size: 12.5px; color: #6B645B;">Expense waiting for you: Venue deposit, Hackathon Kuwait, KWD 600. <a href="Finance.dc.html">Review</a></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;">
+          <div style="border: 1px solid #E4E0D8; background: #EFECE6; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <h2 style="margin: 0; font-size: 14px; font-weight: 500; color: #3A3530;">Stand-up</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B645B;">4 of 6 answered</span>
+            </div>
+            <label style="display: grid; gap: 4px; font-size: 12px; color: #6B645B;">Done yesterday<input type="text" value="Sent sponsor deck to two leads" style="font: inherit; font-size: 13.5px; color: #171513; padding: 8px 10px; border: 1px solid #E4E0D8; background: #F7F6F2;"></label>
+            <label style="display: grid; gap: 4px; font-size: 12px; color: #6B645B;">Next<input type="text" placeholder="What are you on today?" style="font: inherit; font-size: 13.5px; color: #171513; padding: 8px 10px; border: 1px solid #E4E0D8; background: #F7F6F2;"></label>
+            <label style="display: grid; gap: 4px; font-size: 12px; color: #6B645B;">Blockers<input type="text" placeholder="Anything in your way?" style="font: inherit; font-size: 13.5px; color: #171513; padding: 8px 10px; border: 1px solid #E4E0D8; background: #F7F6F2;"></label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <button type="button" style="font: inherit; font-size: 13px; padding: 8px 14px; background: #171513; color: #F7F6F2; border: 1px solid #171513; cursor: pointer;">Post</button>
+              <span style="font-size: 12px; color: #6B645B;">Also answerable from Teams at 9:00</span>
+            </div>
+          </div>
+
+          <div style="border: 1px solid #E4E0D8; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <h2 style="margin: 0; font-size: 14px; font-weight: 500;">Mentions</h2>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B645B;">2 new</span>
+            </div>
+            <a href="Board.dc.html" style="display: flex; gap: 10px; text-decoration: none; color: #171513;">
+              <span style="flex: none; width: 24px; height: 24px; border-radius: 50%; background: #EFECE6; color: #3A3530; display: grid; place-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">SA</span>
+              <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px;"><b style="font-weight: 500;">Sara</b> on SUH-142</span><span style="font-size: 13px; color: #3A3530;">@Ahmed can we move the venue walkthrough to Sunday? The hall is booked Saturday.</span><span style="font-size: 11.5px; color: #6B645B;">20 min ago</span></span>
+            </a>
+            <a href="Content.dc.html" style="display: flex; gap: 10px; text-decoration: none; color: #171513;">
+              <span style="flex: none; width: 24px; height: 24px; border-radius: 50%; background: #EFECE6; color: #3A3530; display: grid; place-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">LY</span>
+              <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px;"><b style="font-weight: 500;">Layla</b> requested your review</span><span style="font-size: 13px; color: #3A3530;">LinkedIn post: Hackathon Kuwait call for builders</span><span style="font-size: 11.5px; color: #6B645B;">1 h ago</span></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <aside style="display: flex; flex-direction: column; gap: 20px; min-width: 0;">
+        <div style="position: relative; overflow: hidden; background: #0B0A09; color: #ECE8E1; border-radius: 14px; padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div aria-hidden="true" style="position: absolute; inset: 0 0 0 35%; opacity: .55; background-image: radial-gradient(circle, #FF5A2A 0 1px, transparent 1.25px), radial-gradient(circle, #FF5A2A 0 .6px, transparent .85px); background-size: 6px 6px, 6px 6px; background-position: 0 0, 3.0px 3.0px; -webkit-mask-image: linear-gradient(110deg, transparent 10%, #000 85%); mask-image: linear-gradient(110deg, transparent 10%, #000 85%);"></div>
+          <div style="position: relative; display: flex; align-items: center; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 14px; font-weight: 500; color: #ECE8E1;">Sprint 4</h2>
+            <a href="Sprint.dc.html" style="font-size: 12px; color: #B7B0A6;">Plan sprint 5</a>
+          </div>
+          <div style="position: relative; display: flex; align-items: baseline; gap: 8px;"><span style="font-family: 'Newsreader', Georgia, serif; font-size: 40px; font-weight: 300;">18</span><span style="color: #B7B0A6; font-size: 13px;">of 31 points · day 6 of 10</span></div>
+          <div style="position: relative; height: 4px; background: #3A3530;"><div style="width: 58%; height: 4px; background: #FF5A2A;"></div></div>
+          <span style="position: relative; font-size: 12px; color: #B7B0A6;">2 tickets blocked, 1 overdue</span>
+        </div>
+
+        <div style="border: 1px solid #E4E0D8; border-radius: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #E4E0D8;">
+            <h2 style="margin: 0; font-size: 14px; font-weight: 500;">Inbox</h2>
+            <a href="Inbox.dc.html" style="font-size: 12px; color: #6B645B;">Open</a>
+          </div>
+          <sc-for list="{{ mail }}" as="m" hint-placeholder-count="3">
+            <a href="Inbox.dc.html" style="display: flex; flex-direction: column; gap: 2px; padding: 10px 18px; border-bottom: 1px solid #E4E0D8; text-decoration: none; color: #171513;">
+              <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: #6B645B;"><span>{{ m.box }}</span><span>{{ m.time }}</span></span>
+              <span style="font-size: 13.5px; font-weight: 500;">{{ m.from }}</span>
+              <span style="font-size: 13px; color: #3A3530; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ m.subject }}</span>
+            </a>
+          </sc-for>
+        </div>
+
+        <div style="border: 1px solid #E4E0D8; background: #EFECE6; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+          <h2 style="margin: 0; font-size: 14px; font-weight: 500; color: #3A3530;">This week</h2>
+          <sc-for list="{{ week }}" as="w" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px; font-size: 13px;">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #6B645B; padding-top: 2px;">{{ w.when }}</span>
+              <span style="display: flex; flex-direction: column;"><span>{{ w.what }}</span><span style="font-size: 12px; color: #6B645B;">{{ w.where }}</span></span>
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TINT = { clay: ['#FBE4DB', '#A8341A'], sea: ['#EFECE6', '#3A3530'], saffron: ['#EFECE6', '#3A3530'], indigo: ['#EFECE6', '#171513'], palm: ['#EFECE6', '#171513'], rose: ['#EFECE6', '#3A3530'], stone: ['#EFECE6', '#4A443D'] };
+    const chip = (c) => 'font-size: 11px; padding: 2px 8px; border-radius: 999px; background: ' + TINT[c][0] + '; color: ' + TINT[c][1] + ';';
+    const PEOPLE = { AE: 'clay', SA: 'sea', LY: 'rose', YO: 'indigo', FN: 'palm' };
+    const av = (ini, size) => 'flex: none; width: ' + (size || 22) + 'px; height: ' + (size || 22) + 'px; border-radius: 50%; display: grid; place-items: center; font-family: "IBM Plex Mono", monospace; font-size: 9.5px; background: ' + TINT[PEOPLE[ini] || 'saffron'][0] + '; color: ' + TINT[PEOPLE[ini] || 'saffron'][1] + ';';
+    const dot = (c) => 'width: 8px; height: 8px; border-radius: 50%; background: ' + c + ';';
+    const due = (late) => 'font-family: "IBM Plex Mono", monospace; font-size: 12px; min-width: 64px; text-align: end; color: ' + (late ? '#C2361B' : '#6B645B') + ';';
+    const ST = { 'In progress': 'saffron', 'Todo': 'stone', 'In review': 'indigo', 'Done': 'palm' };
+    return {
+      work: [
+        { key: 'SUH-142', title: 'Confirm venue for Hackathon Kuwait', project: 'Hackathon Kuwait', status: 'In progress', due: 'Today', dot: dot('#E8461C'), dueStyle: due(true) },
+        { key: 'SUH-151', title: 'Sponsor deck v2 with tier pricing', project: 'Hackathon Kuwait', status: 'Todo', due: 'Fri', dot: dot('#7A736A'), dueStyle: due(false) },
+        { key: 'SUH-118', title: 'Final edit, Majlis episode 3', project: 'The Majlis, season 1', status: 'In review', due: 'Sat', dot: dot('#6B645B'), dueStyle: due(false) },
+        { key: 'SUH-160', title: 'Outline newsletter issue 2', project: 'Newsletter', status: 'Todo', due: 'Sun', dot: dot('#7A736A'), dueStyle: due(false) },
+        { key: 'SUH-163', title: 'Reply to university partnership email', project: 'From tasks@', status: 'Todo', due: 'Mon', dot: dot('#7A736A'), dueStyle: due(false) }
+      ].map((t) => ({ ...t, stStyle: chip(ST[t.status]) })),
+      mail: [
+        { box: 'partners@', time: '09:12', from: 'Noura, [Sponsor company]', subject: 'Sponsorship tiers for Hackathon Kuwait' },
+        { box: 'hello@', time: '08:40', from: '[University] Innovation Office', subject: 'Student teams for November' },
+        { box: 'My inbox', time: 'Yesterday', from: 'Yousef', subject: 'Benchmark dataset licence question' }
+      ],
+      week: [
+        { when: 'Thu 16:00', what: 'Sprint 4 review', where: 'Teams meeting' },
+        { when: 'Sat 19:00', what: 'Majlis episode 4 recording', where: 'Studio, Kuwait City' },
+        { when: 'Sun 11:00', what: 'Venue walkthrough', where: 'Hackathon Kuwait' },
+        { when: '14 Nov', what: 'Hackathon Kuwait', where: '15 days to go' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

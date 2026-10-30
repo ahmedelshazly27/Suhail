@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drive</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#171513}a:hover{color:#E8461C}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 980px; background: #F7F6F2; color: #171513; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+  <div style="flex: 1 1 220px; max-width: 240px; min-width: 0;"><dc-import name="Sidebar" active="drive" hint-size="240px,980px"></dc-import></div>
+
+  <main style="position: relative; isolation: isolate; flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap;">
+    <div aria-hidden="true" style="position: absolute; z-index: -1; top: 0; inset-inline-end: 0; width: 320px; height: 110px; pointer-events: none; opacity: .38; background-image: radial-gradient(circle, #E8461C 0 1px, transparent 1.25px), radial-gradient(circle, #E8461C 0 .6px, transparent .85px); background-size: 6px 6px, 6px 6px; background-position: 0 0, 3.0px 3.0px; -webkit-mask-image: linear-gradient(200deg, #000 0%, transparent 70%); mask-image: linear-gradient(200deg, #000 0%, transparent 70%);"></div>
+    <nav aria-label="Folders" style="flex: 1 1 200px; max-width: 230px; box-sizing: border-box; padding: 24px 12px; border-inline-end: 1px solid #E4E0D8; display: flex; flex-direction: column; gap: 2px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B; padding: 0 8px 8px;">Shared drive</span>
+      <sc-for list="{{ folders }}" as="f" hint-placeholder-count="8">
+        <button type="button" onClick="{{ f.pick }}" style="{{ f.style }}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 6h7l2 2h9v11H3z"></path></svg>
+          <span style="flex: 1;">{{ f.name }}</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #6B645B;">{{ f.lock }}</span>
+        </button>
+      </sc-for>
+      <span style="margin-top: auto; padding: 8px; font-size: 11.5px; color: #6B645B; line-height: 1.45;">Lives in SharePoint, so it also shows up in Teams, OneDrive and File Explorer.</span>
+    </nav>
+
+    <div style="flex: 999 1 460px; min-width: 0; box-sizing: border-box; padding: 24px 28px; display: flex; flex-direction: column; gap: 18px;">
+      <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #A8341A;">Drive / {{ cur.name }}</span>
+          <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 34px; line-height: 1.1;">{{ cur.name }}</h1>
+          <span style="font-size: 12.5px; color: #6B645B;">{{ cur.access }}</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" style="font: inherit; font-size: 13px; padding: 8px 12px; border: 1px solid #E4E0D8; background: transparent; cursor: pointer;">New folder</button>
+          <button type="button" style="font: inherit; font-size: 13px; padding: 8px 12px; border: 1px solid #171513; background: transparent; cursor: pointer;">New Word, Excel or PowerPoint</button>
+          <button type="button" style="font: inherit; font-size: 13px; padding: 8px 14px; background: #171513; color: #F7F6F2; border: 1px solid #171513; cursor: pointer;">Upload</button>
+        </div>
+      </header>
+
+      <label style="display: flex;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden;">Search the drive</span><input type="search" placeholder="Search every file, including inside documents" style="flex: 1; font: inherit; font-size: 13.5px; padding: 9px 12px; border: 1px solid #E4E0D8; background: #F7F6F2;"></label>
+
+      <sc-if value="{{ isRoot }}" hint-placeholder-val="{{ true }}">
+        <section style="display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Recent</span>
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+            <sc-for list="{{ recent }}" as="r" hint-placeholder-count="4">
+              <div style="border: 1px solid #E4E0D8; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+                <span style="{{ r.thumb }}">{{ r.kind }}</span>
+                <span style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ r.name }}</span>
+                <span style="font-size: 11.5px; color: #6B645B;">{{ r.meta }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </sc-if>
+
+      <section style="border: 1px solid #E4E0D8; border-radius: 14px; overflow-x: auto;">
+        <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 13px;">
+          <thead><tr>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 16px; border-bottom: 1px solid #E4E0D8;">Name</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 16px; border-bottom: 1px solid #E4E0D8;">Modified</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 16px; border-bottom: 1px solid #E4E0D8;">By</th>
+            <th scope="col" style="text-align: start; font-weight: 400; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #6B645B; padding: 10px 16px; border-bottom: 1px solid #E4E0D8;">Used in</th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{ files }}" as="x" hint-placeholder-count="6">
+              <tr>
+                <td style="padding: 10px 16px; border-bottom: 1px solid #E4E0D8;"><span style="display: flex; align-items: center; gap: 10px;"><span style="{{ x.badge }}">{{ x.kind }}</span><span>{{ x.name }}</span></span></td>
+                <td style="padding: 10px 16px; border-bottom: 1px solid #E4E0D8; color: #6B645B; font-size: 12.5px;">{{ x.when }}</td>
+                <td style="padding: 10px 16px; border-bottom: 1px solid #E4E0D8;">{{ x.by }}</td>
+                <td style="padding: 10px 16px; border-bottom: 1px solid #E4E0D8; color: #3A3530; font-size: 12.5px;">{{ x.used }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </section>
+      <span style="font-size: 12px; color: #6B645B;">Opening a file edits it in Word, Excel or PowerPoint on the web, together with whoever else has it open. Every file can be attached to a ticket, a partner or an email without making a copy.</span>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { f: 'all' }; }
+  renderVals() {
+    const sel = this.state.f;
+    const colors = { DOC: '#6B645B', XLS: '#171513', PPT: '#E8461C', PDF: '#C2361B', IMG: '#6B645B', ZIP: '#6B645B', DIR: '#171513' };
+    const badge = (k) => 'flex: none; width: 34px; text-align: center; font-family: "IBM Plex Mono", monospace; font-size: 9.5px; padding: 3px 0; border: 1px solid ' + colors[k] + '; color: ' + colors[k] + ';';
+    const F = {
+      all: { name: 'All files', access: 'Everyone in the Suhail team', files: [['DIR', 'Brand', '2 d ago', 'Layla', '24 files'], ['DIR', 'Templates', '1 w ago', 'Ahmed', '12 files'], ['DIR', 'Partnerships', 'Today', 'Sara', '31 files'], ['DIR', 'Events', 'Yesterday', 'Sara', '18 files'], ['DIR', 'Finance', 'Today', 'Finance', 'Restricted'], ['DIR', 'Projects', 'Today', 'Auto', 'One folder per project']] },
+      brand: { name: 'Brand', access: 'Everyone in the Suhail team · edit: Layla, Ahmed', files: [['ZIP', 'Suhail logo pack (star, wordmark, Arabic)', '2 d ago', 'Layla', 'Website, decks'], ['ZIP', 'Fonts: Newsreader, IBM Plex, Amiri', '3 w ago', 'Ahmed', 'Design system'], ['PDF', 'Suhail brand guide', '1 w ago', 'Ahmed', 'Onboarding'], ['IMG', 'Photo library, Majlis episodes 1 to 3', '4 d ago', 'Layla', 'Content calendar'], ['PPT', 'Suhail master deck', '5 d ago', 'Ahmed', '6 projects']] },
+      templates: { name: 'Templates', access: 'Everyone in the Suhail team', files: [['PPT', 'Sponsor deck template', '1 w ago', 'Sara', 'Hackathon Kuwait'], ['DOC', 'Partnership agreement template', '2 w ago', 'Ahmed', 'Partnerships'], ['DOC', 'Event run sheet template', '1 w ago', 'Sara', 'Events'], ['XLS', 'Event budget template', '2 w ago', 'Finance', 'Events'], ['DOC', 'Podcast guest brief', '3 w ago', 'Layla', 'The Majlis']] },
+      partnerships: { name: 'Partnerships', access: 'Everyone in the Suhail team', files: [['PPT', 'Sponsor deck v2', 'Today', 'Sara', 'SUH-151'], ['PDF', 'sponsorship-requirements.pdf', 'Today', 'From partners@', '[Sponsor company]'], ['DOC', 'MoU, [University]', '3 d ago', 'Ahmed', '[University]'], ['XLS', 'Sponsor pipeline export', '1 w ago', 'Sara', 'Relationships']] },
+      events: { name: 'Events', access: 'Everyone in the Suhail team', files: [['XLS', 'Venue options', 'Yesterday', 'Sara', 'SUH-142'], ['PDF', 'hall-floorplan.pdf', 'Mon', 'From partners@', 'SUH-142'], ['DOC', 'Judging criteria', '4 d ago', 'Yousef', 'SUH-150'], ['IMG', 'Venue photos', 'Mon', 'Ahmed', 'Hackathon Kuwait']] },
+      finance: { name: 'Finance', access: 'Restricted: owners and Finance only', files: [['XLS', 'Budget 2026', 'Today', 'Finance', 'Budget and expenses'], ['PDF', 'invoice-venue-deposit.pdf', 'Today', 'Ahmed', 'Expense, KWD 600'], ['IMG', 'receipt-studio-ep4.jpg', 'Yesterday', 'Layla', 'Expense, KWD 160']] },
+      team: { name: 'Team', access: 'Everyone in the Suhail team', files: [['DOC', 'Onboarding: start here', '2 w ago', 'Ahmed', 'New teammates'], ['DOC', 'How we work: sprints and stand-up', '2 w ago', 'Ahmed', 'Sprints'], ['DOC', 'Roles and responsibilities', '1 w ago', 'Ahmed', 'Applications']] },
+      projects: { name: 'Projects', access: 'Created automatically for each project', files: [['DIR', 'Hackathon Kuwait', 'Today', 'Auto', '21 tickets'], ['DIR', 'The Majlis, season 1', 'Yesterday', 'Auto', '9 tickets'], ['DIR', 'Arabic benchmark v0', '3 d ago', 'Auto', '7 tickets'], ['DIR', 'Newsletter', '4 d ago', 'Auto', '5 tickets']] }
+    };
+    const order = [['all', 'All files', ''], ['brand', 'Brand', ''], ['templates', 'Templates', ''], ['partnerships', 'Partnerships', ''], ['events', 'Events', ''], ['finance', 'Finance', 'lock'], ['team', 'Team', ''], ['projects', 'Projects', '']];
+    const fstyle = (on) => 'display: flex; align-items: center; gap: 8px; width: 100%; font: inherit; font-size: 13.5px; text-align: start; padding: 7px 8px; border: 0; cursor: pointer; ' + (on ? 'background: #EFECE6; color: #171513; font-weight: 500;' : 'background: transparent; color: #3A3530;');
+    const thumb = (k) => 'height: 64px; display: grid; place-items: center; font-family: "IBM Plex Mono", monospace; font-size: 11px; background: #EFECE6; color: ' + colors[k] + ';';
+    const cur = F[sel];
+    return {
+      cur, isRoot: sel === 'all',
+      folders: order.map(([id, name, lock]) => ({ name, lock, style: fstyle(id === sel), pick: () => this.setState({ f: id }) })),
+      files: cur.files.map(([kind, name, when, by, used]) => ({ kind, name, when, by, used, badge: badge(kind) })),
+      recent: [['PPT', 'Sponsor deck v2', 'Sara · today'], ['XLS', 'Venue options', 'Sara · yesterday'], ['DOC', 'Judging criteria', 'Yousef · 4 d'], ['ZIP', 'Suhail logo pack', 'Layla · 2 d']].map(([kind, name, meta]) => ({ kind, name, meta, thumb: thumb(kind) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Inbox</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#171513}a:hover{color:#E8461C}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 980px; background: #F7F6F2; color: #171513; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+  <div style="flex: 1 1 220px; max-width: 240px; min-width: 0;"><dc-import name="Sidebar" active="inbox" hint-size="240px,980px"></dc-import></div>
+
+  <main style="position: relative; isolation: isolate; flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap; align-items: stretch;">
+    <div aria-hidden="true" style="position: absolute; z-index: -1; top: 0; inset-inline-end: 0; width: 320px; height: 110px; pointer-events: none; opacity: .38; background-image: radial-gradient(circle, #E8461C 0 1px, transparent 1.25px), radial-gradient(circle, #E8461C 0 .6px, transparent .85px); background-size: 6px 6px, 6px 6px; background-position: 0 0, 3.0px 3.0px; -webkit-mask-image: linear-gradient(200deg, #000 0%, transparent 70%); mask-image: linear-gradient(200deg, #000 0%, transparent 70%);"></div>
+    <div style="flex: 1 1 190px; max-width: 210px; box-sizing: border-box; padding: 24px 12px; border-inline-end: 1px solid #E4E0D8; display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B; padding: 0 8px 8px;">Mailboxes</span>
+      <sc-for list="{{ boxes }}" as="b" hint-placeholder-count="5">
+        <button type="button" onClick="{{ b.pick }}" style="{{ b.style }}"><span>{{ b.name }}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B645B;">{{ b.count }}</span></button>
+      </sc-for>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B; padding: 16px 8px 8px;">Views</span>
+      <span style="padding: 6px 8px; font-size: 13px; color: #3A3530;">Needs reply</span>
+      <span style="padding: 6px 8px; font-size: 13px; color: #3A3530;">Linked to a partner</span>
+      <span style="padding: 6px 8px; font-size: 13px; color: #3A3530;">Turned into tickets</span>
+      <span style="margin-top: auto; padding: 8px; font-size: 11.5px; color: #6B645B; line-height: 1.45;">Synced from Outlook. Shared mailboxes show for everyone with access in Microsoft 365.</span>
+    </div>
+
+    <div style="flex: 1 1 320px; max-width: 380px; min-width: 0; border-inline-end: 1px solid #E4E0D8; display: flex; flex-direction: column;">
+      <div style="padding: 20px 18px 12px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #E4E0D8;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;"><h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 28px;">{{ boxName }}</h1><span style="font-size: 12.5px; padding: 6px 10px; border: 1px solid #171513; color: #171513;">New email</span></div>
+        <label style="display: flex;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden;">Search mail</span><input type="search" placeholder="Search mail" style="flex: 1; font: inherit; font-size: 13px; padding: 7px 10px; border: 1px solid #E4E0D8; background: #F7F6F2;"></label>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <span style="font-size: 12px; padding: 3px 10px; border: 1px solid #171513; border-radius: 999px;">All</span>
+          <span style="font-size: 12px; padding: 3px 10px; border: 1px solid #E4E0D8; border-radius: 999px; color: #6B645B;">Unread</span>
+          <span style="font-size: 12px; padding: 3px 10px; border: 1px solid #E4E0D8; border-radius: 999px; color: #6B645B;">Assigned to me</span>
+        </div>
+      </div>
+      <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="5">
+        <button type="button" onClick="{{ m.pick }}" style="{{ m.style }}">
+          <span style="display: flex; justify-content: space-between; gap: 8px;"><span style="{{ m.fromStyle }}">{{ m.from }}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B645B;">{{ m.time }}</span></span>
+          <span style="font-size: 13px; color: #171513;">{{ m.subject }}</span>
+          <span style="font-size: 12.5px; color: #6B645B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ m.snippet }}</span>
+          <span style="display: flex; gap: 6px; flex-wrap: wrap;"><sc-for list="{{ m.tags }}" as="tg" hint-placeholder-count="1"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; padding: 1px 7px; border-radius: 999px; background: #EFECE6; color: #3A3530;">{{ tg }}</span></sc-for></span>
+        </button>
+      </sc-for>
+    </div>
+
+    <section style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column;">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 24px; border-bottom: 1px solid #E4E0D8; align-items: center;">
+        <button type="button" style="font: inherit; font-size: 13px; padding: 7px 12px; background: #171513; color: #F7F6F2; border: 1px solid #171513; cursor: pointer;">Reply</button>
+        <a href="Board.dc.html" style="font-size: 13px; padding: 7px 12px; border: 1px solid #E4E0D8; text-decoration: none; color: #171513;">Create ticket</a>
+        <a href="Relationships.dc.html" style="font-size: 13px; padding: 7px 12px; border: 1px solid #E4E0D8; text-decoration: none; color: #171513;">Link to partner</a>
+        <button type="button" style="font: inherit; font-size: 13px; padding: 7px 12px; border: 1px solid #E4E0D8; background: transparent; color: #171513; cursor: pointer;">Assign</button>
+        <button type="button" style="font: inherit; font-size: 13px; padding: 7px 12px; border: 1px solid #E4E0D8; background: transparent; color: #171513; cursor: pointer;">Snooze</button>
+        <span style="margin-inline-start: auto; font-size: 12.5px; color: #6B645B;">Open in Outlook</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; flex: 1;">
+        <article style="flex: 999 1 380px; min-width: 0; box-sizing: border-box; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px;">
+          <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400; font-size: 26px; line-height: 1.25;">{{ cur.subject }}</h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 32px; height: 32px; border-radius: 50%; background: #EFECE6; color: #3A3530; display: grid; place-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px;">{{ cur.initials }}</span>
+            <span style="display: flex; flex-direction: column; line-height: 1.3;"><span style="font-weight: 500;">{{ cur.from }}</span><span style="font-size: 12.5px; color: #6B645B;">to {{ cur.to }} · {{ cur.time }}</span></span>
+          </div>
+          <div style="font-size: 14.5px; line-height: 1.65; color: #26221F; white-space: pre-line; max-width: 620px;">{{ cur.body }}</div>
+          <sc-if value="{{ cur.hasFile }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E4E0D8; max-width: 320px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"></path><path d="M15 2v5h5"></path></svg>
+              <span style="display: flex; flex-direction: column; line-height: 1.3;"><span style="font-size: 13px;">{{ cur.file }}</span><span style="font-size: 11.5px; color: #6B645B;">Save to SharePoint or attach to a ticket</span></span>
+            </div>
+          </sc-if>
+          <div style="margin-top: auto; border: 1px solid #E4E0D8; display: flex; flex-direction: column;">
+            <div style="padding: 8px 12px; border-bottom: 1px solid #E4E0D8; font-size: 12px; color: #6B645B;">Reply from {{ cur.toShort }} · sends through Outlook, lands in Sent</div>
+            <label style="display: flex;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden;">Reply</span><textarea rows="3" placeholder="Write a reply…" style="flex: 1; font: inherit; font-size: 14px; padding: 10px 12px; border: 0; background: #F7F6F2; resize: none;"></textarea></label>
+          </div>
+        </article>
+
+        <aside style="flex: 1 1 240px; max-width: 280px; box-sizing: border-box; border-inline-start: 1px solid #E4E0D8; padding: 24px 18px; display: flex; flex-direction: column; gap: 18px; background: #EFECE6;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Partner</span>
+            <a href="Relationships.dc.html" style="text-decoration: none; color: #171513; display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 1px solid #E4E0D8; background: #F7F6F2;"><span style="font-weight: 500;">{{ cur.org }}</span><span style="font-size: 12px; color: #6B645B;">{{ cur.orgStage }}</span></a>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Linked tickets</span>
+            <a href="Board.dc.html" style="text-decoration: none; color: #171513; font-size: 13px; display: flex; gap: 8px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6B645B;">{{ cur.ticket }}</span><span>{{ cur.ticketTitle }}</span></a>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Assigned</span>
+            <span style="font-size: 13px;">{{ cur.owner }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Earlier with them</span>
+            <span style="font-size: 12.5px; color: #3A3530;">21 Oct · Intro call (Teams)</span>
+            <span style="font-size: 12.5px; color: #3A3530;">18 Oct · First email from Sara</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { box: 'partners', sel: 0 }; }
+  renderVals() {
+    const { box, sel } = this.state;
+    const all = {
+      mine: [
+        { sum: 'Two sources in the dialect set are non-commercial. He wants a decision this week on dropping them or asking permission.', next: 'create ticket "Licence review" for Yousef, due Mon', from: 'Yousef', initials: 'YO', to: 'Ahmed', toShort: 'your mailbox', time: 'Yesterday', subject: 'Benchmark dataset licence question', snippet: 'Can we release the dialect set under CC BY, or does the source forbid it?', body: 'Hi Ahmed,\n\nBefore we publish the dialect evaluation set, I want to confirm the licence. Two of the sources are CC BY-NC, so we may need to drop them or ask permission.\n\nCan we decide this week?\n\nYousef', org: 'Internal', orgStage: 'Team', ticket: 'SUH-170', ticketTitle: 'Licence review for benchmark v0', owner: 'Ahmed', tags: ['Arabic benchmark v0'], hasFile: false, file: '' }
+      ],
+      hello: [
+        { sum: 'About 40 engineering students want to join as a group and they would like someone from Suhail to speak on campus first.', next: 'draft a reply, link to [University] as a partner', from: '[University] Innovation Office', initials: 'UN', to: 'hello@', toShort: 'hello@', time: '08:40', subject: 'Student teams for November', snippet: 'We have 40 students interested in joining your hackathon…', body: 'Dear Suhail team,\n\nAround 40 of our engineering students would like to take part in the November hackathon. Is there a way to register as a group, and could one of your team speak on campus beforehand?\n\nKind regards', org: '[University]', orgStage: 'Partner · Prospect', ticket: 'SUH-163', ticketTitle: 'Reply to university partnership email', owner: 'Unassigned', tags: ['Needs reply'], hasFile: false, file: '' },
+        { sum: 'Suggests a Riyadh logistics founder as a podcast guest and offers an intro.', next: 'add as a podcast guest lead for Layla', from: 'Reem', initials: 'RE', to: 'hello@', toShort: 'hello@', time: 'Tue', subject: 'Podcast guest suggestion', snippet: 'You should talk to the founder behind…', body: 'Hello,\n\nLoved episode 2. You should talk to a founder I know who built a logistics company from Riyadh with a team of six. Happy to introduce.\n\nReem', org: 'Not linked', orgStage: 'Add as guest lead', ticket: 'None yet', ticketTitle: '', owner: 'Layla', tags: ['Podcast'], hasFile: false, file: '' }
+      ],
+      partners: [
+        { sum: 'They will take Gold if they get a branded challenge track and two mentors. They need venue and attendance before their budget closes on the 10th.', next: 'draft reply confirming Gold, next step "Send venue and attendance" due 6 Nov', from: 'Noura, [Sponsor company]', initials: 'NO', to: 'partners@', toShort: 'partners@', time: '09:12', subject: 'Sponsorship tiers for Hackathon Kuwait', snippet: 'Thanks for the deck. We are interested in the Gold tier if…', body: 'Hi Sara,\n\nThanks for sending the deck. We are interested in the Gold tier, on two conditions: a branded challenge track, and two of our engineers as mentors on the day.\n\nCould you share the final venue and expected attendance by next week? Our budget closes on the 10th.\n\nBest,\nNoura', org: '[Sponsor company]', orgStage: 'Sponsor · In talks · owner Sara', ticket: 'SUH-151', ticketTitle: 'Sponsor deck v2 with tier pricing', owner: 'Sara', tags: ['Hackathon Kuwait', 'Sponsor'], hasFile: true, file: 'sponsorship-requirements.pdf' },
+        { sum: 'Main hall is free on 14 and 15 Nov for up to 250 people. KWD 600 deposit due within 7 days.', next: 'submit the deposit as an expense on SUH-142', from: 'Venue bookings', initials: 'VB', to: 'partners@', toShort: 'partners@', time: 'Mon', subject: 'Hall availability 14 to 15 November', snippet: 'The main hall is available, deposit due within 7 days…', body: 'Hello,\n\nThe main hall is available on 14 and 15 November for up to 250 people. A deposit of KWD 600 is due within seven days to hold the date.\n\nRegards', org: '[Venue]', orgStage: 'Venue · Confirmed', ticket: 'SUH-142', ticketTitle: 'Confirm venue for Hackathon Kuwait', owner: 'Ahmed', tags: ['Hackathon Kuwait'], hasFile: true, file: 'hall-floorplan.pdf' }
+      ],
+      tasks: [
+        { sum: 'Catering quote forwarded by Sara. Already filed as SUH-171.', next: 'nothing, it is handled', from: 'Sara (forwarded)', initials: 'SA', to: 'tasks@', toShort: 'tasks@', time: '10:02', subject: 'FW: Catering quote #hackathon-kuwait', snippet: 'Turned into SUH-171 and filed in Hackathon Kuwait', body: 'Forwarded to tasks@ with #hackathon-kuwait in the subject.\n\nThe dashboard created SUH-171 "Catering quote" in Hackathon Kuwait, assigned it to Sara, attached the quote and sent her the link in Teams.', org: '[Caterer]', orgStage: 'Vendor', ticket: 'SUH-171', ticketTitle: 'Catering quote', owner: 'Sara', tags: ['Ticket created'], hasFile: true, file: 'catering-quote.pdf' }
+      ]
+    };
+    const names = { mine: 'My inbox', hello: 'hello@', partners: 'partners@', tasks: 'tasks@' };
+    const counts = { mine: '12', hello: '4', partners: '2', tasks: '1' };
+    const list = all[box];
+    const cur = list[Math.min(sel, list.length - 1)];
+    const bstyle = (on) => 'display: flex; justify-content: space-between; align-items: center; width: 100%; font: inherit; font-size: 13.5px; text-align: start; padding: 7px 8px; border: 0; cursor: pointer; ' + (on ? 'background: #EFECE6; color: #171513; font-weight: 500;' : 'background: transparent; color: #3A3530;');
+    return {
+      boxName: names[box],
+      boxes: ['mine', 'hello', 'partners', 'tasks'].map((k) => ({ name: names[k], count: counts[k], style: bstyle(k === box), pick: () => this.setState({ box: k, sel: 0 }) })),
+      msgs: list.map((m, i) => ({ ...m,
+        style: 'display: flex; flex-direction: column; gap: 3px; width: 100%; text-align: start; font: inherit; padding: 12px 18px; border: 0; border-bottom: 1px solid #E4E0D8; cursor: pointer; ' + (i === sel ? 'background: #EFECE6; box-shadow: inset 2px 0 0 #171513;' : 'background: transparent;'),
+        fromStyle: 'font-size: 13.5px; font-weight: ' + (i === 0 ? '600' : '500') + '; color: #171513;',
+        pick: () => this.setState({ sel: i }) })),
+      cur
+    };
+  }
+}
+</script>
+</body>
+</html>

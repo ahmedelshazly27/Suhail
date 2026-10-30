@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Project board</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@300;400;500;600&amp;family=Newsreader:opsz,wght@6..72,300;6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#171513}a:hover{color:#E8461C}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 980px; background: #F7F6F2; color: #171513; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.5;">
+  <div style="flex: 1 1 220px; max-width: 240px; min-width: 0;"><dc-import name="Sidebar" active="projects" hint-size="240px,980px"></dc-import></div>
+
+  <main style="position: relative; isolation: isolate; flex: 999 1 560px; min-width: 0; display: flex; flex-wrap: wrap;">
+    <div aria-hidden="true" style="position: absolute; z-index: -1; top: 0; inset-inline-end: 0; width: 320px; height: 110px; pointer-events: none; opacity: .38; background-image: radial-gradient(circle, #E8461C 0 1px, transparent 1.25px), radial-gradient(circle, #E8461C 0 .6px, transparent .85px); background-size: 6px 6px, 6px 6px; background-position: 0 0, 3.0px 3.0px; -webkit-mask-image: linear-gradient(200deg, #000 0%, transparent 70%); mask-image: linear-gradient(200deg, #000 0%, transparent 70%);"></div>
+    <div style="flex: 999 1 520px; min-width: 0; box-sizing: border-box; padding: 24px 28px; display: flex; flex-direction: column; gap: 18px;">
+      <header style="display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #A8341A;">Projects / Events</span>
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+          <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 300; font-size: 34px; line-height: 1.1;">Hackathon Kuwait</h1>
+          <div style="display: flex; align-items: center; gap: 14px; font-size: 12.5px; color: #6B645B; flex-wrap: wrap;">
+            <span>Lead <b style="font-weight: 500; color: #171513;">Sara</b></span>
+            <span>Target <b style="font-weight: 500; color: #171513;">14 Nov</b></span>
+            <span style="display: flex; align-items: center; gap: 8px;">58%<span style="width: 90px; height: 4px; background: #E4E0D8;"><span style="display: block; width: 58%; height: 4px; background: #E8461C;"></span></span></span>
+            <span>Budget KWD 2,310 of 4,000</span>
+          </div>
+        </div>
+        <nav aria-label="Project views" style="display: flex; gap: 18px; border-bottom: 1px solid #E4E0D8; font-size: 13.5px; flex-wrap: wrap;">
+          <span style="padding: 8px 0; border-bottom: 2px solid #171513; font-weight: 500;">Board</span>
+          <span style="padding: 8px 0; color: #6B645B;">Table</span>
+          <span style="padding: 8px 0; color: #6B645B;">Timeline</span>
+          <span style="padding: 8px 0; color: #6B645B;">Docs</span>
+          <span style="padding: 8px 0; color: #6B645B;">Files (SharePoint)</span>
+          <a href="Finance.dc.html" style="padding: 8px 0; color: #6B645B; text-decoration: none;">Budget</a>
+          <span style="margin-inline-start: auto; padding: 8px 0; color: #6B645B; font-size: 12.5px;">Group: Status · Sprint 4 · Filter</span>
+        </nav>
+      </header>
+
+      <div style="overflow-x: auto;">
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(210px, 1fr)); gap: 14px; min-width: 880px;">
+          <sc-for list="{{ cols }}" as="c" hint-placeholder-count="4">
+            <section style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+              <div style="{{ c.head }}">
+                <span style="{{ c.dot }}"></span>
+                <span style="font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #3A3530;">{{ c.name }}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B645B;">{{ c.count }}</span>
+              </div>
+              <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="3">
+                <article style="{{ k.style }}">
+                  <span style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B645B;"><span>{{ k.key }}</span><span>{{ k.pts }}</span></span>
+                  <span style="font-size: 13.5px; line-height: 1.4;">{{ k.title }}</span>
+                  <span style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                    <span style="{{ k.labelStyle }}">{{ k.label }}</span>
+                    <span style="{{ k.dueStyle }}">{{ k.due }}</span>
+                    <span style="margin-inline-start: auto; {{ k.av }}">{{ k.who }}</span>
+                  </span>
+                </article>
+              </sc-for>
+              <span style="font-size: 12.5px; color: #6B645B; padding: 6px 2px;">+ Add ticket</span>
+            </section>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <aside aria-label="Ticket SUH-142" style="flex: 1 1 420px; max-width: 520px; min-width: 0; box-sizing: border-box; border-inline-start: 1px solid #E4E0D8; background: #F7F6F2; box-shadow: 0 8px 30px rgba(10,9,8,.10); padding: 22px 26px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; color: #6B645B;">
+        <span style="font-family: 'IBM Plex Mono', monospace;">SUH-142 · Hackathon Kuwait</span>
+        <span style="display: flex; gap: 12px;"><span>Expand</span><span>Copy link</span><span>Close</span></span>
+      </div>
+      <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400; font-size: 26px; line-height: 1.25;">Confirm venue for Hackathon Kuwait</h2>
+      <dl style="margin: 0; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px 12px; font-size: 13px;">
+        <dt style="color: #6B645B;">Status</dt><dd style="margin: 0; display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #E8461C;"></span>In progress</dd>
+        <dt style="color: #6B645B;">Assignee</dt><dd style="margin: 0;">Ahmed</dd>
+        <dt style="color: #6B645B;">Due</dt><dd style="margin: 0; color: #C2361B;">Today</dd>
+        <dt style="color: #6B645B;">Sprint</dt><dd style="margin: 0;">Sprint 4 · 3 points</dd>
+        <dt style="color: #6B645B;">Linked</dt><dd style="margin: 0;"><a href="Inbox.dc.html">Email from Venue bookings</a> · <a href="Relationships.dc.html">[Venue]</a></dd>
+      </dl>
+      <div style="font-size: 14px; line-height: 1.6; color: #26221F; display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0;">Hold the main hall for 14 and 15 November. Deposit is KWD 600 within seven days. Check power for 250 laptops and the stage setup for the opening.</p>
+        <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox" checked> Get floor plan</label>
+        <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox" checked> Compare two backup venues</label>
+        <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox"> Walkthrough with Sara</label>
+        <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox"> Pay deposit (expense sent to Finance)</label>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #E4E0D8;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h18v14H3z"></path><path d="M3 10h18M9 5v14"></path></svg>
+        <span style="display: flex; flex-direction: column; line-height: 1.3;"><span style="font-size: 13px;">Venue options.xlsx</span><span style="font-size: 11.5px; color: #6B645B;">SharePoint · Hackathon Kuwait · edited by Sara</span></span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #E4E0D8; padding-top: 14px;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #6B645B;">Comments and activity</span>
+        <div style="display: flex; gap: 10px;"><span style="flex: none; width: 24px; height: 24px; border-radius: 50%; background: #EFECE6; color: #3A3530; display: grid; place-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px;">SA</span><span style="font-size: 13px;"><b style="font-weight: 500;">Sara</b> <span style="color: #6B645B;">20 min</span><br>@Ahmed can we move the walkthrough to Sunday? The hall is booked Saturday.</span></div>
+        <span style="font-size: 12px; color: #6B645B;">Ahmed moved this to In progress · Tue</span>
+        <span style="font-size: 12px; color: #6B645B;">Created from an email to partners@ · Mon</span>
+        <label style="display: flex;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden;">Comment</span><input type="text" placeholder="Comment, @mention, or / for commands" style="flex: 1; font: inherit; font-size: 13px; padding: 9px 10px; border: 1px solid #E4E0D8; background: #F7F6F2;"></label>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const TINT = { clay: ['#FBE4DB', '#A8341A'], sea: ['#EFECE6', '#3A3530'], saffron: ['#EFECE6', '#3A3530'], indigo: ['#EFECE6', '#171513'], palm: ['#EFECE6', '#171513'], rose: ['#EFECE6', '#3A3530'], stone: ['#EFECE6', '#4A443D'] };
+    const chip = (c) => 'font-size: 11px; padding: 2px 8px; border-radius: 999px; background: ' + TINT[c][0] + '; color: ' + TINT[c][1] + ';';
+    const PEOPLE = { AE: 'clay', SA: 'sea', LY: 'rose', YO: 'indigo', FN: 'palm' };
+    const av = (ini, size) => 'flex: none; width: ' + (size || 22) + 'px; height: ' + (size || 22) + 'px; border-radius: 50%; display: grid; place-items: center; font-family: "IBM Plex Mono", monospace; font-size: 9.5px; background: ' + TINT[PEOPLE[ini] || 'saffron'][0] + '; color: ' + TINT[PEOPLE[ini] || 'saffron'][1] + ';';
+    const dot = (c) => 'width: 8px; height: 8px; border-radius: 50%; background: ' + c + ';';
+    const card = (on) => 'display: flex; flex-direction: column; gap: 8px; padding: 11px 12px; background: #F7F6F2; border: 1px solid ' + (on ? '#171513' : '#E4E0D8') + '; border-radius: 10px;';
+    const due = (late) => 'font-family: "IBM Plex Mono", monospace; font-size: 11px; color: ' + (late ? '#C2361B' : '#6B645B') + ';';
+    const LBL = { Sponsors: 'clay', Programme: 'indigo', Logistics: 'sea', Comms: 'rose', Planning: 'palm', Finance: 'saffron' };
+    const k = (key, title, label, d, late, who, pts, on) => ({ key, title, label, labelStyle: chip(LBL[label] || 'stone'), av: av(who), due: d, dueStyle: due(late), who, pts: pts + ' pt', style: card(on) });
+    const cols = [
+      { name: 'Todo', c: '#7A736A', cards: [k('SUH-151', 'Sponsor deck v2 with tier pricing', 'Sponsors', 'Fri', false, 'AE', 3), k('SUH-155', 'Judges shortlist, 8 names', 'Programme', 'Mon', false, 'LY', 2), k('SUH-171', 'Catering quote', 'Logistics', 'Tue', false, 'SA', 1)] },
+      { name: 'In progress', c: '#E8461C', cards: [k('SUH-142', 'Confirm venue for Hackathon Kuwait', 'Logistics', 'Today', true, 'AE', 3, true), k('SUH-149', 'Challenge tracks and briefs', 'Programme', 'Sun', false, 'YO', 5)] },
+      { name: 'In review', c: '#6B645B', cards: [k('SUH-147', 'Registration form copy, AR and EN', 'Comms', 'Thu', false, 'LY', 2), k('SUH-150', 'Prize structure and rules', 'Programme', 'Fri', false, 'SA', 2)] },
+      { name: 'Done', c: '#171513', cards: [k('SUH-139', 'Pick date and city', 'Planning', '', false, 'AE', 1), k('SUH-140', 'Budget draft', 'Finance', '', false, 'FN', 2), k('SUH-144', 'Call for builders post', 'Comms', '', false, 'LY', 1)] }
+    ];
+    const HEAD = { 'Todo': 'stone', 'In progress': 'saffron', 'In review': 'indigo', 'Done': 'palm' };
+    return { cols: cols.map((c) => ({ name: c.name, count: String(c.cards.length), dot: dot(c.c), head: 'display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; background: ' + TINT[HEAD[c.name]][0] + ';', cards: c.cards })) };
+  }
+}
+</script>
+</body>
+</html>
