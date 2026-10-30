@@ -1,0 +1,165 @@
+{
+ "agenda": [
+  [
+   "09:30",
+   "Doors open and breakfast",
+   "فتح الأبواب والفطور"
+  ],
+  [
+   "10:00",
+   "Opening and team matching",
+   "الافتتاح وتشكيل الفرق"
+  ],
+  [
+   "13:00",
+   "Lunch",
+   "الغداء"
+  ],
+  [
+   "19:30",
+   "Submission deadline and dinner",
+   "آخر موعد للتسليم والعشاء",
+   1
+  ],
+  [
+   "20:30",
+   "Live demos",
+   "العروض المباشرة"
+  ],
+  [
+   "21:30",
+   "Awards",
+   "إعلان الفائزين"
+  ]
+ ],
+ "drafts": [
+  {
+   "id": "agents-online",
+   "t": [
+    "Arabic Agents Hack",
+    "هاكاثون الوكلاء العرب"
+   ],
+   "fmt": "online",
+   "city": [
+    "Online",
+    "أونلاين"
+   ],
+   "scene": "pattern",
+   "desc": [
+    "Build agents that work in Arabic, from anywhere. Open to anyone. Challenges and partners are announced to applicants.",
+    "ابنِ وكلاء يشتغلون بالعربي، من أي مكان. مفتوح للجميع. التحديات والشركاء يُعلنون للمتقدّمين."
+   ]
+  },
+  {
+   "id": "applied-ai-kuwait",
+   "t": [
+    "Applied AI Hack",
+    "هاكاثون الذكاء التطبيقي"
+   ],
+   "fmt": "inperson",
+   "city": [
+    "Kuwait City",
+    "الكويت"
+   ],
+   "scene": "skyline",
+   "desc": [
+    "Meet, build and demo in one day. The schedule, challenges and partners below are kept up to date by the event team.",
+    "تقابل وتبني وتعرض في يوم واحد. البرنامج والتحديات والشركاء يحدّثها فريق الفعالية."
+   ]
+  },
+  {
+   "id": "energy-riyadh",
+   "t": [
+    "Energy and Climate Hack",
+    "هاكاثون الطاقة والمناخ"
+   ],
+   "fmt": "inperson",
+   "city": [
+    "Riyadh",
+    "الرياض"
+   ],
+   "scene": "tent",
+   "desc": [
+    "Grids, cooling and water for the hottest places on earth. One day, real data from partners.",
+    "شبكات وتبريد ومياه لأحرّ أماكن على الأرض. يوم واحد، وبيانات حقيقية من الشركاء."
+   ]
+  },
+  {
+   "id": "physical-cairo",
+   "t": [
+    "Physical AI Hack",
+    "هاكاثون الذكاء المادي"
+   ],
+   "fmt": "inperson",
+   "city": [
+    "Cairo",
+    "القاهرة"
+   ],
+   "scene": "dhow",
+   "desc": [
+    "Robots, sensors and machines that leave the screen. Hardware is provided on site.",
+    "روبوتات وحسّاسات وآلات تطلع من الشاشة. الأجهزة متوفرة في المكان."
+   ]
+  }
+ ],
+ "who": [
+  [
+   "Engineers",
+   "مهندسون"
+  ],
+  [
+   "Founders",
+   "مؤسّسون"
+  ],
+  [
+   "Investors",
+   "مستثمرون"
+  ],
+  [
+   "Technical leaders",
+   "قادة تقنيون"
+  ],
+  [
+   "Researchers",
+   "باحثون"
+  ],
+  [
+   "Product designers",
+   "مصمّمو منتجات"
+  ],
+  [
+   "Operators",
+   "مشغّلون"
+  ],
+  [
+   "Students",
+   "طلاب"
+  ]
+ ],
+ "stages": [
+  [
+   "main",
+   "st1",
+   "st1p",
+   "photo:main"
+  ],
+  [
+   "builders",
+   "st2",
+   "st2p",
+   "photo:builders"
+  ],
+  [
+   "capital",
+   "st3",
+   "st3p",
+   "photo:capital"
+  ],
+  [
+   "workshops",
+   "st4",
+   "st4p",
+   "scene:pattern"
+  ]
+ ]
+}
