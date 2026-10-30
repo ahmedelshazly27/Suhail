@@ -1,4 +1,4 @@
-export const initials = (name: string) => { const w = (name || "?").split(/\s+/).filter(Boolean); return (w.length > 1 ? w[0][0] + w[1][0] : (w[0] || "?").slice(0, 2)).toUpperCase(); };
+export const initials = (name: string) => { const w = (name || "?").replace(/[^\p{L}\p{N}\s]/gu, "").split(/\s+/).filter(Boolean); return (w.length > 1 ? w[0][0] + w[1][0] : (w[0] || "?").slice(0, 2)).toUpperCase(); };
 
 /** 22px circle: Microsoft photo when there is one, else initials on --soft. */
 export function Avatar({ name, src, size = "sm", ink, me, title }: { name: string; src?: string | null; size?: "sm" | "md" | "lg"; ink?: boolean; me?: boolean; title?: string }) {
