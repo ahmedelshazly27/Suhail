@@ -15,12 +15,13 @@ export default async function Inbox({ searchParams }: PageProps<"/team/inbox">) 
   const me = await requireMe();
   const sp = await searchParams;
   const db = await supabaseServer();
-  const [{ lang }, shell, mp] = await Promise.all([teamPrefs(), getShell(me.id), mail(me.id)]);
+  // Everything that doesn't depend on the mailbox starts at once.
+  const [{ lang }, shell, mp, { data: links }, { data: rels }] = await Promise.all([teamPrefs(), getShell(me.id), mail(me.id),
+    db.from("mail_links").select("message_id,mailbox,entity_type,entity_id,assignee_id,snoozed_until"), db.from("relationships").select("id,name").order("name")]);
   const boxes = await mp.mailboxes().catch(() => []);
   const view = typeof sp.view === "string" ? sp.view : null;
   const mb = typeof sp.mb === "string" ? sp.mb : view ? "" : boxes.find((b) => b.id !== "me" && b.unread)?.id ?? boxes[0]?.id ?? "me";
   const box = boxes.find((b) => b.id === mb);
-  const { data: links } = await db.from("mail_links").select("message_id,mailbox,entity_type,entity_id,assignee_id,snoozed_until");
   const now = new Date().toISOString();
   const snoozed = new Set((links || []).filter((l) => l.snoozed_until && l.snoozed_until > now).map((l) => l.message_id));
   let list = mb ? (await mp.list(mb).catch(() => [])).filter((m) => !snoozed.has(m.id)) : [];
@@ -53,12 +54,11 @@ export default async function Inbox({ searchParams }: PageProps<"/team/inbox">) 
       assignee: shell.people.find((p) => p.id === (myLinks.find((l) => l.assignee_id)?.assignee_id ?? rel?.owner_id))?.name ?? null,
     };
   }
-  const { data: rels } = await db.from("relationships").select("id,name").order("name");
   const q = (o: Record<string, string>) => "?" + new URLSearchParams(Object.fromEntries(Object.entries({ mb, f: filter, ...o }).filter(([, v]) => v))).toString();
   const unreadNotes = shell.counts.inbox;
 
   return (
-    <div className={`mailwrap${cur || view === "notifications" ? " reading" : ""}`}>
+    <div className={`mailwrap${(cur && typeof sp.id === "string") || view === "notifications" ? " reading" : ""}`}>{/* phones show the reader only for a tapped message; desktop also previews the newest */}
       <nav className="mb-col" aria-label={tt(lang, "mailbox")}>
         <span className="side-label">{lang === "ar" ? "صناديق البريد" : "Mailboxes"}</span>
         {boxes.map((b) => <Link key={b.id} className="side-item" href={`/team/inbox?mb=${encodeURIComponent(b.id)}`} aria-current={!view && b.id === mb ? "page" : undefined}><span>{b.id === "me" ? (lang === "ar" ? "بريدي" : "My inbox") : b.name}</span>{b.unread ? <span className="n">{b.unread}</span> : null}</Link>)}

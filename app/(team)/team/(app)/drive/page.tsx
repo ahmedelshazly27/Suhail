@@ -22,7 +22,8 @@ export default async function Page({ searchParams }: PageProps<"/team/drive">) {
   const fid = typeof sp.f === "string" && folders.some((f) => f.id === sp.f) ? sp.f : "root";
   const q = typeof sp.q === "string" ? sp.q.slice(0, 80) : "";
   const cur = folders.find((f) => f.id === fid);
-  const [items, recent] = await Promise.all([q ? d.search(q) : d.list(fid), fid === "root" && !q ? d.recent() : Promise.resolve([] as DriveItem[])]);
+  // A Microsoft hiccup (or a folder that moved) shows an empty folder, not an error page.
+  const [items, recent] = await Promise.all([(q ? d.search(q) : d.list(fid)).catch(() => [] as DriveItem[]), fid === "root" && !q ? d.recent().catch(() => [] as DriveItem[]) : Promise.resolve([] as DriveItem[])]);
   const visible = items.filter((i) => finance || !(i.path.startsWith("/Finance") || (fid === "root" && i.name === "Finance")));
   const db = await supabaseServer();
   const { data: links } = await db.from("file_links").select("drive_item_id,web_url,entity_type,entity_id");

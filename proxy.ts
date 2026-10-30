@@ -39,7 +39,7 @@ async function withSession(req: NextRequest, res: NextResponse) {
     },
   });
   try {
-    await supabase.auth.getUser();
+    await supabase.auth.getClaims(); // refreshes an expired session; verified locally, so no Auth round trip otherwise
   } catch {
     // Database unreachable: pages handle the signed-out state.
   }
