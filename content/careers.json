@@ -1,0 +1,495 @@
+{
+ "roles": [
+  {
+   "id": "partnerships",
+   "t": [
+    "Partnerships",
+    "الشراكات"
+   ],
+   "plain": [
+    "Head of Partnerships",
+    "رئيس الشراكات"
+   ],
+   "pitch": [
+    "Brings in the investors, companies, universities and cities that back Suhail, and keeps them involved.",
+    "يجيب المستثمرين والشركات والجامعات والمدن اللي تدعم سهيل، ويخلّيهم جزء منه."
+   ],
+   "do": [
+    [
+     "Build relationships with investors, companies, universities and government bodies across the region.",
+     "Shape partnership formats: hackathon tracks, recruiting, the newsletter and Suhail Season.",
+     "Secure the partners for the first events, and keep them for the next ones."
+    ],
+    [
+     "تبني علاقات مع المستثمرين والشركات والجامعات والجهات الحكومية في المنطقة.",
+     "تصمّم صيغ الشراكة: مسارات الهاكاثون، والتوظيف، والنشرة، وموسم سهيل.",
+     "تأمّن شركاء أول الفعاليات، وتحافظ عليهم للي بعدها."
+    ]
+   ],
+   "you": [
+    [
+     "You have a real network in the region's startup ecosystem.",
+     "You're good at closing, and better at following up.",
+     "You're at ease in Arabic and English."
+    ],
+    [
+     "عندك شبكة حقيقية في منظومة الشركات الناشئة بالمنطقة.",
+     "تعرف تقفل الاتفاق، وتعرف تتابع بعده أكثر.",
+     "مرتاح بالعربي والإنجليزي."
+    ]
+   ]
+  },
+  {
+   "id": "events",
+   "t": [
+    "Events and Programming",
+    "الفعاليات والبرامج"
+   ],
+   "plain": [
+    "Head of Events and Programming",
+    "رئيس الفعاليات والبرامج"
+   ],
+   "pitch": [
+    "Plans and runs everything people come to: hackathons, firesides, The Majlis podcast and Suhail Season.",
+    "يخطّط ويدير كل شي يحضره الناس: الهاكاثونات، والجلسات الحوارية، وبودكاست المجلس، وموسم سهيل."
+   ],
+   "do": [
+    [
+     "Plan and run hackathons, fireside chats and Suhail Season, from the venue to the last demo.",
+     "Produce The Majlis podcast: pick guests, plan episodes and run recordings.",
+     "Own the calendar: what happens, where, when and with which partners."
+    ],
+    [
+     "تخطّط وتدير الهاكاثونات والجلسات الحوارية وموسم سهيل، من المكان لآخر عرض.",
+     "تنتج بودكاست المجلس: تختار الضيوف، وتجهّز الحلقات، وتدير التسجيل.",
+     "تمسك التقويم: وش يصير، ووين، ومتى، ومع أي شركاء."
+    ]
+   ],
+   "you": [
+    [
+     "You've organised events, talks or a podcast before.",
+     "You care about details and stay calm when things break.",
+     "You can be in the room for events in the region."
+    ],
+    [
+     "نظّمت فعاليات أو جلسات أو بودكاست قبل.",
+     "تهتم بالتفاصيل، وهادي لما يخرب شي.",
+     "تقدر تكون حاضر في فعاليات المنطقة."
+    ]
+   ]
+  },
+  {
+   "id": "editorial",
+   "t": [
+    "Editorial",
+    "التحرير"
+   ],
+   "plain": [
+    "Head of Editorial",
+    "رئيس التحرير"
+   ],
+   "pitch": [
+    "Finds the promising startups and the news worth knowing, and tells their story in the newsletter and on social.",
+    "يلقى الشركات الناشئة الواعدة والأخبار اللي تستاهل، ويحكي قصتها في النشرة وعلى المنصّات."
+   ],
+   "do": [
+    [
+     "Scout promising startups and founders across the region before they're on anyone's list.",
+     "Write the weekly newsletter and decide what's worth people's time.",
+     "Turn firesides, podcast episodes and news into posts, clips and threads."
+    ],
+    [
+     "تلقى الشركات الناشئة والمؤسّسين الواعدين في المنطقة قبل ما يكونون على قائمة أحد.",
+     "تكتب النشرة الأسبوعية، وتقرّر وش يستاهل وقت الناس.",
+     "تحوّل الجلسات وحلقات البودكاست والأخبار لمنشورات ومقاطع وسلاسل."
+    ]
+   ],
+   "you": [
+    [
+     "You follow tech in the region closely, from the source.",
+     "You write clearly in Arabic and English.",
+     "You know a good story when you see one."
+    ],
+    [
+     "تتابع التقنية في المنطقة عن قرب، ومن مصادرها الأولى.",
+     "تكتب بوضوح بالعربي والإنجليزي.",
+     "تعرف القصة الحلوة أول ما تشوفها."
+    ]
+   ]
+  },
+  {
+   "id": "engineering",
+   "t": [
+    "Engineering and Research",
+    "الهندسة والأبحاث"
+   ],
+   "plain": [
+    "Head of Engineering",
+    "رئيس الهندسة"
+   ],
+   "pitch": [
+    "Leads Suhail's open research: foundation models, datasets and benchmarks built for the Arab world and released in the open.",
+    "يقود أبحاث سهيل المفتوحة: نماذج أساسية وبيانات ومعايير مبنية للعالم العربي ومنشورة للكل."
+   ],
+   "do": [
+    [
+     "Pick the first projects and turn them into a research roadmap: models the region needs that nobody has built yet.",
+     "Fine-tune and adapt open-weight models on regional data, and publish the weights, code and results.",
+     "Build open datasets and benchmarks with the community, universities and partners, and lead the people who contribute to them."
+    ],
+    [
+     "تختار أول المشاريع وتحوّلها لخطة أبحاث: نماذج تحتاجها المنطقة وما بناها أحد للحين.",
+     "تدرّب وتكيّف نماذج مفتوحة الأوزان على بيانات المنطقة، وتنشر الأوزان والكود والنتائج.",
+     "تبني بيانات ومعايير مفتوحة مع المجتمع والجامعات والشركاء، وتقود الناس اللي يساهمون فيها."
+    ]
+   ],
+   "you": [
+    [
+     "You've trained or fine-tuned models and shipped the results, in a lab, a company or on your own.",
+     "You care about data quality and honest evaluation as much as the model.",
+     "You can get a lot done with little compute, and you know how to find more."
+    ],
+    [
+     "درّبت أو كيّفت نماذج ونشرت النتائج، في مختبر أو شركة أو لحالك.",
+     "تهتم بجودة البيانات والتقييم الصادق بقدر اهتمامك بالنموذج.",
+     "تعرف تنجز كثير بموارد حوسبة قليلة، وتعرف كيف تلقى أكثر."
+    ]
+   ]
+  },
+  {
+   "id": "finance",
+   "t": [
+    "Finance",
+    "المالية"
+   ],
+   "plain": [
+    "Finance Lead",
+    "مسؤول المالية"
+   ],
+   "pitch": [
+    "Runs Suhail's money: budgets, the books, partner deals and the path to revenue.",
+    "يدير فلوس سهيل: الميزانيات، والحسابات، واتفاقيات الشركاء، والطريق للدخل."
+   ],
+   "do": [
+    [
+     "Build the budgets for every event and for the year, and track where every dirham goes.",
+     "Set up the company side: entity, banking, invoicing and partner contracts across the region.",
+     "Model how Suhail makes money, from sponsorships and tickets to partnerships, and get us to the point where these roles are paid."
+    ],
+    [
+     "تبني ميزانية كل فعالية وميزانية السنة، وتتابع وين يروح كل درهم.",
+     "تجهّز الجانب الرسمي: الكيان، والحسابات البنكية، والفواتير، وعقود الشركاء في المنطقة.",
+     "تبني نموذج دخل سهيل، من الرعايات والتذاكر للشراكات، وتوصلنا لليوم اللي تصير فيه هذي الأدوار مدفوعة."
+    ]
+   ],
+   "you": [
+    [
+     "You've worked in finance, accounting or operations at a startup, a fund or a firm.",
+     "You're careful with numbers and clear when you explain them.",
+     "You know how money and companies work in at least one country in the region."
+    ],
+    [
+     "اشتغلت في المالية أو المحاسبة أو العمليات، في شركة ناشئة أو صندوق أو شركة.",
+     "دقيق مع الأرقام، وواضح لما تشرحها.",
+     "تعرف كيف تمشي الفلوس والشركات في دولة وحدة على الأقل في المنطقة."
+    ]
+   ]
+  }
+ ],
+ "roleForms": {
+  "partnerships": [
+   {
+    "id": "task_h",
+    "en": "Your turn",
+    "ar": "دورك",
+    "type": "head"
+   },
+   {
+    "id": "p_pitch",
+    "en": "Pick a real company in the region that should sponsor our first hackathon. Write them the message you'd send.",
+    "ar": "اختر شركة حقيقية في المنطقة لازم ترعى أول هاكاثون لنا، واكتب لهم الرسالة اللي بترسلها.",
+    "type": "textarea",
+    "req": 1,
+    "max": 150,
+    "note": [
+     "Who it's to, what you ask for (with a number), and why they'd say yes.",
+     "لمين، وش تطلب منهم (برقم)، وليش بيوافقون."
+    ]
+   },
+   {
+    "id": "p_deal",
+    "en": "A deal or partnership you closed. What did they want, what did you give, what came out of it?",
+    "ar": "اتفاقية أو شراكة قفلتها. وش كانوا يبون، وش عطيتهم، ووش طلع منها؟",
+    "type": "textarea",
+    "req": 1,
+    "max": 120
+   },
+   {
+    "id": "p_calls",
+    "en": "Who could you get on a call this month? Roles and companies, not names.",
+    "ar": "مين تقدر تكلّمه هالشهر؟ المنصب والشركة، مو الأسماء.",
+    "type": "textarea",
+    "req": 1,
+    "max": 60,
+    "ph": "Head of Developer Relations at …"
+   },
+   {
+    "id": "p_markets",
+    "en": "Where your network is strongest",
+    "ar": "وين شبكة علاقاتك أقوى",
+    "type": "checks",
+    "opts": "@countries"
+   }
+  ],
+  "events": [
+   {
+    "id": "task_h",
+    "en": "Your turn",
+    "ar": "دورك",
+    "type": "head"
+   },
+   {
+    "id": "e_design",
+    "en": "Design our first hackathon in five lines: city, theme, partners, prize, and the one moment people will remember.",
+    "ar": "صمّم أول هاكاثون لنا في خمس سطور: المدينة، الموضوع، الشركاء، الجائزة، واللحظة اللي الناس بتتذكرها.",
+    "type": "textarea",
+    "req": 1,
+    "max": 120
+   },
+   {
+    "id": "e_majlis",
+    "en": "Three guests for The Majlis podcast, and the one question you'd ask each.",
+    "ar": "ثلاث ضيوف لبودكاست المجلس، وسؤال واحد بتسأله لكل واحد.",
+    "type": "textarea",
+    "req": 1,
+    "max": 120
+   },
+   {
+    "id": "e_fire",
+    "en": "It's 7am on demo day and the venue has no internet. What do you do in the first hour?",
+    "ar": "الساعة ٧ الصبح يوم العروض، والمكان ما فيه إنترنت. وش تسوي في أول ساعة؟",
+    "type": "textarea",
+    "req": 1,
+    "max": 100
+   },
+   {
+    "id": "e_past",
+    "en": "An event, talk or podcast you ran: how many people, your role, a link if there is one.",
+    "ar": "فعالية أو جلسة أو بودكاست نظّمته: كم شخص، دورك، ورابط إذا موجود.",
+    "type": "textarea",
+    "req": 1,
+    "max": 100
+   }
+  ],
+  "editorial": [
+   {
+    "id": "task_h",
+    "en": "Your turn",
+    "ar": "دورك",
+    "type": "head"
+   },
+   {
+    "id": "w_open",
+    "en": "Write the opening of our first newsletter: one thing that happened in the region's tech this month, and why it matters.",
+    "ar": "اكتب افتتاحية أول نشرة لنا: شي صار في تقنية المنطقة هالشهر، وليش يهم.",
+    "type": "textarea",
+    "req": 1,
+    "max": 150,
+    "note": [
+     "Write it in Arabic or English, whichever is stronger for you.",
+     "اكتبها بالعربي أو الإنجليزي، اللي تكون فيه أقوى."
+    ]
+   },
+   {
+    "id": "w_scout",
+    "en": "A founder or startup in the region nobody is talking about yet. Who, and why they matter.",
+    "ar": "مؤسّس أو شركة ناشئة في المنطقة محد يتكلّم عنها للحين. مين، وليش تهم.",
+    "type": "textarea",
+    "req": 1,
+    "max": 100
+   },
+   {
+    "id": "w_sources",
+    "en": "Three things you read or follow every week that most people don't",
+    "ar": "ثلاث أشياء تقراها أو تتابعها كل أسبوع وأغلب الناس ما يعرفونها",
+    "type": "textarea",
+    "req": 1,
+    "max": 60
+   },
+   {
+    "id": "w_samples",
+    "en": "Links to things you've written",
+    "ar": "روابط لأشياء كتبتها",
+    "type": "textarea",
+    "req": 1,
+    "ltr": 1,
+    "ph": "https://…"
+   }
+  ],
+  "engineering": [
+   {
+    "id": "task_h",
+    "en": "Your turn",
+    "ar": "دورك",
+    "type": "head"
+   },
+   {
+    "id": "g_plan",
+    "en": "You get 8 GPUs for a month and no budget for new data. Which open model or dataset for the Arab world do you build, from what, and how will you know it's good?",
+    "ar": "عندك ٨ معالجات رسومية لمدة شهر وما فيه ميزانية لبيانات جديدة. أي نموذج أو مجموعة بيانات مفتوحة للعالم العربي بتبني، من وين، وكيف بتعرف إنه زين؟",
+    "type": "textarea",
+    "req": 1,
+    "max": 200
+   },
+   {
+    "id": "g_number",
+    "en": "Something you trained, fine-tuned or evaluated, and the number that told you it worked",
+    "ar": "شي درّبته أو كيّفته أو قيّمته، والرقم اللي قال لك إنه نجح",
+    "type": "textarea",
+    "req": 1,
+    "max": 100
+   },
+   {
+    "id": "g_broken",
+    "en": "An Arabic AI benchmark or dataset you think is broken, and why",
+    "ar": "معيار أو مجموعة بيانات عربية للذكاء الاصطناعي تشوفها خربانة، وليش",
+    "type": "textarea",
+    "max": 100
+   },
+   {
+    "id": "g_profiles",
+    "en": "GitHub, Hugging Face or Google Scholar",
+    "ar": "GitHub أو Hugging Face أو Google Scholar",
+    "type": "text",
+    "req": 1,
+    "ltr": 1,
+    "ph": "https://"
+   }
+  ],
+  "finance": [
+   {
+    "id": "task_h",
+    "en": "Your turn",
+    "ar": "دورك",
+    "type": "head"
+   },
+   {
+    "id": "f_budget",
+    "en": "Our first hackathon: 150 people, one city, two days. Give us a rough budget in a few lines: the biggest costs, and how you'd cover them.",
+    "ar": "أول هاكاثون لنا: ١٥٠ شخص، مدينة وحدة، يومين. عطنا ميزانية تقريبية في سطور: أكبر التكاليف، وكيف بتغطيها.",
+    "type": "textarea",
+    "req": 1,
+    "max": 150
+   },
+   {
+    "id": "f_revenue",
+    "en": "Three ways Suhail could make money in year one, ranked. Which one do you start with, and why?",
+    "ar": "ثلاث طرق ممكن سهيل يحقّق فيها دخل في أول سنة، بالترتيب. بأي وحدة تبدأ، وليش؟",
+    "type": "textarea",
+    "req": 1,
+    "max": 120
+   },
+   {
+    "id": "f_done",
+    "en": "Finance work you've done: budgets, books, fundraising or deals",
+    "ar": "شغلك في المالية: ميزانيات، حسابات، تمويل أو اتفاقيات",
+    "type": "textarea",
+    "req": 1,
+    "max": 100
+   },
+   {
+    "id": "f_setup",
+    "en": "Where you know how companies, banking and tax work",
+    "ar": "وين تعرف كيف تمشي الشركات والبنوك والضرائب",
+    "type": "checks",
+    "req": 1,
+    "opts": "@countries"
+   }
+  ]
+ },
+ "basics": [
+  [
+   {
+    "id": "name",
+    "en": "Name",
+    "ar": "الاسم",
+    "type": "text",
+    "req": 1
+   },
+   {
+    "id": "email",
+    "en": "Email",
+    "ar": "البريد الإلكتروني",
+    "type": "email",
+    "req": 1
+   }
+  ],
+  [
+   {
+    "id": "country",
+    "en": "Based in",
+    "ar": "مقيم في",
+    "type": "select",
+    "req": 1,
+    "opts": "@countries"
+   },
+   {
+    "id": "link",
+    "en": "LinkedIn",
+    "ar": "LinkedIn",
+    "type": "text",
+    "ltr": 1,
+    "ph": "linkedin.com/in/…"
+   }
+  ],
+  {
+   "id": "cv",
+   "en": "CV (PDF, up to 10 MB)",
+   "ar": "السيرة الذاتية (PDF، حتى ١٠ ميغا)",
+   "type": "file",
+   "accept": "application/pdf,.pdf"
+  },
+  {
+   "id": "cv_link",
+   "en": "Or a link to your CV",
+   "ar": "أو رابط لسيرتك الذاتية",
+   "type": "text",
+   "ltr": 1,
+   "ph": "https://"
+  },
+  {
+   "id": "best",
+   "en": "The most impressive thing you've built or done, in two sentences",
+   "ar": "أقوى شي بنيته أو سوّيته، في جملتين",
+   "type": "textarea",
+   "req": 1,
+   "max": 60
+  }
+ ],
+ "close": [
+  {
+   "id": "hours",
+   "en": "Hours a week you can give",
+   "ar": "الساعات اللي تقدر تعطيها في الأسبوع",
+   "type": "radio",
+   "req": 1,
+   "opts": [
+    [
+     "lt5",
+     "Under 5",
+     "أقل من 5"
+    ],
+    [
+     "5-10",
+     "5 to 10",
+     "من 5 إلى 10"
+    ],
+    [
+     "10+",
+     "10 or more",
+     "10 أو أكثر"
+    ]
+   ]
+  }
+ ]
+}

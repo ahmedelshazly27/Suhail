@@ -1,0 +1,71 @@
+/* Tailwind without preflight: the prototype relies on browser defaults (list markers, details, form controls),
+   so the base layer below is the prototype's own reset, not Tailwind's. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "../design-system/tokens.css" layer(base);
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant rtl (&:where([dir=rtl], [dir=rtl] *));
+
+/* Only design-system values resolve. Tailwind's palette, fonts, radii and shadows are switched off. */
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-soft: var(--soft);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-accent-tint: var(--accent-tint);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--st-danger);
+  --color-st-backlog: var(--st-backlog);
+  --color-st-todo: var(--st-todo);
+  --color-st-progress: var(--st-progress);
+  --color-st-review: var(--st-review);
+  --color-st-done: var(--st-done);
+  --color-st-cancel: var(--st-cancel);
+  --color-band: var(--band-bg);
+  --color-band-fg: var(--band-fg);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-*: initial;
+  --font-display: var(--f-display);
+  --font-body: var(--f-body);
+  --font-mono: var(--f-mono);
+
+  --radius-*: initial;
+  --radius-0: var(--r-0);
+  --radius-sm: var(--r-sm);
+  --radius-sm-md: var(--r-sm-md);
+  --radius-md: var(--r-md);
+  --radius-md-lg: var(--r-md-lg);
+  --radius-card: var(--r-card);
+  --radius-lg: var(--r-lg);
+  --radius-pill: var(--r-pill);
+
+  --shadow-*: initial;
+  --shadow-float: var(--shadow-float);
+
+  --spacing: var(--s-1);
+  --ease-brand: var(--ease);
+
+  --breakpoint-*: initial;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 47.5rem;
+  --breakpoint-lg: 56.25rem;
+  --breakpoint-xl: 80rem;
+}
+
+@layer base {
+  *, ::before, ::after { box-sizing: border-box; }
+  p { margin: 0; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  [hidden] { display: none !important; }
+  .vh-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+}

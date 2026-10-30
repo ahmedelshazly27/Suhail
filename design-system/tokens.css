@@ -5,7 +5,7 @@
   /* color: light */
   --bg:#F7F6F2;        /* paper */
   --fg:#171513;        /* ink */
-  --muted:#7A736A;     /* secondary text, labels */
+  --muted:#716A61;     /* secondary text, labels. Was #7A736A (4.32:1 on paper); darkened to meet WCAG AA 4.5:1 */
   --faint:#B7B0A6;     /* underlines, disabled, placeholders */
   --line:#E4E0D8;      /* hairlines, borders */
   --soft:#EFECE6;      /* subtle fills, hover rows */
@@ -13,6 +13,18 @@
   --on-accent:#FFFFFF;
   --scene:#B2AA9E;     /* illustration fills */
   --scene-hi:#6A635A;
+  --fg-2:#3A3530;      /* secondary ink: dashboard nav and list text (from the approved mockup) */
+
+  /* fixed dark surfaces: the same in light and dark mode (posters, dark band, polaroid ASCII tile) */
+  --band-bg:#0B0A09; --band-fg:#F1ECE4; --band-scene:#4A443D; --band-scene-hi:#9A9187; --band-accent:#FF5A2A;
+  --art-bg:#0F0E0D; --art-scene:#3E3933; --art-scene-hi:#8C847A; --art-scrim:rgba(15,14,13,.82); --art-scrim-0:rgba(15,14,13,0);
+  --paper-photo:#FBFAF6;  /* polaroid border */
+
+  /* floating layers only (modal, popover, palette, peek panel) */
+  --shadow-float:0 8px 30px rgba(10,9,8,.12);
+  --shadow-gate:0 12px 40px rgba(0,0,0,.08);
+  --shadow-photo:0 10px 30px rgba(0,0,0,.18), 0 1px 3px rgba(0,0,0,.12);
+  --backdrop:rgba(10,9,8,.45);
 
   /* dashboard only: status hues, quiet on purpose. Never on the public site */
   --st-backlog:#B7B0A6; --st-todo:#B7B0A6; --st-progress:#E8461C; --st-review:#6B645B;
@@ -24,10 +36,15 @@
   --dither-size:6px;
 
   /* type */
-  --f-display:"Newsreader", Georgia, serif;
-  --f-body:"IBM Plex Sans", system-ui, sans-serif;
-  --f-mono:"IBM Plex Mono", ui-monospace, monospace;
+  /* --ff-* are set by next/font on <html>; the quoted names are the fallback when they are absent (emails, mockups) */
+  --f-display:var(--ff-newsreader, "Newsreader"), Georgia, serif;
+  --f-body:var(--ff-plex, "IBM Plex Sans"), system-ui, sans-serif;
+  --f-mono:var(--ff-plex-mono, "IBM Plex Mono"), ui-monospace, monospace;
   --f-num:var(--f-mono);
+  /* email: web fonts don't load reliably in mail clients */
+  --f-email-display:Georgia, 'Times New Roman', serif;
+  --f-email-display-ar:'Amiri', Georgia, 'Times New Roman', serif;
+  --f-email-body:-apple-system, 'Segoe UI', Roboto, Tahoma, Arial, sans-serif;
 
   /* layout */
   --col:62rem;   /* page column */
@@ -35,7 +52,7 @@
   --gutter:max(20px, env(safe-area-inset-left, 0px));
 
   /* shape: sharp by default, round only for pills and cards */
-  --r-0:0; --r-sm:4px; --r-md:10px; --r-card:14px; --r-lg:16px; --r-pill:999px;
+  --r-0:0; --r-xs:2px; --r-sm:4px; --r-sm-md:8px; --r-md:10px; --r-md-lg:12px; --r-card:14px; --r-lg:16px; --r-pill:999px;
 
   /* spacing scale (rem) */
   --s-1:.25rem; --s-2:.5rem; --s-3:.75rem; --s-4:1rem; --s-5:1.5rem; --s-6:2rem; --s-7:3rem; --s-8:4.5rem; --s-9:7rem;
@@ -45,9 +62,9 @@
 }
 
 /* Arabic: different faces, no tracking, looser leading */
-:root[lang="ar"]{
-  --f-display:"Amiri", "Noto Naskh Arabic", "Geeza Pro", serif;
-  --f-body:"IBM Plex Sans Arabic", "Geeza Pro", system-ui, sans-serif;
+:root[lang="ar"], [lang="ar"]{
+  --f-display:var(--ff-amiri, "Amiri"), "Noto Naskh Arabic", "Geeza Pro", serif;
+  --f-body:var(--ff-plex-arabic, "IBM Plex Sans Arabic"), "Geeza Pro", system-ui, sans-serif;
 }
 
 /* dark: follows the system unless the user picks light */
@@ -57,15 +74,25 @@
     --accent:#FF5A2A; --on-accent:#0B0A09; --scene:#433E38; --scene-hi:#857D73;
     --st-progress:#FF5A2A; --st-review:#9A9288; --st-done:#ECE8E1; --st-danger:#FF6A4A;
     --accent-tint:#3A1D14; --accent-ink:#FF8A66;
+    --fg-2:#C9C3BA; --shadow-float:0 8px 30px rgba(0,0,0,.5);
     color-scheme:dark;
   }
 }
-:root[data-theme="dark"]{
+:root[data-theme="dark"], [data-theme="dark"]{
   --bg:#0B0A09; --fg:#ECE8E1; --muted:#8F877D; --faint:#4A453F; --line:#211E1B; --soft:#141210;
   --accent:#FF5A2A; --on-accent:#0B0A09; --scene:#433E38; --scene-hi:#857D73;
   --st-progress:#FF5A2A; --st-review:#9A9288; --st-done:#ECE8E1; --st-danger:#FF6A4A;
   --accent-tint:#3A1D14; --accent-ink:#FF8A66;
+  --fg-2:#C9C3BA; --shadow-float:0 8px 30px rgba(0,0,0,.5);
   color-scheme:dark;
+}
+
+[data-theme="light"]{
+  --bg:#F7F6F2; --fg:#171513; --muted:#716A61; --faint:#B7B0A6; --line:#E4E0D8; --soft:#EFECE6;
+  --accent:#E8461C; --on-accent:#FFFFFF; --scene:#B2AA9E; --scene-hi:#6A635A; --fg-2:#3A3530;
+  --st-progress:#E8461C; --st-review:#6B645B; --st-done:#171513; --st-danger:#C2361B;
+  --accent-tint:#FBE4DB; --accent-ink:#A8341A; --shadow-float:0 8px 30px rgba(10,9,8,.12);
+  color-scheme:light;
 }
 
 /* base */

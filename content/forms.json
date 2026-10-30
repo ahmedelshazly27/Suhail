@@ -1,0 +1,734 @@
+{
+ "hack": {
+  "coll": "hack_apps",
+  "submit": [
+   "Apply",
+   "قدّم"
+  ],
+  "fields": [
+   [
+    {
+     "id": "name",
+     "en": "Name",
+     "ar": "الاسم",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "email",
+     "en": "Email",
+     "ar": "البريد الإلكتروني",
+     "type": "email",
+     "req": 1
+    }
+   ],
+   {
+    "id": "event",
+    "en": "Which hackathon",
+    "ar": "أي هاكاثون",
+    "type": "select",
+    "req": 1,
+    "opts": "@hackathons"
+   },
+   {
+    "id": "role",
+    "en": "You are mainly",
+    "ar": "تخصصك الأساسي",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "Engineer",
+      "Engineer",
+      "مهندس"
+     ],
+     [
+      "Designer",
+      "Designer",
+      "مصمّم"
+     ],
+     [
+      "Researcher",
+      "Researcher",
+      "باحث"
+     ],
+     [
+      "Product",
+      "Product",
+      "منتج"
+     ]
+    ]
+   },
+   [
+    {
+     "id": "stack",
+     "en": "Stack and skills",
+     "ar": "التقنيات والمهارات",
+     "type": "text"
+    },
+    {
+     "id": "github",
+     "en": "GitHub or portfolio",
+     "ar": "GitHub أو معرض أعمال",
+     "type": "text",
+     "ltr": 1
+    }
+   ],
+   {
+    "id": "team",
+    "en": "Team",
+    "ar": "الفريق",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "solo",
+      "Solo, match me",
+      "لحالي، لقوا لي فريق"
+     ],
+     [
+      "team",
+      "I have a team",
+      "عندي فريق"
+     ]
+    ]
+   },
+   {
+    "id": "idea",
+    "en": "What would you build?",
+    "ar": "وش تبي تبني؟",
+    "type": "textarea"
+   }
+  ]
+ },
+ "house": {
+  "coll": "house_apps",
+  "submit": [
+   "Apply",
+   "قدّم"
+  ],
+  "fields": [
+   [
+    {
+     "id": "name",
+     "en": "Name",
+     "ar": "الاسم",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "email",
+     "en": "Email",
+     "ar": "البريد الإلكتروني",
+     "type": "email",
+     "req": 1
+    }
+   ],
+   [
+    {
+     "id": "company",
+     "en": "Company or project",
+     "ar": "الشركة أو المشروع",
+     "type": "text"
+    },
+    {
+     "id": "country",
+     "en": "Based in",
+     "ar": "مقيم في",
+     "type": "select",
+     "opts": "@countries"
+    }
+   ],
+   {
+    "id": "stage",
+    "en": "Stage",
+    "ar": "المرحلة",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "idea",
+      "Before the idea",
+      "قبل الفكرة"
+     ],
+     [
+      "building",
+      "Building",
+      "نبني"
+     ],
+     [
+      "users",
+      "Have users",
+      "عندنا مستخدمين"
+     ],
+     [
+      "revenue",
+      "Have revenue",
+      "عندنا إيرادات"
+     ]
+    ]
+   },
+   {
+    "id": "fulltime",
+    "en": "Full-time on it?",
+    "ar": "متفرّغ لها؟",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "yes",
+      "Yes",
+      "إيه"
+     ],
+     [
+      "when",
+      "When I move in",
+      "لما أدخل البيت"
+     ],
+     [
+      "no",
+      "Not yet",
+      "للحين لا"
+     ]
+    ]
+   },
+   {
+    "id": "built",
+    "en": "Link to something you built",
+    "ar": "رابط لشي بنيته",
+    "type": "text",
+    "req": 1,
+    "ltr": 1
+   },
+   {
+    "id": "why",
+    "en": "What will you build in the house?",
+    "ar": "وش بتبني في البيت؟",
+    "type": "textarea",
+    "req": 1
+   }
+  ]
+ },
+ "talent": {
+  "coll": "talent",
+  "submit": [
+   "Join the pool",
+   "انضم"
+  ],
+  "fields": [
+   [
+    {
+     "id": "name",
+     "en": "Name",
+     "ar": "الاسم",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "email",
+     "en": "Email",
+     "ar": "البريد الإلكتروني",
+     "type": "email",
+     "req": 1
+    }
+   ],
+   {
+    "id": "track",
+    "en": "Track",
+    "ar": "المسار",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "tech",
+      "Technical",
+      "تقنية"
+     ],
+     [
+      "ops",
+      "Ops & Business",
+      "عمليات وأعمال"
+     ]
+    ]
+   },
+   {
+    "id": "level",
+    "en": "Seniority",
+    "ar": "الخبرة",
+    "type": "radio",
+    "opts": [
+     [
+      "junior",
+      "0–2 years",
+      "0–2 سنة"
+     ],
+     [
+      "mid",
+      "3–6 years",
+      "3–6 سنوات"
+     ],
+     [
+      "senior",
+      "7+ years",
+      "7 سنوات وأكثر"
+     ]
+    ]
+   },
+   [
+    {
+     "id": "cities",
+     "en": "Cities you'd work in",
+     "ar": "المدن اللي تشتغل فيها",
+     "type": "text"
+    },
+    {
+     "id": "link",
+     "en": "LinkedIn, GitHub or site",
+     "ar": "LinkedIn أو GitHub أو موقعك",
+     "type": "text",
+     "ltr": 1
+    }
+   ],
+   {
+    "id": "next",
+    "en": "What do you want next?",
+    "ar": "وش تبي تسوي بعدين؟",
+    "type": "textarea"
+   }
+  ]
+ },
+ "cofounder": {
+  "coll": "cofounders",
+  "submit": [
+   "Send",
+   "أرسل"
+  ],
+  "fields": [
+   [
+    {
+     "id": "name",
+     "en": "Name",
+     "ar": "الاسم",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "email",
+     "en": "Email",
+     "ar": "البريد الإلكتروني",
+     "type": "email",
+     "req": 1
+    }
+   ],
+   {
+    "id": "bring",
+    "en": "You bring",
+    "ar": "أنت تجيب",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "tech",
+      "Technical",
+      "الجانب التقني"
+     ],
+     [
+      "biz",
+      "Business",
+      "جانب الأعمال"
+     ],
+     [
+      "design",
+      "Design and product",
+      "التصميم والمنتج"
+     ]
+    ]
+   },
+   {
+    "id": "need",
+    "en": "You're looking for",
+    "ar": "تدوّر على",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "tech",
+      "Technical",
+      "تقني"
+     ],
+     [
+      "biz",
+      "Business",
+      "أعمال"
+     ],
+     [
+      "design",
+      "Design and product",
+      "تصميم ومنتج"
+     ]
+    ]
+   },
+   {
+    "id": "idea",
+    "en": "The idea, or the space",
+    "ar": "الفكرة أو المجال",
+    "type": "textarea"
+   },
+   {
+    "id": "link",
+    "en": "Link to you",
+    "ar": "رابط لك",
+    "type": "text",
+    "ltr": 1
+   }
+  ]
+ },
+ "company": {
+  "coll": "companies",
+  "submit": [
+   "Submit",
+   "أرسل"
+  ],
+  "fields": [
+   [
+    {
+     "id": "company",
+     "en": "Company",
+     "ar": "الشركة",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "site",
+     "en": "Website",
+     "ar": "الموقع",
+     "type": "text",
+     "ltr": 1
+    }
+   ],
+   [
+    {
+     "id": "name",
+     "en": "Your name",
+     "ar": "اسمك",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "email",
+     "en": "Work email",
+     "ar": "بريد العمل",
+     "type": "email",
+     "req": 1
+    }
+   ],
+   {
+    "id": "stage",
+    "en": "Stage",
+    "ar": "المرحلة",
+    "type": "radio",
+    "opts": [
+     [
+      "Early",
+      "Early",
+      "مبكرة"
+     ],
+     [
+      "Growth",
+      "Growth",
+      "نمو"
+     ],
+     [
+      "Scaling",
+      "Scaling",
+      "توسّع"
+     ],
+     [
+      "Large",
+      "Large",
+      "شركة كبيرة"
+     ]
+    ]
+   },
+   [
+    {
+     "id": "city",
+     "en": "Main office",
+     "ar": "المكتب الرئيسي",
+     "type": "text"
+    },
+    {
+     "id": "count",
+     "en": "Open roles",
+     "ar": "عدد الوظائف",
+     "type": "text"
+    }
+   ],
+   {
+    "id": "roles",
+    "en": "Which roles?",
+    "ar": "وش الوظائف؟",
+    "type": "textarea"
+   }
+  ]
+ },
+ "season": {
+  "coll": "season",
+  "submit": [
+   "Send",
+   "أرسل"
+  ],
+  "fields": [
+   [
+    {
+     "id": "name",
+     "en": "Name",
+     "ar": "الاسم",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "email",
+     "en": "Email",
+     "ar": "البريد الإلكتروني",
+     "type": "email",
+     "req": 1
+    }
+   ],
+   [
+    {
+     "id": "company",
+     "en": "Company",
+     "ar": "الشركة",
+     "type": "text"
+    },
+    {
+     "id": "title",
+     "en": "Role",
+     "ar": "المسمّى",
+     "type": "text"
+    }
+   ],
+   {
+    "id": "as",
+    "en": "I want to",
+    "ar": "أبي",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "attend",
+      "Attend",
+      "أحضر"
+     ],
+     [
+      "speak",
+      "Speak",
+      "أتكلّم"
+     ],
+     [
+      "workshop",
+      "Run a workshop",
+      "أقدّم ورشة"
+     ]
+    ]
+   },
+   {
+    "id": "talk",
+    "en": "If speaking: the talk in one line",
+    "ar": "إذا بتتكلّم: الفكرة بسطر واحد",
+    "type": "textarea"
+   }
+  ]
+ },
+ "partner": {
+  "coll": "partners",
+  "submit": [
+   "Send",
+   "أرسل"
+  ],
+  "fields": [
+   [
+    {
+     "id": "company",
+     "en": "Company",
+     "ar": "الشركة",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "name",
+     "en": "Your name",
+     "ar": "اسمك",
+     "type": "text",
+     "req": 1
+    }
+   ],
+   [
+    {
+     "id": "email",
+     "en": "Work email",
+     "ar": "بريد العمل",
+     "type": "email",
+     "req": 1
+    },
+    {
+     "id": "title",
+     "en": "Role",
+     "ar": "المسمّى",
+     "type": "text"
+    }
+   ],
+   {
+    "id": "goal",
+    "en": "You're after",
+    "ar": "تبي",
+    "type": "checks",
+    "req": 1,
+    "opts": [
+     [
+      "talent",
+      "Talent",
+      "مواهب"
+     ],
+     [
+      "distribution",
+      "Distribution",
+      "انتشار"
+     ],
+     [
+      "community",
+      "Community",
+      "مجتمع"
+     ]
+    ]
+   },
+   {
+    "id": "note",
+    "en": "Anything we should know",
+    "ar": "شي لازم نعرفه",
+    "type": "textarea"
+   }
+  ]
+ },
+ "podcast": {
+  "coll": "podcast",
+  "submit": [
+   "Send",
+   "أرسل"
+  ],
+  "fields": [
+   [
+    {
+     "id": "name",
+     "en": "Your name",
+     "ar": "اسمك",
+     "type": "text",
+     "req": 1
+    },
+    {
+     "id": "email",
+     "en": "Email",
+     "ar": "البريد الإلكتروني",
+     "type": "email",
+     "req": 1
+    }
+   ],
+   {
+    "id": "who",
+    "en": "Guest",
+    "ar": "الضيف",
+    "type": "radio",
+    "req": 1,
+    "opts": [
+     [
+      "me",
+      "Me",
+      "أنا"
+     ],
+     [
+      "someone",
+      "Someone else",
+      "شخص ثاني"
+     ]
+    ]
+   },
+   {
+    "id": "guest",
+    "en": "Guest name and link",
+    "ar": "اسم الضيف ورابطه",
+    "type": "text",
+    "ltr": 0
+   },
+   {
+    "id": "why",
+    "en": "Why them?",
+    "ar": "ليش هو؟",
+    "type": "textarea",
+    "req": 1
+   }
+  ]
+ },
+ "newsletter": {
+  "coll": "subscribers",
+  "submit": [
+   "Subscribe",
+   "اشترك"
+  ],
+  "fields": [
+   {
+    "id": "email",
+    "en": "Email",
+    "ar": "البريد الإلكتروني",
+    "type": "email",
+    "req": 1
+   },
+   {
+    "id": "topics",
+    "en": "Send me",
+    "ar": "أبي",
+    "type": "checks",
+    "opts": [
+     [
+      "roles",
+      "Roles",
+      "الوظائف"
+     ],
+     [
+      "events",
+      "Events",
+      "الفعاليات"
+     ],
+     [
+      "built",
+      "What's being built",
+      "اللي ينبني"
+     ],
+     [
+      "podcast",
+      "The Majlis",
+      "المجلس"
+     ]
+    ]
+   },
+   {
+    "id": "lang",
+    "en": "Language",
+    "ar": "اللغة",
+    "type": "radio",
+    "opts": [
+     [
+      "ar",
+      "Arabic",
+      "العربي"
+     ],
+     [
+      "en",
+      "English",
+      "الإنجليزي"
+     ]
+    ]
+   }
+  ]
+ }
+}
