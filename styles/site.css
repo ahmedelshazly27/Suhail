@@ -1,4 +1,6 @@
-/* Public site styles, ported from reference/suhail.html. Values unchanged; colours, radii and directions mapped to tokens. */
+/* Public site styles, ported from reference/suhail.html. Values unchanged; colours, radii and directions mapped to tokens.
+   Text never uses --faint (2:1 on paper); placeholder text uses --muted.
+   Small orange text uses --accent-ink, the design system's text form of the orange: plain --accent is 3.6:1 on paper. */
 *{box-sizing:border-box}
 body{background:var(--bg); color:var(--fg); font:300 1.0625rem/1.7 var(--f-body); -webkit-font-smoothing:antialiased;
   padding-inline:max(20px, env(safe-area-inset-left, 0px)) max(20px, env(safe-area-inset-right, 0px))}
@@ -18,6 +20,8 @@ h1{font-size:clamp(2.3rem, 5.2vw, 3.9rem); line-height:1.12; letter-spacing:-.01
 h2{font-size:clamp(1.5rem, 2.6vw, 2rem); line-height:1.3}
 :root[lang="ar"] h2{font-weight:400; line-height:1.6}
 h3{font-family:var(--f-body); font-size:1rem; font-weight:500; line-height:1.5}
+/* h3 in the prototype, h2 here so the heading order has no gaps; looks exactly like h3 in both languages */
+h2.h3, :root[lang] h2.h3{font-family:var(--f-body); font-size:1rem; font-weight:500; line-height:1.5}
 .label{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:400}
 :root[lang="ar"] .label{letter-spacing:0; font-size:.9rem}
 .hl{color:var(--accent)}
@@ -54,7 +58,7 @@ nav.links a[aria-current="page"]::after{content:""; display:block; height:1px; b
 .sub button{border:0; background:none; color:var(--fg); font:500 .95rem var(--f-body); cursor:pointer; padding:.8rem 0; padding-inline-start:1rem; white-space:nowrap}
 .sub button:hover{color:var(--accent)}
 .sub-msg{font-size:.88rem; min-height:1.5em; margin-top:.6rem; color:var(--muted)}
-.sub-msg.err, .status.err{color:var(--accent)}
+.sub-msg.err, .status.err{color:var(--accent-ink)}
 
 section.page{display:none}
 section.page.on{display:block; animation:rise .5s ease both}
@@ -98,7 +102,7 @@ section.page.on{display:block; animation:rise .5s ease both}
 .ev .t{font-family:var(--f-display); font-size:1.3rem; font-weight:400; line-height:1.35}
 :root[lang="ar"] .ev .t{font-size:1.45rem}
 .ev .info{color:var(--muted); font-size:.92rem; display:flex; flex-wrap:wrap; gap:.2rem 1rem; margin-top:.3rem}
-.ev .fmt{color:var(--accent)}
+.ev .fmt{color:var(--accent-ink)}
 .ev .go{align-self:center}
 @media (max-width:700px){ .ev{grid-template-columns:minmax(0,1fr); gap:.7rem} .ev .go{justify-self:start} }
 .past-empty{padding-block:2rem; border-block:1px solid var(--line); color:var(--muted)}
@@ -109,7 +113,7 @@ section.page.on{display:block; animation:rise .5s ease both}
 .stages{display:grid; gap:4rem}
 .stage{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:clamp(1.5rem, 4vw, 3.5rem); align-items:center}
 .stage img{width:100%; aspect-ratio:3/2; object-fit:cover; display:block; filter:grayscale(.15)}
-.stage .k{font-family:var(--f-num); font-size:.8rem; color:var(--accent)}
+.stage .k{font-family:var(--f-num); font-size:.8rem; color:var(--accent-ink)}
 .stage > div{display:grid; gap:.8rem}
 @media (max-width:760px){ .stage{grid-template-columns:minmax(0,1fr)} }
 .stage.noimg{grid-template-columns:minmax(0,1fr)}
@@ -129,18 +133,18 @@ section.page.on{display:block; animation:rise .5s ease both}
 .chip{display:flex; justify-content:space-between; gap:.5rem; align-items:center; font-size:.92rem; cursor:pointer}
 .chip input{accent-color:var(--accent); margin:0; margin-inline-end:.55rem}
 .chip span:first-child{display:flex; align-items:center}
-.chip .n{font-family:var(--f-num); font-size:.75rem; color:var(--faint)}
+.chip .n{font-family:var(--f-num); font-size:.75rem; color:var(--muted)}
 .search{display:flex; align-items:center; gap:.6rem; border-bottom:1px solid var(--line); padding-block:.5rem}
 .search input{border:0; outline:0; background:transparent; color:var(--fg); font:300 .95rem var(--f-body); flex:1; min-width:0; width:100%}
 .list-meta{display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; padding-bottom:1rem; font-size:.88rem; color:var(--muted)}
-.note{color:var(--accent)}
+.note{color:var(--accent-ink)}
 .roles{list-style:none; margin:0; padding:0}
 .role{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:1.5rem; padding-block:1.5rem; border-top:1px solid var(--line)}
 .role:last-child{border-bottom:1px solid var(--line)}
 .role .t{font-family:var(--f-display); font-size:1.2rem; font-weight:400; line-height:1.4}
 :root[lang="ar"] .role .t{font-family:var(--f-body); font-weight:500; font-size:1.05rem}
 .role .c{color:var(--muted); font-size:.92rem}
-.role .x{color:var(--faint); font-size:.82rem; margin-top:.35rem}
+.role .x{color:var(--muted); font-size:.82rem; margin-top:.35rem}
 .role .when{font-size:.85rem; color:var(--muted); text-align:end; white-space:nowrap}
 .role .pay{display:block; color:var(--fg)}
 .empty-roles{padding:2rem 0; color:var(--muted)}
@@ -190,7 +194,7 @@ details p{padding-bottom:1.4rem; color:var(--muted); max-width:var(--text)}
 .mail button{font:400 .82rem var(--f-body); background:none; border:1px solid var(--line); color:var(--muted); padding:.3rem .6rem; cursor:pointer}
 .areas{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:3rem}
 .areas > div{display:grid; gap:.9rem; align-content:start}
-.areas .k{font-family:var(--f-num); font-size:.8rem; color:var(--accent)}
+.areas .k{font-family:var(--f-num); font-size:.8rem; color:var(--accent-ink)}
 .areas ul{list-style:none; margin:0; padding:0; color:var(--muted); font-size:.95rem; display:grid; gap:.35rem}
 @media (max-width:820px){ .areas{grid-template-columns:minmax(0,1fr); gap:2.5rem} }
 .steps{list-style:none; margin:0; padding:0}
@@ -201,13 +205,14 @@ details p{padding-bottom:1.4rem; color:var(--muted); max-width:var(--text)}
 /* house */
 .day{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:0; border-top:1px solid var(--fg)}
 .day > div{padding-top:1.2rem; padding-inline-end:1.4rem; display:grid; gap:.5rem; align-content:start}
-.day .k{font-family:var(--f-num); font-size:.82rem; color:var(--accent)}
+.day .k{font-family:var(--f-num); font-size:.82rem; color:var(--accent-ink)}
 @media (max-width:820px){ .day{grid-template-columns:repeat(2, minmax(0,1fr)); row-gap:2rem} }
 .inhouse{display:flex; flex-wrap:wrap; gap:.4rem 2.2rem; font-family:var(--f-display); font-size:clamp(1.2rem, 2.2vw, 1.55rem)}
 :root[lang="ar"] .inhouse{font-size:clamp(1.3rem, 2.4vw, 1.7rem)}
 
 .mtext{display:grid; gap:1.9rem; max-width:38rem}
 :root[lang="ar"] .mtext{font-family:var(--f-display); font-size:clamp(1.4rem, 2.8vw, 1.85rem); line-height:2}
+.mtext .hl{color:var(--accent-ink)} /* body-size highlight: plain --accent is under 4.5:1 */
 :root[lang="en"] .mtext{font-family:var(--f-display); font-size:clamp(1.25rem, 2.3vw, 1.55rem); line-height:1.6; font-weight:300}
 .verse{color:var(--muted)}
 :root[lang="en"] .verse{font-style:italic}
@@ -239,7 +244,7 @@ footer a:hover{color:var(--fg)}
 
 /* hackathons */
 .hk-hero{text-align:center; padding-block:clamp(4.5rem, 10vw, 7rem) clamp(2.5rem, 5vw, 3.5rem); display:grid; gap:1rem; justify-items:center}
-.hk-hero h1{font-family:var(--f-mono); font-weight:700; letter-spacing:-.02em; color:var(--faint); font-size:clamp(2.6rem, 6vw, 3.6rem)}
+.hk-hero h1{font-family:var(--f-mono); font-weight:700; letter-spacing:-.02em; color:var(--muted); font-size:clamp(2.6rem, 6vw, 3.6rem)}
 :root[lang="ar"] .hk-hero h1{font-family:var(--f-display); letter-spacing:0}
 .hk-hero p{color:var(--muted); max-width:30rem; font-size:.95rem}
 .bar{display:flex; justify-content:space-between; align-items:baseline; gap:1rem; padding-bottom:.9rem; border-bottom:1px solid var(--line)}
@@ -265,7 +270,7 @@ footer a:hover{color:var(--fg)}
 :root[lang="ar"] .past-head h2{font-family:var(--f-display); letter-spacing:0}
 @media (max-width:720px){ .past-head{grid-template-columns:minmax(0,1fr)} }
 .pastrow{display:grid; grid-template-columns:8.5rem minmax(0,1fr) 13rem; gap:2rem; padding-block:1.4rem; border-bottom:1px solid var(--line); align-items:center}
-.pastrow .thumb{aspect-ratio:1/1; border-radius:var(--r-md); background:var(--soft); display:grid; place-items:center; color:var(--faint); font-family:var(--f-mono); font-size:.75rem}
+.pastrow .thumb{aspect-ratio:1/1; border-radius:var(--r-md); background:var(--soft); display:grid; place-items:center; color:var(--muted); font-family:var(--f-mono); font-size:.75rem}
 .pastrow .d{font-family:var(--f-mono); font-size:.78rem; letter-spacing:.06em; color:var(--muted); text-transform:uppercase}
 .pastrow .t{font-family:var(--f-mono); font-size:1.5rem; line-height:1.25}
 :root[lang="ar"] .pastrow .t{font-family:var(--f-display)}
@@ -298,7 +303,7 @@ footer a:hover{color:var(--fg)}
 .yr{display:inline-flex; align-items:center; gap:.5rem; font-family:var(--f-mono); font-size:.85rem}
 .yr i{width:2.1rem; height:1.15rem; border-radius:var(--r-pill); background:var(--fg); position:relative; display:inline-block}
 .yr i::after{content:""; position:absolute; top:3px; inset-inline-start:3px; width:.75rem; height:.75rem; border-radius:50%; background:var(--bg)}
-.yr span{color:var(--faint)}
+.yr span{color:var(--muted)}
 .cf-hero{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:clamp(2rem, 5vw, 4rem); align-items:center; padding-block:clamp(2.5rem, 6vw, 4.5rem) 3rem}
 @media (max-width:860px){ .cf-hero{grid-template-columns:minmax(0,1fr)} }
 .cf-hero > *{min-width:0}
@@ -357,9 +362,9 @@ footer a:hover{color:var(--fg)}
 .spk .av svg{width:16px; height:16px}
 .spk b{font-family:var(--f-mono); font-weight:600; font-size:.95rem}
 .spk .rl{font-family:var(--f-mono); font-size:.76rem; color:var(--muted)}
-.spk .tt{font-family:var(--f-mono); font-size:.88rem; margin-top:.35rem; color:var(--faint)}
+.spk .tt{font-family:var(--f-mono); font-size:.88rem; margin-top:.35rem; color:var(--muted)}
 :root[lang="ar"] .spk b, :root[lang="ar"] .spk .rl, :root[lang="ar"] .spk .tt{font-family:var(--f-body)}
-.spk .w{font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; color:var(--faint)}
+.spk .w{font-family:var(--f-mono); font-size:.68rem; letter-spacing:.1em; color:var(--muted)}
 @media (max-width:760px){ .spk{grid-template-columns:minmax(0,1fr)} .spk > div:nth-child(2n){border-inline-start:0; padding-inline-start:0} }
 .updates{border-top:1px solid var(--line); padding-block:2.5rem 1rem; display:grid; gap:.9rem}
 .updates h3{font-family:var(--f-mono); font-weight:500; font-size:1.3rem}
@@ -411,7 +416,7 @@ footer a:hover{color:var(--fg)}
 .gatewrap{position:relative; margin-top:1.6rem}
 .gatewrap .blur{filter:blur(4px); opacity:.45; pointer-events:none; user-select:none}
 .gatecard{position:absolute; top:1.5rem; inset-inline:0; margin-inline:auto; width:min(24rem, 100%); background:var(--bg); border:1px solid var(--line); border-radius:var(--r-lg); padding:1.6rem; display:grid; gap:.8rem; text-align:center; box-shadow:var(--shadow-gate)}
-.gatecard h3{font-weight:700; font-size:1.35rem; font-family:var(--f-body)}
+.gatecard h2.h3, :root[lang] .gatecard h2.h3{font-weight:700; font-size:1.35rem; font-family:var(--f-body)}
 .gatecard p{font-size:.9rem; color:var(--muted)}
 .gatecard input{border:1px solid var(--line); border-radius:var(--r-pill); padding:.7rem 1rem; font:400 .95rem var(--f-body); background:transparent; color:var(--fg)}
 .gatecard button{border:0; border-radius:var(--r-pill); padding:.8rem 1rem; background:var(--fg); color:var(--bg); font:600 .92rem var(--f-body); cursor:pointer}
@@ -446,7 +451,7 @@ footer a:hover{color:var(--fg)}
 @media (max-width:700px){ .carrole .cols{grid-template-columns:minmax(0,1fr)} }
 
 /* coming soon */
-.soontag{display:inline-block; font:500 .66rem/1 var(--f-mono); letter-spacing:.1em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:var(--r-pill); padding:.3rem .55rem; font-style:normal; vertical-align:middle}
+.soontag{display:inline-block; font:500 .66rem/1 var(--f-mono); letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); border:1px solid var(--accent); border-radius:var(--r-pill); padding:.3rem .55rem; font-style:normal; vertical-align:middle}
 :root[lang="ar"] .soontag{font-family:var(--f-body); letter-spacing:0; font-size:.78rem}
 .soonbar{display:flex; gap:1rem; align-items:center; flex-wrap:wrap; padding-block:1rem; border-bottom:1px solid var(--line); font-size:.9rem}
 .soonblock{grid-column:1 / -1; border:1px dashed var(--faint); border-radius:var(--r-card); padding:2rem; display:grid; gap:.7rem; justify-items:start}
@@ -455,9 +460,9 @@ footer a:hover{color:var(--fg)}
 .carform{border-top:1px solid var(--line); padding-top:2rem; display:grid; gap:1.6rem; max-width:44rem}
 .carform h2{font-size:clamp(1.4rem, 2.4vw, 1.8rem)}
 .fhead{border-top:1px solid var(--line); padding-top:1.6rem; margin-top:.4rem}
-.fhead .eyebrow{color:var(--accent)}
+.fhead .eyebrow{color:var(--accent-ink)}
 .wc{font-size:.8rem; color:var(--muted); justify-self:end}
-.wc.over{color:var(--accent)}
+.wc.over{color:var(--accent-ink)}
 .vh{position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; pointer-events:none}
 .filerow{position:relative; display:flex; align-items:center; gap:.9rem; padding:.45rem 0 .6rem; border-bottom:1px solid var(--faint); min-width:0}
 .filerow .fname{color:var(--muted); font-size:.92rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0}

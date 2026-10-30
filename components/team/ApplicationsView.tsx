@@ -82,7 +82,7 @@ export function ApplicationsView({ lang, form, forms, roles, apps, people, templ
               <select className="inp" style={{ width: "auto" }} value="" aria-label={tt(lang, "emailApplicant")} onChange={(e) => { const k = e.target.value; if (k && confirm(lang === "ar" ? `ترسل «${k}» إلى ${ids.length}؟` : `Send "${k}" to ${ids.length} applicant(s)?`)) bulk(() => emailApplicants({ ids, key: k }), tt(lang, "emailSent")); }}><option value="">{tt(lang, "emailApplicant")}…</option>{templates.map((t) => <option key={t.key} value={t.key}>{t.name}</option>)}</select>
             </div>
           ) : null}
-          <div className="tbl-wrap"><table className="tbl">
+          <div className="tbl-wrap" tabIndex={0}><table className="tbl">
             <thead><tr><th className="chk"><input type="checkbox" aria-label="Select all" checked={sel.size > 0 && sel.size === rows.length} onChange={(e) => setSel(e.target.checked ? new Set(rows.map((r) => r.id)) : new Set())} /></th>
               <th>{tt(lang, "name")}</th>{form === "careers" ? <th>{tt(lang, "role")}</th> : null}<th>{tt(lang, "stage")}</th><th>{lang === "ar" ? "المراجع" : "Reviewer"}</th><th className="n">{tt(lang, "score")}</th><th>{tt(lang, "language2")}</th><th className="n">{tt(lang, "received")}</th></tr></thead>
             <tbody>{rows.map((a) => (

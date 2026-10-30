@@ -44,7 +44,7 @@ export function Members({ lang, rows }: { lang: TLang; rows: Member[] }) {
   return (
     <div className="col">
       <p className="muted" style={{ fontSize: ".8125rem", maxWidth: "40rem" }}>{lang === "ar" ? "الصلاحيات تجي من مجموعات Microsoft 365: suhail-owners وsuhail-admins وsuhail-team. أضف أو شيل الشخص هناك، ويتحدّث هنا أول ما يدخل. هنا تحدد وظيفته (مثل المالية) وسعته." : "Access comes from the Microsoft 365 groups suhail-owners, suhail-admins and suhail-team. Add or remove someone there and it updates here the next time they sign in. Here you set their function (such as Finance) and capacity."}</p>
-      <div className="tbl-wrap"><table className="tbl">
+      <div className="tbl-wrap" tabIndex={0}><table className="tbl">
         <thead><tr><th>{tt(lang, "name")}</th><th>{tt(lang, "role")}</th><th>{lang === "ar" ? "الوظيفة" : "Function"}</th><th className="n">{tt(lang, "capacity")}</th><th>{tt(lang, "status")}</th></tr></thead>
         <tbody>{rows.map((m) => (
           <tr key={m.id} style={{ cursor: "default" }}>

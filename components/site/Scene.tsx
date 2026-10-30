@@ -6,7 +6,7 @@ import { DRAW, RAMP } from "./scene-draw";
 
 export type SceneKind = "home" | "skyline" | "astrolabe" | "tent" | "pattern" | "house" | "dhow" | "dallah" | "rise";
 
-type S = { cv: HTMLCanvasElement; kind: SceneKind; hi: HTMLCanvasElement; lo: HTMLCanvasElement; vis: boolean; cols: number; rows: number; cw: number; ch: number; dpr: number };
+type S = { cv: HTMLCanvasElement; kind: SceneKind; hi: HTMLCanvasElement; lo: HTMLCanvasElement; vis: boolean; cols: number; rows: number; cw: number; ch: number; dpr: number; font: string; sc: string; hi2: string; ac: string };
 const list = new Set<S>();
 let started = false;
 let last = 0;
@@ -19,6 +19,10 @@ function size(s: S) {
   s.cols = Math.floor(r.width / cw); s.rows = Math.floor(r.height / ch); s.cw = r.width / s.cols; s.ch = r.height / s.rows;
   s.cv.width = Math.round(r.width * dpr); s.cv.height = Math.round(r.height * dpr); s.dpr = dpr;
   s.hi.width = Math.round(r.width); s.hi.height = Math.round(r.height); s.lo.width = s.cols; s.lo.height = s.rows;
+  // Colours and font only change with theme, language or size, which all reset cols, so read them here, not every frame.
+  const cs = getComputedStyle(s.cv);
+  s.font = `${(s.ch * 0.82).toFixed(1)}px ${cs.getPropertyValue("--f-mono").trim()}`;
+  s.sc = cs.getPropertyValue("--scene").trim(); s.hi2 = cs.getPropertyValue("--scene-hi").trim(); s.ac = cs.getPropertyValue("--accent").trim();
   return true;
 }
 
@@ -33,10 +37,9 @@ function render(s: S, t: number) {
   const d = lc.getImageData(0, 0, s.cols, s.rows).data;
   const c = s.cv.getContext("2d")!;
   c.setTransform(s.dpr, 0, 0, s.dpr, 0, 0); c.clearRect(0, 0, s.cv.width, s.cv.height);
-  const cs = getComputedStyle(s.cv);
-  c.font = `${(s.ch * 0.82).toFixed(1)}px ${cs.getPropertyValue("--f-mono").trim()}`;
+  c.font = s.font;
   c.textBaseline = "top";
-  const sc = cs.getPropertyValue("--scene").trim(), hi = cs.getPropertyValue("--scene-hi").trim(), ac = cs.getPropertyValue("--accent").trim();
+  const { sc, hi2: hi, ac } = s;
   for (let y = 0; y < s.rows; y++) for (let x = 0; x < s.cols; x++) {
     const i = (y * s.cols + x) * 4, r = d[i], g = d[i + 1];
     const v = Math.pow(Math.max(r, g) / 255, 0.62);
@@ -57,6 +60,9 @@ function loop(ts: number) {
   if (!reduce()) requestAnimationFrame(loop);
 }
 
+// The first frames are CPU heavy, so they wait until the page has painted its text (the largest paint).
+const idle = (fn: () => void) => ("requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 200));
+
 function start() {
   if (started) return;
   started = true;
@@ -71,13 +77,13 @@ export function Scene({ kind, className = "scene", style }: { kind: SceneKind; c
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const cv = ref.current!;
-    const s: S = { cv, kind, hi: document.createElement("canvas"), lo: document.createElement("canvas"), vis: false, cols: 0, rows: 0, cw: 0, ch: 0, dpr: 1 };
+    const s: S = { cv, kind, hi: document.createElement("canvas"), lo: document.createElement("canvas"), vis: false, cols: 0, rows: 0, cw: 0, ch: 0, dpr: 1, font: "", sc: "", hi2: "", ac: "" };
     list.add(s);
     const io = new IntersectionObserver((es) => { s.vis = es[0].isIntersecting; });
     io.observe(cv);
-    start();
-    requestAnimationFrame(() => { if (cv.offsetParent) render(s, performance.now() / 1000); });
-    return () => { io.disconnect(); list.delete(s); };
+    let alive = true;
+    idle(() => { if (!alive) return; start(); requestAnimationFrame(() => { if (cv.offsetParent) render(s, performance.now() / 1000); }); });
+    return () => { alive = false; io.disconnect(); list.delete(s); };
   }, [kind]);
   return <canvas ref={ref} className={className} data-scene={kind} style={style} aria-hidden="true" />;
 }

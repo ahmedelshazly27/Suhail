@@ -24,7 +24,7 @@ export default async function Podcast({ params }: PageProps<"/[lang]/podcast">) 
       <div className="scene-wrap"><Scene kind="dallah" style={{ height: "clamp(200px, 26vw, 340px)" }} /><span className="cap">{t(lang, "cap_dallah")}</span></div>
       <div className="wrap sec">
         <div className="sec-head"><p className="label">{t(lang, "episodes")}</p></div>
-        <div>{EP[lang].map(([h, p]) => <div className="pair" key={h}><h3>{h}</h3><p>{p}</p></div>)}</div>
+        <div>{EP[lang].map(([h, p]) => <div className="pair" key={h}><h2 className="h3">{h}</h2><p>{p}</p></div>)}</div>
       </div>
       <div className="wrap sec" style={{ paddingTop: 0 }}>
         <div className="formsec">

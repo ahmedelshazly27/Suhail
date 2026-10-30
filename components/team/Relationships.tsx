@@ -44,7 +44,7 @@ export function Relationships({ lang, rows, people, projects }: { lang: TLang; r
         {rows.some(overdue) ? <button type="button" className="pill-s" aria-pressed={type === "overdue"} onClick={() => setType("overdue")} style={{ color: "var(--accent-ink)", borderColor: type === "overdue" ? "var(--accent-ink)" : undefined }}>{lang === "ar" ? "خطوات متأخرة" : "Next step overdue"} {rows.filter(overdue).length}</button> : null}
       </div>
       {layout === "table" ? (
-        <div className="card"><div className="tbl-wrap"><table className="tbl" style={{ margin: "0 1rem", width: "calc(100% - 2rem)" }}>
+        <div className="card"><div className="tbl-wrap" tabIndex={0}><table className="tbl" style={{ margin: "0 1rem", width: "calc(100% - 2rem)" }}>
           <thead><tr><th>{tt(lang, "name")}</th><th>{tt(lang, "type")}</th><th>{tt(lang, "stage")}</th><th>{tt(lang, "owner2")}</th><th>{tt(lang, "nextStep")}</th><th>{tt(lang, "lastContact")}</th></tr></thead>
           <tbody>{shown.map((r) => { const d = dueLabel(lang, r.next_due); return (
             <tr key={r.id} aria-selected={id === r.id} onClick={() => open(r.id)} tabIndex={0} onKeyDown={(e) => e.key === "Enter" && open(r.id)}>

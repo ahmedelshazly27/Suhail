@@ -100,7 +100,7 @@ export function TicketsView({ tickets, ctx, list, view, defaults, swimlanes, hid
           {layout === "board" ? (
             <Board cols={columns(g.items)} render={card} onMove={move} footer={addFooter(lanes ? g.id || null : null)} label={g.name || tt(lang, "board")} />
           ) : layout === "table" ? (
-            <div className="tbl-wrap"><table className="tbl">
+            <div className="tbl-wrap" tabIndex={0}><table className="tbl">
               <thead><tr><th>{lang === "ar" ? "الرقم" : "Key"}</th><th>{lang === "ar" ? "العنوان" : "Title"}</th><th>{tt(lang, "status")}</th><th>{tt(lang, "assignee")}</th><th>{tt(lang, "priority")}</th><th>{tt(lang, "due")}</th><th className="n">{tt(lang, "estimate")}</th></tr></thead>
               <tbody>{g.items.map((t) => { const d = dueLabel(lang, t.due_on); return (
                 <tr key={t.id} onClick={() => open(t.key)} aria-selected={key === t.key} tabIndex={0} onKeyDown={(e) => e.key === "Enter" && open(t.key)}>

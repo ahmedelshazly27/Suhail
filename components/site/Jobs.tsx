@@ -65,7 +65,7 @@ export function Jobs({ lang }: { lang: Lang }) {
         <div className="gatewrap">
           <div className="blur" id="blurred" />
           <div className="gatecard">
-            <h3>{t(lang, "more_h")}</h3>
+            <h2 className="h3">{t(lang, "more_h")}</h2>
             <p>{t(lang, "more_p")}</p>
             <QuickSubscribe lang={lang} source="jobs" variant="gate" label={t(lang, "sub_unlock")} msgStyle={{ margin: 0 }} />
           </div>

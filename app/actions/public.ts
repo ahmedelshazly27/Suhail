@@ -5,7 +5,10 @@ import { randomUUID } from "node:crypto";
 import { createElement } from "react";
 import { z } from "zod";
 import { env } from "@/lib/env";
-import { answersSchema, careersFields, checkAnswers, STATIC_FORMS, PUBLIC_FORM_KEYS, type Answers, type Opt, type Problem } from "@/lib/forms";
+import { careersFields, checkAnswers, STATIC_FORMS, PUBLIC_FORM_KEYS, type Answers, type Opt, type Problem } from "@/lib/forms";
+
+// zod for the envelope; field-level rules come from the form schema via checkAnswers. Kept here so zod stays off the client.
+const answersSchema = z.record(z.string().max(64), z.union([z.string().max(8000), z.array(z.string().max(200)).max(40)])).refine((a) => Object.keys(a).length <= 60);
 import { rateLimit, verifyTurnstile } from "@/lib/security";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { sendEmail } from "@/lib/email/send";

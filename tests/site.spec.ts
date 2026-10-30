@@ -18,7 +18,7 @@ for (const lang of ["ar", "en"] as const) {
       // hreflang pair
       await expect(page.locator('link[rel="alternate"][hreflang="ar"]')).toHaveCount(1);
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(1);
-      const axe = await new AxeBuilder({ page }).disableRules(["color-contrast"]).analyze();
+      const axe = await new AxeBuilder({ page }).analyze();
       expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id)).toEqual([]);
     });
   }

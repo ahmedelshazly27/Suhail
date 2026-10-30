@@ -66,7 +66,7 @@ export function Board<T extends { id: string }>({ cols: initial, render, onMove,
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={onStart} onDragEnd={onEnd} onDragCancel={() => setActive(null)}
       accessibility={{ screenReaderInstructions: { draggable: "Press space to pick up a card, arrow keys to move it, space again to drop it, or escape to cancel." } }}>
-      <div className="board" role="group" aria-label={label}>
+      <div className="board" role="group" aria-label={label} tabIndex={0}>{/* focusable so keyboards can scroll it even when empty */}
         {cols.map((c) => <Column key={c.id} col={c} render={render} footer={footer} />)}
       </div>
       <DragOverlay>{active ? <div className="dragging-wrap">{render(active, true)}</div> : null}</DragOverlay>

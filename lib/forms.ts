@@ -1,6 +1,5 @@
 // Form schemas, shared by the public forms, the server validation and the dashboard's answer rendering.
 // The shape is the prototype's FORMS / ROLE_FORMS, stored as JSON (content/forms.json, roles.form_schema).
-import { z } from "zod";
 import countries from "@/content/countries.json";
 import formsJson from "@/content/forms.json";
 import careers from "@/content/careers.json";
@@ -55,5 +54,3 @@ export function checkAnswers(rows: Row[], v: Answers, opts: { hackathons?: Opt[]
   return null;
 }
 
-/** zod for the envelope; field-level rules come from the schema via checkAnswers. */
-export const answersSchema = z.record(z.string().max(64), z.union([z.string().max(8000), z.array(z.string().max(200)).max(40)])).refine((a) => Object.keys(a).length <= 60);

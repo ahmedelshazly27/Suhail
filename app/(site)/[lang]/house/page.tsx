@@ -43,7 +43,7 @@ export default async function House({ params }: PageProps<"/[lang]/house">) {
       <div className="scene-wrap"><Scene kind="house" style={{ height: "clamp(220px, 30vw, 380px)" }} /><span className="cap">{t(lang, "cap_house")}</span></div>
       <div className="wrap sec">
         <div className="sec-head"><p className="label">{t(lang, "house_day")}</p></div>
-        <div className="day">{c.day.map(([k, h, p]) => <div key={k}><span className="k">{k}</span><h3>{h}</h3><p className="muted">{p}</p></div>)}</div>
+        <div className="day">{c.day.map(([k, h, p]) => <div key={k}><span className="k">{k}</span><h2 className="h3">{h}</h2><p className="muted">{p}</p></div>)}</div>
       </div>
       <div className="wrap sec" style={{ paddingTop: 0 }}>
         <div className="sec-head"><p className="label">{t(lang, "house_in")}</p></div>

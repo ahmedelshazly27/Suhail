@@ -22,7 +22,7 @@ export default async function Projects() {
   return (
     <>
       <header className="ph"><div className="ph-t"><span className="eb">{tt(lang, "workspace")}</span><h1>{tt(lang, "projects")}</h1></div><NewProject lang={lang} people={shell.people} templates={templates || []} /></header>
-      <div className="tbl-wrap"><table className="tbl">
+      <div className="tbl-wrap" tabIndex={0}><table className="tbl">
         <thead><tr><th>{tt(lang, "name")}</th><th>{tt(lang, "lead")}</th><th>{tt(lang, "status")}</th><th>{tt(lang, "target")}</th><th style={{ width: "14rem" }}>{lang === "ar" ? "التقدّم" : "Progress"}</th></tr></thead>
         <tbody>{(projects || []).map((p) => { const g = prog(p.id), pct = g.total ? Math.round((g.done / g.total) * 100) : 0, d = dueLabel(lang, p.target_date); return (
           <tr key={p.id}><td><Link href={`/team/projects/${p.slug}`} style={{ textDecoration: "none", fontWeight: 500 }}>{p.name}</Link></td>

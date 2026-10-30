@@ -34,7 +34,7 @@ export function Finance({ lang, budgets, expenses, people, projects, categories,
       <div className="card">
         <div className="card-h"><h2>{lang === "ar" ? "المصاريف" : "Expenses"}</h2>
           <div style={{ display: "flex", gap: ".375rem" }}><button type="button" className="pill-s" aria-pressed={filter === "pending"} onClick={() => setFilter("pending")}>{lang === "ar" ? "بانتظار الاعتماد" : "Waiting for approval"} {expenses.filter((e) => e.status === "pending").length}</button><button type="button" className="pill-s" aria-pressed={filter === "all"} onClick={() => setFilter("all")}>{tt(lang, "allRoles")}</button></div></div>
-        <div className="tbl-wrap"><table className="tbl" style={{ margin: "0 1.125rem", width: "calc(100% - 2.25rem)" }}>
+        <div className="tbl-wrap" tabIndex={0}><table className="tbl" style={{ margin: "0 1.125rem", width: "calc(100% - 2.25rem)" }}>
           <thead><tr><th>{tt(lang, "when")}</th><th>{lang === "ar" ? "الوصف" : "What"}</th><th>{tt(lang, "project")}</th><th>{lang === "ar" ? "من" : "By"}</th><th className="n">{tt(lang, "amount")}</th><th>{tt(lang, "receipt")}</th><th>{tt(lang, "status")}</th></tr></thead>
           <tbody>{rows.map((e) => (
             <tr key={e.id} style={{ cursor: "default" }}>

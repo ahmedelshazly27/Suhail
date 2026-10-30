@@ -22,7 +22,7 @@ for (const lang of ["en", "ar"] as const) for (const path of SCREENS) {
     await expect(page.locator("html")).toHaveAttribute("dir", lang === "ar" ? "rtl" : "ltr");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
-    const axe = await new AxeBuilder({ page }).disableRules(["color-contrast", "region"]).analyze();
+    const axe = await new AxeBuilder({ page }).disableRules(["region"]).analyze();
     expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([]);
   });
 }

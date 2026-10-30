@@ -8,7 +8,7 @@ import { tt } from "@/lib/team-i18n";
 import { teamPrefs } from "@/lib/team-prefs";
 
 export const metadata = { title: "Drive" };
-const COLOR: Record<string, string> = { PPT: "var(--accent)", PDF: "var(--st-danger)", XLS: "var(--fg)", DIR: "var(--fg)" };
+const COLOR: Record<string, string> = { PPT: "var(--accent-ink)", PDF: "var(--st-danger)", XLS: "var(--fg)", DIR: "var(--fg)" };
 const Badge = ({ k }: { k: string }) => <span style={{ flex: "none", width: "2.125rem", textAlign: "center", font: "400 .59375rem/1 var(--f-mono)", padding: "3px 0", border: `1px solid ${COLOR[k] ?? "var(--st-review)"}`, color: COLOR[k] ?? "var(--st-review)" }}>{k}</span>;
 
 export default async function Page({ searchParams }: PageProps<"/team/drive">) {
@@ -47,7 +47,7 @@ export default async function Page({ searchParams }: PageProps<"/team/drive">) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(12rem, 1fr))", gap: ".75rem" }}>
             {recent.map((r) => <a key={r.id} href={r.webUrl} target="_blank" rel="noreferrer" className="card pad" style={{ textDecoration: "none", gap: ".5rem" }}><span style={{ height: "4rem", display: "grid", placeItems: "center", background: "var(--soft)", font: "400 .6875rem/1 var(--f-mono)", color: COLOR[r.kind] ?? "var(--st-review)" }}>{r.kind}</span><span className="ell">{r.name}</span><span className="muted" style={{ fontSize: ".75rem" }}>{r.by} · {ago(lang, r.modified)}</span></a>)}
           </div></> : null}
-        <div className="card"><div className="tbl-wrap"><table className="tbl" style={{ margin: "0 1rem", width: "calc(100% - 2rem)" }}>
+        <div className="card"><div className="tbl-wrap" tabIndex={0}><table className="tbl" style={{ margin: "0 1rem", width: "calc(100% - 2rem)" }}>
           <thead><tr><th>{tt(lang, "name")}</th><th>{lang === "ar" ? "آخر تعديل" : "Modified"}</th><th>{lang === "ar" ? "من" : "By"}</th><th>{tt(lang, "usedIn")}</th></tr></thead>
           <tbody>{visible.map((i) => (
             <tr key={i.id}><td>{i.kind === "DIR" ? <Link href={`/team/drive?f=${encodeURIComponent(i.id)}`} style={{ display: "flex", gap: ".625rem", alignItems: "center", textDecoration: "none" }}><Badge k={i.kind} />{i.name}</Link> : <a href={i.webUrl} target="_blank" rel="noreferrer" style={{ display: "flex", gap: ".625rem", alignItems: "center", textDecoration: "none" }}><Badge k={i.kind} />{i.name}</a>}</td>

@@ -5,7 +5,7 @@
   /* color: light */
   --bg:#F7F6F2;        /* paper */
   --fg:#171513;        /* ink */
-  --muted:#7A736A;     /* secondary text, labels */
+  --muted:#716A61;     /* secondary text, labels. Was #7A736A (4.32:1 on paper); darkened to meet WCAG AA 4.5:1 */
   --faint:#B7B0A6;     /* underlines, disabled, placeholders */
   --line:#E4E0D8;      /* hairlines, borders */
   --soft:#EFECE6;      /* subtle fills, hover rows */
@@ -88,7 +88,7 @@
 }
 
 [data-theme="light"]{
-  --bg:#F7F6F2; --fg:#171513; --muted:#7A736A; --faint:#B7B0A6; --line:#E4E0D8; --soft:#EFECE6;
+  --bg:#F7F6F2; --fg:#171513; --muted:#716A61; --faint:#B7B0A6; --line:#E4E0D8; --soft:#EFECE6;
   --accent:#E8461C; --on-accent:#FFFFFF; --scene:#B2AA9E; --scene-hi:#6A635A; --fg-2:#3A3530;
   --st-progress:#E8461C; --st-review:#6B645B; --st-done:#171513; --st-danger:#C2361B;
   --accent-tint:#FBE4DB; --accent-ink:#A8341A; --shadow-float:0 8px 30px rgba(10,9,8,.12);

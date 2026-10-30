@@ -24,7 +24,7 @@ export default async function Page({ searchParams }: PageProps<"/team/newsletter
       <header className="ph"><div className="ph-t"><span className="eb">Resend · {c("ar")} {tt(lang, "arabic")} · {c("en")} {tt(lang, "english")}</span><h1>{tt(lang, "newsletter")}</h1></div><form action={createIssue}><button className="b" type="submit">{tt(lang, "compose")}</button></form></header>
       <nav className="tabs-u"><Link href="?tab=issues" aria-current={tab === "issues" ? "page" : undefined}>{tt(lang, "issues")}</Link><Link href="?tab=subscribers" aria-current={tab === "subscribers" ? "page" : undefined}>{tt(lang, "subscribers")} <span className="key">{(counts.data || []).length}</span></Link></nav>
       {tab === "issues" ? (
-        <div className="tbl-wrap"><table className="tbl">
+        <div className="tbl-wrap" tabIndex={0}><table className="tbl">
           <thead><tr><th>#</th><th>{lang === "ar" ? "العنوان" : "Title"}</th><th>{tt(lang, "status")}</th><th>{tt(lang, "segment")}</th><th className="n">{tt(lang, "delivered")}</th><th className="n">{tt(lang, "opened")}</th><th className="n">{tt(lang, "bounced")}</th><th className="n">{tt(lang, "complained")}</th></tr></thead>
           <tbody>{(issues || []).map((i) => (
             <tr key={i.id}><td className="key">{i.number}</td><td><Link href={`/team/newsletter/${i.id}`} style={{ textDecoration: "none" }}>{i.title}</Link></td>
@@ -32,7 +32,7 @@ export default async function Page({ searchParams }: PageProps<"/team/newsletter
               <td className="n">{stat(i.id, "email.delivered") || ""}</td><td className="n">{stat(i.id, "email.opened") || ""}</td><td className="n">{stat(i.id, "email.bounced") || ""}</td><td className="n">{stat(i.id, "email.complained") || ""}</td></tr>))}</tbody>
         </table></div>
       ) : (
-        <div className="tbl-wrap"><table className="tbl">
+        <div className="tbl-wrap" tabIndex={0}><table className="tbl">
           <thead><tr><th>{tt(lang, "emailAddr")}</th><th>{tt(lang, "language2")}</th><th>{tt(lang, "status")}</th><th>{lang === "ar" ? "المصدر" : "Source"}</th><th className="n">{tt(lang, "when")}</th></tr></thead>
           <tbody>{(subs || []).map((s) => <tr key={s.id} style={{ cursor: "default" }}><td dir="ltr">{s.email}</td><td>{s.lang.toUpperCase()}</td><td><span className="chip">{tt(lang, s.status as TKey)}</span></td><td>{(s.sources || []).join(", ")}</td><td className="n">{ago(lang, s.created_at)}</td></tr>)}</tbody>
         </table></div>

@@ -3,7 +3,6 @@
 // messages, then the same checks again on the server.
 import { useMemo, useState } from "react";
 import { cvUploadUrl, submitForm } from "@/app/actions/public";
-import { supabaseBrowser } from "@/lib/supabase/browser";
 import { checkAnswers, flat, resolveOpts, words, type Answers, type Field, type Opt, type Row } from "@/lib/forms";
 import { t, type Lang } from "@/lib/i18n";
 import { problemText } from "./messages";
@@ -40,6 +39,7 @@ export function FormBox({ formKey, action, rows, submit, lang, hackathons = [], 
       if (file) {
         const up = await cvUploadUrl();
         if (!up.ok) { setBusy(false); return err(up.problem === "rate" ? "err" : "cv_noup"); }
+        const { supabaseBrowser } = await import("@/lib/supabase/browser"); // loaded only when someone attaches a CV
         const { error } = await supabaseBrowser().storage.from("cvs").uploadToSignedUrl(up.path, up.token, file, { contentType: "application/pdf" });
         if (error) { setBusy(false); return err("cv_noup"); }
         cvPath = up.path;
