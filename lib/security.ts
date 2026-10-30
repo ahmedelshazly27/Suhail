@@ -19,6 +19,8 @@ export async function rateLimit(bucket: string, limit: number, windowSeconds: nu
 
 /** Cloudflare Turnstile. Uses Cloudflare's published test secret until real keys are set. */
 export async function verifyTurnstile(token: string | null | undefined) {
+  // End-to-end tests run without Cloudflare. The bypass is ignored on every Vercel deployment.
+  if (process.env.E2E === "1" && !process.env.VERCEL) return true;
   if (!token) return false;
   const body = new URLSearchParams({ secret: env.turnstileSecret(), response: token });
   try {

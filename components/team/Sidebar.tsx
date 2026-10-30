@@ -25,7 +25,7 @@ export function Sidebar({ lang, me, counts, projects, m365 }: Props) {
     <nav className="side" aria-label={lang === "ar" ? "لوحة الفريق" : "Dashboard"}>
       <div className="side-top">
         <Link href="/team" style={{ textDecoration: "none" }}><Brand lang={lang} /></Link>
-        <button type="button" className="kbd" aria-label={tt(lang, "search")} onClick={() => openPalette()}>⌘K</button>
+        <button type="button" className="kbd" onClick={() => openPalette()}>⌘K<span className="vh-sr"> {tt(lang, "search")}</span></button>
       </div>
       <div className="side-group">{TOP.map(item)}</div>
       <div className="side-group"><span className="side-label">{tt(lang, "workspace")}</span>{WORK.map(item)}</div>

@@ -15,14 +15,14 @@ type Props = { lang: TLang; sprint: { id: string; number: number }; active: { id
 
 const PRI_RANK: Record<string, number> = { urgent: 0, high: 1, med: 2, low: 3, none: 4 };
 
-function Row({ t, lang, project, right, onAdd, addLabel }: { t: Ticket; lang: TLang; project?: string; right: React.ReactNode; onAdd?: () => void; addLabel?: string }) {
+function Row({ t, lang, project, trail, onAdd, addLabel }: { t: Ticket; lang: TLang; project?: string; trail: React.ReactNode; onAdd?: () => void; addLabel?: string }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: t.id });
   return (
-    <div ref={setNodeRef} className="row" style={{ gridTemplateColumns: "1.25rem 4rem minmax(0,1fr) auto auto auto", opacity: isDragging ? 0.4 : 1 }}>
+    <div ref={setNodeRef} className="row srow" style={{ opacity: isDragging ? 0.4 : 1 }}>
       <span {...attributes} {...listeners} aria-label={`${lang === "ar" ? "اسحب" : "Drag"} ${t.key}`} style={{ cursor: "grab", color: "var(--faint)" }}>⋮⋮</span>
       <span className="key">{t.key}</span>
       <span className="stack-t"><span className="ell">{t.title}</span>{project ? <span className="s">{project}</span> : null}</span>
-      {right}
+      {trail}
       <span className="key">{t.estimate ?? 0} {tt(lang, "pt")}</span>
       {onAdd ? <button type="button" className="linkbtn" onClick={onAdd} aria-label={`${addLabel} ${t.key}`}>{lang === "ar" ? "←" : "→"}</button> : <span />}
     </div>
@@ -65,17 +65,17 @@ export function SprintPlanner(p: Props) {
     <DndContext sensors={sensors} onDragStart={(e) => setDrag([...backlog, ...planned].find((x) => x.id === e.active.id) ?? null)} onDragEnd={onEnd} onDragCancel={() => setDrag(null)}>
       <div className="ph-actions" style={{ position: "absolute", insetBlockStart: "1.75rem", insetInlineEnd: "2.5rem" }} />
       {p.active && p.unfinished ? (
-        <div className="card soft" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: ".75rem", padding: ".875rem 1rem", borderRadius: 0 }}>
+        <div className="card soft sq" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: ".75rem", padding: ".875rem 1rem", }}>
           <span>{lang === "ar" ? `${p.unfinished} مهام من الدورة ${p.active.number} ما خلصت.` : `${p.unfinished} tickets from Sprint ${p.active.number} are not finished.`}</span>
           <button type="button" className="b ghost" disabled={pending} onClick={() => start(async () => { const n = await rollOver(p.active!.id, p.sprint.id); toast(lang === "ar" ? `انتقلت ${n} مهام` : `${n} tickets moved`); router.refresh(); })}>{lang === "ar" ? `انقلها للدورة ${p.sprint.number}` : `Roll them into Sprint ${p.sprint.number}`}</button>
           <span className="muted">{lang === "ar" ? "أو خلّها في المؤجّل" : "or leave them in the backlog"}</span>
         </div>
       ) : null}
-      <div className="grid-2" style={{ gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", alignItems: "start" }}>
+      <div className="grid-2" style={{ alignItems: "start" }}>
         <Drop id="backlog" className="card">
           <div className="card-h"><h2>{tt(lang, "backlog")}</h2><span className="muted" style={{ fontSize: ".78rem" }}>{lang === "ar" ? "مرتّبة حسب الأولوية · اسحب للدورة" : "Sorted by priority · drag into the sprint"}</span></div>
           {backlog.map((t) => <Row key={t.id} t={t} lang={lang} project={proj(t.project_id)} onAdd={() => move(t, true)} addLabel={lang === "ar" ? "أضف للدورة" : "Add to sprint"}
-            right={t.priority !== "none" ? <span className={`chip${t.priority === "high" || t.priority === "urgent" ? " attn" : ""}`}>{tt(lang, t.priority as TKey)}</span> : <span />} />)}
+            trail={t.priority !== "none" ? <span className={`chip${t.priority === "high" || t.priority === "urgent" ? " attn" : ""}`}>{tt(lang, t.priority as TKey)}</span> : <span />} />)}
           {!backlog.length ? <div className="card-f">{tt(lang, "emptyList")}</div> : null}
         </Drop>
         <div className="col">
@@ -95,7 +95,7 @@ export function SprintPlanner(p: Props) {
           </div>
           <Drop id="sprint" className="card">
             <div className="card-h"><h2>{lang === "ar" ? "في هالدورة" : "In this sprint"}</h2><span className="key">{planned.length} {lang === "ar" ? "مهمة" : "tickets"}</span></div>
-            {planned.map((t) => { const a = who(t.assignee_id); return <Row key={t.id} t={t} lang={lang} onAdd={() => move(t, false)} addLabel={lang === "ar" ? "رجّعها للمؤجّل" : "Back to backlog"} right={a ? <Avatar name={a.name} src={a.avatar_url} /> : <span />} />; })}
+            {planned.map((t) => { const a = who(t.assignee_id); return <Row key={t.id} t={t} lang={lang} onAdd={() => move(t, false)} addLabel={lang === "ar" ? "رجّعها للمؤجّل" : "Back to backlog"} trail={a ? <Avatar name={a.name} src={a.avatar_url} /> : <span />} />; })}
             <div style={{ padding: ".75rem 1.125rem" }}><div style={{ border: "1px dashed var(--faint)", padding: "1rem", textAlign: "center", fontSize: ".8125rem" }} className="muted">{lang === "ar" ? "اسحب المهام هنا" : "Drop tickets here"}</div></div>
           </Drop>
         </div>

@@ -9,8 +9,8 @@ const vars = (src) => Object.fromEntries([...src.matchAll(/--([\w-]+)\s*:\s*([^;
 const prev = JSON.parse(fs.readFileSync("design-system/tokens.json", "utf8"));
 const out = {
   light: vars(block(/:root\{([\s\S]*?)\n\}/)),
-  dark: vars(block(/:root\[data-theme="dark"\]\{([\s\S]*?)\}/)),
-  arabic: vars(block(/:root\[lang="ar"\]\{([\s\S]*?)\}/)),
+  dark: vars(block(/:root\[data-theme="dark"\](?:, \[data-theme="dark"\])?\{([\s\S]*?)\}/)),
+  arabic: vars(block(/:root\[lang="ar"\](?:, \[lang="ar"\])?\{([\s\S]*?)\}/)),
   fonts: prev.fonts,
   breakpoints: prev.breakpoints,
 };
@@ -29,6 +29,7 @@ export const theme = {
   soft: tokens.light.soft,
   accent: tokens.light.accent,
   display: tokens.light["f-email-display"],
+  displayAr: tokens.light["f-email-display-ar"],
   body: tokens.light["f-email-body"],
   width: 560,
 } as const;

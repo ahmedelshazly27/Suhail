@@ -9,6 +9,7 @@ export const theme = {
   soft: tokens.light.soft,
   accent: tokens.light.accent,
   display: tokens.light["f-email-display"],
+  displayAr: tokens.light["f-email-display-ar"],
   body: tokens.light["f-email-body"],
   width: 560,
 } as const;

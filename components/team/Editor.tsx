@@ -11,7 +11,7 @@ import { PluginKey } from "@tiptap/pm/state";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Suggestion, { type SuggestionProps } from "@tiptap/suggestion";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 export type Doc = JSONContent;
 type Person = { id: string; name: string };
@@ -63,8 +63,6 @@ type Props = { value?: Doc | null; onChange?: (d: Doc) => void; onSubmit?: (d: D
 
 export function Editor({ value, onChange, onSubmit, people = [], placeholder, dir, minimal, label, autofocus }: Props) {
   const [menu, setMenu] = useState<Menu>(null);
-  const peopleRef = useRef(people);
-  useEffect(() => { peopleRef.current = people; }, [people]);
   const editor = useEditor({
     immediatelyRender: false,
     autofocus: autofocus ? "end" : false,
@@ -74,27 +72,21 @@ export function Editor({ value, onChange, onSubmit, people = [], placeholder, di
       TaskList, TaskItem.configure({ nested: true }),
       Placeholder.configure({ placeholder: placeholder ?? "" }),
       Mention.configure({ HTMLAttributes: { class: "mention" }, renderText: ({ node }) => "@" + node.attrs.label, renderHTML: ({ node }) => ["span", { class: "mention", "data-id": node.attrs.id }, "@" + node.attrs.label], suggestion: { char: "\u0000" } }),
-      menuExtension("mentionMenu", "@", (q) => peopleRef.current.filter((p) => p.name.toLowerCase().startsWith(q.toLowerCase())).slice(0, 6).map((p) => ({ id: p.id, label: p.name })), setMenu,
+      menuExtension("mentionMenu", "@", (q) => people.filter((p) => p.name.toLowerCase().startsWith(q.toLowerCase())).slice(0, 6).map((p) => ({ id: p.id, label: p.name })), setMenu,
         (e, r, i) => e.chain().focus().deleteRange(r).insertContent([{ type: "mention", attrs: { id: i.id, label: i.label } }, { type: "text", text: " " }]).run()),
       ...(minimal ? [] : [menuExtension("slashMenu", "/", (q) => SLASH.filter((s) => s.label.toLowerCase().includes(q.toLowerCase())), setMenu, (e, r, i) => i.run?.(e, r))]),
     ],
     content: value ?? undefined,
     editorProps: {
       attributes: { class: "rt", ...(dir ? { dir } : {}), ...(label ? { "aria-label": label } : {}), role: "textbox", "aria-multiline": "true" },
-      handleKeyDown: (_v, ev) => {
-        if (onSubmit && ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) { const ed = editorRef.current; if (ed) onSubmit(ed.getJSON(), () => ed.commands.clearContent()); return true; }
-        return false;
-      },
     },
     onUpdate: ({ editor }) => onChange?.(editor.getJSON()),
   });
-  const editorRef = useRef<TEditor | null>(null);
-  useEffect(() => { editorRef.current = editor; }, [editor]);
   return (
-    <div className="editor" style={{ position: "relative" }}>
+    <div className="editor" style={{ position: "relative" }} onKeyDown={(e) => { if (onSubmit && editor && e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); onSubmit(editor.getJSON(), () => editor.commands.clearContent()); } }}>
       <EditorContent editor={editor} />
       {menu && menu.items.length ? (
-        <div className="slash" role="listbox" style={{ position: "fixed", top: (menu.rect?.bottom ?? 0) + 6, left: menu.rect?.left ?? 0 }}>
+        <div className="slash" role="listbox" style={{ position: "fixed", top: (menu.rect?.bottom ?? 0) + 6, insetInlineStart: document.dir === "rtl" ? innerWidth - (menu.rect?.right ?? 0) : menu.rect?.left ?? 0 }}>
           {menu.items.map((i, n) => <button key={i.id} type="button" role="option" aria-selected={n === menu.index} onMouseDown={(e) => { e.preventDefault(); menu.pick(i); }}>{i.label}</button>)}
         </div>
       ) : null}

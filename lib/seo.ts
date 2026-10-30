@@ -12,7 +12,7 @@ export function pageMeta(lang: Lang, path: string, navKey: Key | null, descripti
     title,
     description,
     alternates: { canonical: href(lang, path), languages: { ar: href("ar", path), en: href("en", path), "x-default": href("ar", path) } },
-    openGraph: { title, description, siteName: brand, locale: lang === "ar" ? "ar_AR" : "en_US", alternateLocale: lang === "ar" ? "en_US" : "ar_AR", type: "website", url: href(lang, path) },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { title, description, siteName: brand, locale: lang === "ar" ? "ar_AR" : "en_US", alternateLocale: lang === "ar" ? "en_US" : "ar_AR", type: "website", url: href(lang, path), images: [{ url: `/og-${lang}.png`, width: 1200, height: 630, alt: brand }] },
+    twitter: { card: "summary_large_image", title, description, images: [`/og-${lang}.png`] },
   };
 }

@@ -28,14 +28,14 @@ export default async function Page({ searchParams }: PageProps<"/team/drive">) {
   const { data: links } = await db.from("file_links").select("drive_item_id,web_url,entity_type,entity_id");
   const used = (i: DriveItem) => (links || []).filter((l) => l.drive_item_id === i.id || (l.web_url === i.webUrl && i.webUrl !== "#")).map((l) => l.entity_type).join(", ");
   return (
-    <div className="mailwrap" style={{ gridTemplateColumns: "12.5rem minmax(0,1fr)" }}>
+    <div className="mailwrap drivewrap">
       <nav className="mb-col" aria-label={lang === "ar" ? "المجلدات" : "Folders"}>
         <span className="side-label">{lang === "ar" ? "الملفات المشتركة" : "Shared drive"}</span>
         <Link className="side-item" href="/team/drive" aria-current={fid === "root" && !q ? "page" : undefined}>{lang === "ar" ? "كل الملفات" : "All files"}</Link>
         {folders.map((f) => <Link key={f.id} className="side-item" href={`/team/drive?f=${encodeURIComponent(f.id)}`} aria-current={fid === f.id ? "page" : undefined}><span>{f.name}</span>{f.restricted ? <span className="n">{lang === "ar" ? "مقفل" : "lock"}</span> : null}</Link>)}
         <p className="foot">{lang === "ar" ? "محفوظة في SharePoint، وتظهر بعد في Teams وOneDrive ومستكشف الملفات." : "Lives in SharePoint, so it also shows up in Teams, OneDrive and File Explorer."}</p>
       </nav>
-      <section style={{ padding: "1.75rem 2.5rem 2.5rem", display: "flex", flexDirection: "column", gap: "1.25rem", minWidth: 0 }}>
+      <section className="drive-main">
         <header className="ph">
           <div className="ph-t"><span className="eb">{tt(lang, "drive")} / {cur?.name ?? (lang === "ar" ? "كل الملفات" : "All files")}</span><h1>{q ? `"${q}"` : cur?.name ?? (lang === "ar" ? "كل الملفات" : "All files")}</h1><span className="muted" style={{ fontSize: ".8125rem" }}>{cur?.access ?? (lang === "ar" ? "كل فريق سهيل" : "Everyone in the Suhail team")}</span></div>
           <DriveActions lang={lang} parent={fid} live={d.live} />

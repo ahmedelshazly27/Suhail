@@ -84,13 +84,13 @@ export default async function Inbox({ searchParams }: PageProps<"/team/inbox">) 
         </section>
       ) : (
         <>
-          <section className="ml-col" aria-label={box?.name ?? ""}>
-            <div className="ml-head">
+          <section className="mlist" aria-label={box?.name ?? ""}>
+            <div className="mlist-head">
               <h1>{view ? { reply: lang === "ar" ? "تحتاج رد" : "Needs reply", linked: lang === "ar" ? "مربوطة بشريك" : "Linked to a partner", tickets: lang === "ar" ? "صارت مهام" : "Turned into tickets" }[view] : box?.id === "me" ? (lang === "ar" ? "بريدي" : "My inbox") : box?.name}</h1>
-              {!view ? <div style={{ display: "flex", gap: ".375rem" }}>{[["all", lang === "ar" ? "الكل" : "All"], ["unread", lang === "ar" ? "غير مقروءة" : "Unread"], ["mine", lang === "ar" ? "مسندة لي" : "Assigned to me"]].map(([k, l]) => <Link key={k} href={q({ f: k })} className="pill-s" aria-pressed={filter === k}>{l}</Link>)}</div> : null}
+              {!view ? <div style={{ display: "flex", gap: ".375rem" }}>{[["all", lang === "ar" ? "الكل" : "All"], ["unread", lang === "ar" ? "غير مقروءة" : "Unread"], ["mine", lang === "ar" ? "مسندة لي" : "Assigned to me"]].map(([k, l]) => <Link key={k} href={q({ f: k })} className="pill-s" aria-current={filter === k ? "true" : undefined}>{l}</Link>)}</div> : null}
             </div>
             {list.map((m) => (
-              <Link key={m.id} href={view ? `?view=${view}&id=${encodeURIComponent(m.id)}` : q({ id: m.id })} className={`ml-item${m.unread ? " unread" : ""}`} aria-current={cur?.id === m.id}>
+              <Link key={m.id} href={view ? `?view=${view}&id=${encodeURIComponent(m.id)}` : q({ id: m.id })} className={`mlist-item${m.unread ? " unread" : ""}`} aria-current={cur?.id === m.id}>
                 <span className="r1"><b className="ell">{m.from}</b><span className="key">{shortTime(lang, m.received)}</span></span>
                 <span className="ell" style={{ fontSize: ".8125rem" }}>{m.subject}</span>
                 <span className="snip">{m.snippet}</span>
@@ -108,7 +108,7 @@ export default async function Inbox({ searchParams }: PageProps<"/team/inbox">) 
                   <div style={{ display: "flex", gap: ".75rem", alignItems: "center" }}><Avatar name={cur.from} size="lg" /><span className="stack-t"><span style={{ fontWeight: 500 }}>{cur.from}</span><span className="s">{lang === "ar" ? "إلى" : "to"} {box?.name ?? cur.mailbox} · {shortTime(lang, cur.received)}</span></span></div>
                   <div className="rd-text" dir="auto">{cur.bodyText}</div>
                   {cur.attachments.map((a) => (
-                    <div key={a.id} className="card" style={{ display: "flex", gap: ".75rem", alignItems: "center", padding: ".75rem 1rem", maxWidth: "21.5rem", borderRadius: 0 }}>
+                    <div key={a.id} className="card sq" style={{ display: "flex", gap: ".75rem", alignItems: "center", padding: ".75rem 1rem", maxWidth: "21.5rem", }}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M6 3h8l4 4v14H6z" /></svg>
                       <span className="stack-t"><span>{a.name}</span><span className="s">{lang === "ar" ? "احفظه في SharePoint أو أرفقه بمهمة" : "Save to SharePoint or attach to a ticket"}</span></span>
                     </div>
@@ -122,7 +122,7 @@ export default async function Inbox({ searchParams }: PageProps<"/team/inbox">) 
             {cur ? (
               <>
                 <div><div className="sect-h">{lang === "ar" ? "الشريك" : "Partner"}</div>
-                  {ctx.rel ? <Link href={`/team/relationships?id=${ctx.rel.id}`} className="card" style={{ display: "block", padding: ".75rem .875rem", borderRadius: 0, textDecoration: "none" }}><b style={{ fontWeight: 500 }}>{ctx.rel.name}</b><br /><span className="muted" style={{ fontSize: ".75rem" }}>{ctx.rel.type} · {ctx.rel.stage}{ctx.rel.owner_id ? ` · ${lang === "ar" ? "المسؤول" : "owner"} ${shell.people.find((p) => p.id === ctx.rel!.owner_id)?.name.split(" ")[0] ?? ""}` : ""}</span></Link> : <span className="muted">{lang === "ar" ? "مو مربوط" : "Not linked"}</span>}</div>
+                  {ctx.rel ? <Link href={`/team/relationships?id=${ctx.rel.id}`} className="card sq" style={{ display: "block", padding: ".75rem .875rem", textDecoration: "none" }}><b style={{ fontWeight: 500 }}>{ctx.rel.name}</b><br /><span className="muted" style={{ fontSize: ".75rem" }}>{ctx.rel.type} · {ctx.rel.stage}{ctx.rel.owner_id ? ` · ${lang === "ar" ? "المسؤول" : "owner"} ${shell.people.find((p) => p.id === ctx.rel!.owner_id)?.name.split(" ")[0] ?? ""}` : ""}</span></Link> : <span className="muted">{lang === "ar" ? "مو مربوط" : "Not linked"}</span>}</div>
                 {ctx.tickets.length ? <div><div className="sect-h">{lang === "ar" ? "مهام مرتبطة" : "Linked tickets"}</div>{ctx.tickets.map((t) => <Link key={t.key} href={`/team/tickets/${t.key}`} style={{ display: "grid", gridTemplateColumns: "3.5rem minmax(0,1fr)", gap: ".5rem", textDecoration: "none" }}><span className="key">{t.key}</span><span>{t.title}</span></Link>)}</div> : null}
                 {ctx.assignee ? <div><div className="sect-h">{lang === "ar" ? "المسؤول" : "Assigned"}</div>{ctx.assignee.split(" ")[0]}</div> : null}
                 {ctx.events.length ? <div><div className="sect-h">{lang === "ar" ? "تواصل سابق" : "Earlier with them"}</div>{ctx.events.map((e, i) => <div key={i}>{new Intl.DateTimeFormat(lang === "ar" ? "ar-KW-u-nu-latn" : "en-GB", { day: "numeric", month: "short" }).format(new Date(e.happened_at))} · {e.what}</div>)}</div> : null}

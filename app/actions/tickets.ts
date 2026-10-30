@@ -14,12 +14,13 @@ const createSchema = z.object({
   title: z.string().trim().min(1).max(300),
   project_id: uuid.nullish(), sprint_id: uuid.nullish(), assignee_id: uuid.nullish(), parent_id: uuid.nullish(),
   status: z.enum(STATUSES).default("todo"), priority: z.enum(PRIORITIES).default("none"),
-  due_on: z.string().date().nullish(), estimate: z.number().int().min(0).max(100).nullish(),
+  due_on: z.string().date().nullish(), estimate: z.number().int().min(0).max(100).nullish(), assign_me: z.boolean().optional(),
 });
 
 export async function createTicket(input: z.input<typeof createSchema>) {
   const me = await requireMe();
-  const v = createSchema.parse(input);
+  const { assign_me, ...v } = createSchema.parse(input);
+  if (assign_me && !v.assignee_id) v.assignee_id = me.id;
   const db = await supabaseServer();
   const { data, error } = await db.from("tickets").insert({ ...v, created_by: me.id }).select("id,key").single();
   if (error) throw new Error(error.message);

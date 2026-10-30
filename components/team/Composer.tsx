@@ -40,7 +40,7 @@ export function Composer({ lang, issue, audience, lastStats, broadcastsOn }: { l
           </> : null}
         </div>
       </header>
-      <div className="card" style={{ borderRadius: 0, display: "flex", flexWrap: "wrap", gap: ".5rem 1.5rem", padding: ".875rem 1rem", fontSize: ".8125rem", alignItems: "center" }}>
+      <div className="card sq" style={{ display: "flex", flexWrap: "wrap", gap: ".5rem 1.5rem", padding: ".875rem 1rem", fontSize: ".8125rem", alignItems: "center" }}>
         <label>{tt(lang, "segment")} <select className="inp" style={{ width: "auto", padding: ".125rem .375rem" }} value={segment} onChange={(e) => { const s = e.target.value as Issue["segment"]; setSegment(s); persist({ segment: s }); }} disabled={!draft}>
           <option value="ar">{lang === "ar" ? "المشتركون بالعربي" : "Arabic subscribers"} · {audience.ar.toLocaleString("en")}</option>
           <option value="en">{lang === "ar" ? "المشتركون بالإنجليزي" : "English subscribers"} · {audience.en.toLocaleString("en")}</option>
@@ -51,9 +51,9 @@ export function Composer({ lang, issue, audience, lastStats, broadcastsOn }: { l
       </div>
       <div className="grid-2" style={{ alignItems: "start", gap: "1.5rem" }}>
         <div className="col" style={{ gap: ".75rem" }}>
-          <div className="seg2" role="tablist" style={{ alignSelf: "flex-start" }}>
-            <button type="button" role="tab" aria-pressed={tab === "ar"} aria-selected={tab === "ar"} onClick={() => setTab("ar")} lang="ar">العربية</button>
-            <button type="button" role="tab" aria-pressed={tab === "en"} aria-selected={tab === "en"} onClick={() => setTab("en")} lang="en">English</button>
+          <div className="seg2" role="group" aria-label={tt(lang, "language2")} style={{ alignSelf: "flex-start" }}>
+            <button type="button" aria-pressed={tab === "ar"} onClick={() => setTab("ar")} lang="ar">العربية</button>
+            <button type="button" aria-pressed={tab === "en"} onClick={() => setTab("en")} lang="en">English</button>
           </div>
           <label className="fld"><span>{tt(lang, "subject")} ({tab === "ar" ? tt(lang, "arabic") : tt(lang, "english")})</span>
             <input dir={tab === "ar" ? "rtl" : "ltr"} lang={tab} value={subj[tab]} disabled={!draft} onChange={(e) => { const s = { ...subj, [tab]: e.target.value }; setSubj(s); persist({ subject_ar: s.ar, subject_en: s.en }); }} /></label>

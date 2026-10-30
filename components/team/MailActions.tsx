@@ -34,7 +34,7 @@ export function ReplyBox({ lang, mailbox, id, boxName, live }: { lang: TLang; ma
   const [pending, start] = useTransition();
   const toast = useToast();
   return (
-    <form id="reply" className="card" style={{ borderRadius: 0, marginTop: "auto", maxWidth: "26.5rem" }} onSubmit={(e) => { e.preventDefault(); start(async () => { try { await replyToMail({ mailbox, id, text }); setText(""); toast(lang === "ar" ? "انرسل الرد" : "Reply sent"); } catch (err) { toast((err as Error).message); } }); }}>
+    <form id="reply" className="card sq" style={{ marginTop: "auto", maxWidth: "26.5rem" }} onSubmit={(e) => { e.preventDefault(); start(async () => { try { await replyToMail({ mailbox, id, text }); setText(""); toast(lang === "ar" ? "انرسل الرد" : "Reply sent"); } catch (err) { toast((err as Error).message); } }); }}>
       <div className="card-f" style={{ borderBottom: "1px solid var(--line)" }}>{lang === "ar" ? `الرد من ${boxName} · يمشي عبر Outlook ويوصل للمرسل` : `Reply from ${boxName} · sends through Outlook, lands in Sent`}</div>
       <textarea id="reply-box" className="inp" style={{ border: 0, minHeight: "5.5rem", resize: "vertical" }} value={text} onChange={(e) => setText(e.target.value)} placeholder={lang === "ar" ? "اكتب ردك…" : "Write a reply…"} aria-label={tt(lang, "reply")} />
       {text ? <div style={{ display: "flex", justifyContent: "flex-end", padding: ".5rem" }}><button className="b" type="submit" disabled={pending || !live}>{tt(lang, "send")}</button></div> : null}

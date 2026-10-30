@@ -33,7 +33,8 @@ export function ApplicationsView({ lang, form, forms, roles, apps, people, templ
   const rows = useMemo(() => apps.filter((a) => role === "all" || a.role_id === role), [apps, role]);
   const roleOf = (a: App) => roles.find((r) => r.id === a.role_id);
   const reload = useCallback(() => { if (id) loadApplication(id).then(setPeek); router.refresh(); }, [id, router]);
-  useEffect(() => { if (id) loadApplication(id).then(setPeek); else setPeek(null); }, [id]);
+  useEffect(() => { let alive = true; if (id) loadApplication(id).then((d) => { if (alive) setPeek(d); }); return () => { alive = false; }; }, [id]);
+  const shown = id && peek?.app.id === id ? peek : null;
   const open = (aid: string) => { const q = new URLSearchParams(sp); q.set("a", aid); router.push(`${path}?${q}`, { scroll: false }); };
   const close = useCallback(() => { const q = new URLSearchParams(sp); q.delete("a"); router.push(`${path}?${q}`, { scroll: false }); }, [sp, path, router]);
 
@@ -96,9 +97,9 @@ export function ApplicationsView({ lang, form, forms, roles, apps, people, templ
           </table></div>
         </>
       )}
-      {peek ? (
-        <Peek lang={lang} onClose={close} fullHref={`/team/applications/${peek.app.id}`} crumb={peek.role ? `${lang === "ar" ? "أدوار الفريق" : "Team roles"} · ${lang === "ar" ? peek.role.title_ar : peek.role.title_en}` : lang === "ar" ? peek.form.name_ar : peek.form.name_en}>
-          <ApplicantDetail key={peek.app.id + peek.feed.length + peek.app.stage} data={peek} lang={lang} people={people} templates={templates} onChanged={reload} />
+      {shown ? (
+        <Peek lang={lang} onClose={close} fullHref={`/team/applications/${shown.app.id}`} crumb={shown.role ? `${lang === "ar" ? "أدوار الفريق" : "Team roles"} · ${lang === "ar" ? shown.role.title_ar : shown.role.title_en}` : lang === "ar" ? shown.form.name_ar : shown.form.name_en}>
+          <ApplicantDetail key={shown.app.id + shown.feed.length + shown.app.stage} data={shown} lang={lang} people={people} templates={templates} onChanged={reload} />
         </Peek>
       ) : null}
     </>

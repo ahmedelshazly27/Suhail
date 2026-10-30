@@ -3,7 +3,7 @@
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, TouchSensor, closestCorners, useDroppable, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export type Col<T> = { id: string; title: string; dot?: React.ReactNode; items: T[] };
 type Props<T extends { id: string }> = {
@@ -16,8 +16,10 @@ type Props<T extends { id: string }> = {
 
 function Card<T extends { id: string }>({ item, render }: { item: T; render: (i: T, d?: boolean) => React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
+  // The card inside is the focusable button; the wrapper only carries the drag handlers and instructions.
+  const { role: _r, tabIndex: _t, "aria-roledescription": _d, ...a11y } = attributes; void _r; void _t; void _d;
   return (
-    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.35 : 1 }} {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.35 : 1 }} {...a11y} {...listeners}>
       {render(item)}
     </div>
   );
@@ -40,8 +42,9 @@ function Column<T extends { id: string }>({ col, render, footer }: { col: Col<T>
 
 export function Board<T extends { id: string }>({ cols: initial, render, onMove, footer, label }: Props<T>) {
   const [cols, setCols] = useState(initial);
+  const [src, setSrc] = useState(initial);
   const [active, setActive] = useState<T | null>(null);
-  useEffect(() => setCols(initial), [initial]);
+  if (src !== initial) { setSrc(initial); setCols(initial); } // new data from the server
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }), useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 6 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   const colOf = (id: string) => (id.startsWith("col:") ? cols.find((c) => c.id === id.slice(4)) : cols.find((c) => c.items.some((i) => i.id === id)));
 

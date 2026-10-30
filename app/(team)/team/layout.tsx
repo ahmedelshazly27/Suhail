@@ -3,6 +3,7 @@ import { fontVars } from "@/lib/fonts";
 import { teamPrefs } from "@/lib/team-prefs";
 import "../../globals.css";
 import "@/styles/team.css";
+import "@/styles/form-preview.css";
 
 export const metadata: Metadata = { title: { default: "Suhail Team", template: "%s · Suhail Team" }, robots: { index: false, follow: false }, manifest: "/manifest.webmanifest" };
 export const viewport: Viewport = {

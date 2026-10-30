@@ -38,7 +38,6 @@ export function ApplicantDetail({ data, lang, people, templates, onChanged }: { 
   const show = (f: (typeof fields)[number]) => { const v = ans[f.id]; if (v == null || v === "" || (Array.isArray(v) && !v.length)) return null; return Array.isArray(v) ? v.map((x) => label(f.id, x)).join(", ") : ["radio", "select"].includes(f.type) ? label(f.id, v) : v; };
   const task = fields.filter((f) => f.task && show(f));
   const rubric = role?.rubric ?? [];
-  const reviewer = people.find((p) => p.id === a.assignee_id);
   const links = fields.filter((f) => f.ltr && typeof ans[f.id] === "string" && /^(https?:\/\/|[\w.-]+\.[a-z]{2,}\/)/i.test(String(ans[f.id])));
 
   return (

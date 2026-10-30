@@ -33,13 +33,14 @@ export function TicketsView({ tickets, ctx, list, view, defaults, swimlanes, hid
   const key = sp.get("t");
 
   const refreshPeek = useCallback(() => { if (key) loadTicket(key).then(setPeek); router.refresh(); }, [key, router]);
-  useEffect(() => { if (key) loadTicket(key).then(setPeek); else setPeek(null); }, [key]);
+  useEffect(() => { let alive = true; if (key) loadTicket(key).then((d) => { if (alive) setPeek(d); }); return () => { alive = false; }; }, [key]);
+  const shown = key && peek?.ticket.key === key ? peek : null;
   const open = (k: string) => router.push(`${path}?t=${k}`, { scroll: false });
   const close = useCallback(() => router.push(path, { scroll: false }), [router, path]);
 
   const person = (id: string | null) => people.find((p) => p.id === id);
   const label = (id: string) => labels.find((l) => l.id === id);
-  const shown = hideDone ? tickets.filter((t) => t.status !== "cancelled") : tickets;
+  const visible = hideDone ? tickets.filter((t) => t.status !== "cancelled") : tickets;
 
   const columns = useCallback((items: Ticket[]): Col<Ticket>[] => {
     if (group === "assignee") return [...people.map((p) => ({ id: p.id, title: p.name, items: items.filter((t) => t.assignee_id === p.id) })), { id: "none", title: tt(lang, "unassigned"), items: items.filter((t) => !t.assignee_id) }].filter((c) => c.items.length || c.id !== "none");
@@ -48,7 +49,7 @@ export function TicketsView({ tickets, ctx, list, view, defaults, swimlanes, hid
     return sts.map((s) => ({ id: s, title: tt(lang, s), dot: <StatusDot s={s} />, items: items.filter((t) => t.status === s) }));
   }, [group, people, lang, hideDone, hideBacklog]);
 
-  const laneGroups = useMemo(() => (lanes ? [...projects.map((p) => ({ id: p.id, name: p.name })), { id: "", name: tt(lang, "noProject") }].map((p) => ({ ...p, items: shown.filter((t) => (t.project_id ?? "") === p.id) })).filter((g) => g.items.length) : [{ id: "all", name: "", items: shown }]), [lanes, projects, shown, lang]);
+  const laneGroups = useMemo(() => (lanes ? [...projects.map((p) => ({ id: p.id, name: p.name })), { id: "", name: tt(lang, "noProject") }].map((p) => ({ ...p, items: visible.filter((t) => (t.project_id ?? "") === p.id) })).filter((g) => g.items.length) : [{ id: "all", name: "", items: visible }]), [lanes, projects, visible, lang]);
 
   const move = (id: string, col: string, _i: number, before: Ticket | null, after: Ticket | null) => start(async () => {
     const patch: Parameters<typeof updateTicket>[1] = { sort: between(before?.sort, after?.sort) };
@@ -70,13 +71,13 @@ export function TicketsView({ tickets, ctx, list, view, defaults, swimlanes, hid
     );
   };
 
-  const addFooter = (laneProject: string | null) => (c: Col<Ticket>) => adding === c.id + laneProject ? (
+  const addFooter = (laneProject: string | null) => function AddFooter(c: Col<Ticket>) { return adding === c.id + laneProject ? (
     <form onSubmit={(e) => { e.preventDefault(); const title = String(new FormData(e.currentTarget).get("title") || "").trim(); if (!title) return; start(async () => {
       const r = await createTicket({ title, ...defaults, ...(laneProject ? { project_id: laneProject } : {}), ...(group === "status" ? { status: c.id as Status } : group === "assignee" && c.id !== "none" ? { assignee_id: c.id } : group === "priority" ? { priority: c.id as (typeof PRIORITIES)[number] } : {}) });
       setAdding(null); toast(r.key); router.refresh(); }); }}>
       <input name="title" className="inp" autoFocus placeholder={tt(lang, "titlePh")} aria-label={tt(lang, "titlePh")} onKeyDown={(e) => e.key === "Escape" && setAdding(null)} />
     </form>
-  ) : <button type="button" className="addrow" onClick={() => setAdding(c.id + laneProject)}>+ {tt(lang, "addTicket")}</button>;
+  ) : <button type="button" className="addrow" onClick={() => setAdding(c.id + laneProject)}>+ {tt(lang, "addTicket")}</button>; };
 
   return (
     <>
@@ -118,9 +119,9 @@ export function TicketsView({ tickets, ctx, list, view, defaults, swimlanes, hid
         </div>
       ))}
 
-      {peek ? (
-        <Peek lang={lang} onClose={close} fullHref={`/team/tickets/${peek.ticket.key}`} crumb={<>{peek.ticket.key}{peek.project ? ` · ${peek.project.name}` : ""}</>}>
-          <TicketDetail key={peek.ticket.id + peek.feed.length} data={peek} ctx={ctx} onChanged={refreshPeek} />
+      {shown ? (
+        <Peek lang={lang} onClose={close} fullHref={`/team/tickets/${shown.ticket.key}`} crumb={<>{shown.ticket.key}{shown.project ? ` · ${shown.project.name}` : ""}</>}>
+          <TicketDetail key={shown.ticket.id + shown.feed.length} data={shown} ctx={ctx} onChanged={refreshPeek} />
         </Peek>
       ) : null}
     </>

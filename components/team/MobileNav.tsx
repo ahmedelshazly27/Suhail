@@ -31,7 +31,7 @@ export function MobileNav({ lang, me, inbox }: { lang: TLang; me: { name: string
         <button type="button" className="iconbtn" aria-label={tt(lang, "search")} onClick={() => openPalette()}>
           <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.4" /><path d="M11 11l4 4" stroke="currentColor" strokeWidth="1.4" /></svg>
         </button>
-        <Link href="/team/settings" aria-label={tt(lang, "settings")}><Avatar name={me.name} src={me.avatar_url} size="lg" /></Link>
+        <Link href="/team/settings"><Avatar name={me.name} src={me.avatar_url} size="lg" /><span className="vh-sr">{tt(lang, "settings")}</span></Link>
       </header>
       <nav className="m-tabs" aria-label={lang === "ar" ? "التنقل" : "Navigation"}>
         <div className="in">

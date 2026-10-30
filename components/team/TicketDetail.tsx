@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { deleteTicket, updateTicket } from "@/app/actions/tickets";
 import { StatusDot } from "@/components/ui/Status";
 import { useToast } from "@/components/ui/Toast";
@@ -22,8 +22,8 @@ export function TicketDetail({ data, ctx, onChanged }: { data: Data; ctx: Ctx; o
   const [, start] = useTransition();
   const router = useRouter();
   const toast = useToast();
-  const save = (patch: Parameters<typeof updateTicket>[1]) => start(async () => { await updateTicket(t.id, patch); onChanged ? onChanged() : router.refresh(); });
-  let descTimer: ReturnType<typeof setTimeout>;
+  const save = (patch: Parameters<typeof updateTicket>[1]) => start(async () => { await updateTicket(t.id, patch); if (onChanged) onChanged(); else router.refresh(); });
+  const descTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const due = dueLabel(lang, t.due_on);
   const sprint = sprints.find((s) => s.id === t.sprint_id);
   return (
@@ -60,7 +60,7 @@ export function TicketDetail({ data, ctx, onChanged }: { data: Data; ctx: Ctx; o
         </dd></> : null}
       </dl>
       <Editor value={t.description as Doc} people={people} placeholder={lang === "ar" ? "أضف وصف، أو / للأوامر" : "Add a description, or / for commands"} label={lang === "ar" ? "الوصف" : "Description"}
-        onChange={(d) => { clearTimeout(descTimer); descTimer = setTimeout(() => updateTicket(t.id, { description: d as { type: "doc" } }), 700); }} />
+        onChange={(d) => { clearTimeout(descTimer.current); descTimer.current = setTimeout(() => updateTicket(t.id, { description: d as { type: "doc" } }), 700); }} />
       {data.files.map((f) => (
         <a key={f.id} href={f.web_url} target="_blank" rel="noreferrer" className="card" style={{ display: "flex", gap: ".75rem", alignItems: "center", padding: ".75rem .875rem", textDecoration: "none" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 4h16v16H4zM4 10h16M10 4v16" /></svg>

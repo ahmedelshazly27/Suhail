@@ -15,7 +15,8 @@ const rules = [
   { name: "raw hex colour", re: /#[0-9a-fA-F]{3,8}\b(?![\w-])/, only: /\.(tsx?|jsx?|css)$/ },
   { name: "font name", re: /(["'])(Newsreader|IBM Plex[\w ]*|Amiri|Georgia|Arial|Helvetica|Inter|Roboto)\1|font-family:\s*(?!var\()[A-Za-z"']/, only: /\.(tsx?|jsx?|css)$/, skip: /next\/font|lib\/fonts\.ts$/ },
   { name: "px border-radius", re: /border-radius:\s*[\d.]+px|borderRadius:\s*["']?[\d.]+(px)?["']?[,}\s]|rounded-\[[\d.]+px\]/, only: /\.(tsx?|jsx?|css)$/ },
-  { name: "physical direction", re: /\b(margin|padding|border)-(left|right)\b|(?<![\w-])(left|right)\s*:|text-align:\s*(left|right)|float:\s*(left|right)|\b(marginLeft|marginRight|paddingLeft|paddingRight|borderLeft|borderRight)\b|(?<![\w-])(ml|mr|pl|pr|left|right|border-l|border-r|rounded-l|rounded-r|rounded-tl|rounded-tr|rounded-bl|rounded-br|text-left|text-right)-[\w[]|\b(text-left|text-right)\b/, only: /\.(tsx?|jsx?|css)$/ },
+  { name: "physical direction", re: /\b(margin|padding|border)-(left|right)\b|(?<![\w-])(left|right)\s*:|text-align:\s*(left|right)|float:\s*(left|right)|\b(marginLeft|marginRight|paddingLeft|paddingRight|borderLeft|borderRight)\b/, only: /\.(tsx?|jsx?|css)$/ },
+  { name: "physical Tailwind class", re: /className=["'`{][^"'`]*(?<=[\s"'`])(ml|mr|pl|pr|left|right|border-l|border-r|rounded-l|rounded-r|rounded-tl|rounded-tr|rounded-bl|rounded-br)-[\w[]|className=["'`{][^"'`]*\b(text-left|text-right)\b/, only: /\.(tsx|jsx)$/ },
   { name: "em dash", re: /—/, only: /./ },
 ];
 

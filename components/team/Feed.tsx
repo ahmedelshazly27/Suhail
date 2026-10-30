@@ -41,7 +41,7 @@ export function Feed({ lang, items, people, entity, onPosted, onSend, placeholde
         onSubmit={(doc, clear) => start(async () => {
           if (!(doc.content || []).some((n) => (n.content || []).length)) return;
           if (onSend) await onSend(doc); else await addComment({ entity_type: entity.type, entity_id: entity.id, body: doc as { type: "doc" } });
-          clear(); toast(tt(lang, "saved")); onPosted ? onPosted() : router.refresh();
+          clear(); toast(tt(lang, "saved")); if (onPosted) onPosted(); else router.refresh();
         })} />
       {pending ? <span className="muted" style={{ fontSize: ".75rem" }}>{tt(lang, "loading")}</span> : null}
     </div>

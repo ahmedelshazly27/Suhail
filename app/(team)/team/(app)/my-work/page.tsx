@@ -6,6 +6,7 @@ import { listTickets } from "@/lib/data/tickets";
 import { getView } from "@/lib/data/views";
 import { supabaseServer } from "@/lib/supabase/server";
 import { tt } from "@/lib/team-i18n";
+import { addDays, todayISO } from "@/lib/dates";
 
 export const metadata = { title: "My work" };
 
@@ -21,7 +22,7 @@ export default async function MyWork() {
   return (
     <>
       <header className="ph"><div className="ph-t"><span className="eb">{me.name}</span><h1>{tt(lang, "myWork")}</h1></div></header>
-      <TicketsView tickets={tickets.filter((t) => t.status !== "done" || (t.due_on ?? "") > new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10))} ctx={ctx} list="my-work" view={view} defaults={{}} hideDone />
+      <TicketsView tickets={tickets.filter((t) => t.status !== "done" || (t.due_on ?? "") > addDays(todayISO(), -7))} ctx={ctx} list="my-work" view={view} defaults={{}} hideDone />
       {apps.data?.length ? (
         <div className="card">
           <div className="card-h"><h2>{tt(lang, "applications")}</h2><span className="key">{apps.data.length}</span></div>
