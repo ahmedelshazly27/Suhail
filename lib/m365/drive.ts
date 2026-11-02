@@ -10,6 +10,8 @@ export interface DriveProvider {
   list(folderId: string | "root"): Promise<DriveItem[]>;
   recent(): Promise<DriveItem[]>;
   search(q: string): Promise<DriveItem[]>;
+  /** Files in a folder by path from the library root, e.g. "Team/Plan"; null when the folder doesn't exist. */
+  listPath(path: string): Promise<DriveItem[] | null>;
   createFolder(parentId: string, name: string): Promise<DriveItem>;
   createOffice(parentId: string, kind: "docx" | "xlsx" | "pptx", name: string): Promise<DriveItem>;
 }
@@ -44,6 +46,10 @@ class GraphDrive implements DriveProvider {
   }
   async list(id: string) { return (await graph<{ value: GItem[] }>(this.token, `${this.base()}/${id === "root" ? "root" : `items/${id}`}/children?$top=200`)).value.map(toItem); }
   async recent() { return (await graph<{ value: GItem[] }>(this.token, `/me/drive/recent?$top=12`)).value.map(toItem); }
+  async listPath(path: string) {
+    try { return (await graph<{ value: GItem[] }>(this.token, `${this.base()}/root:/${path.split("/").map(encodeURIComponent).join("/")}:/children?$top=50`)).value.map(toItem); }
+    catch { return null; }
+  }
   async search(q: string) {
     const j = await graph<{ value: { hitsContainers: { hits?: { resource: GItem }[] }[] }[] }>(this.token, "/search/query", { method: "POST", body: JSON.stringify({ requests: [{ entityTypes: ["driveItem"], query: { queryString: q }, size: 10 }] }) });
     return (j.value[0]?.hitsContainers[0]?.hits || []).map((h) => toItem(h.resource));
@@ -74,6 +80,7 @@ class SampleDrive implements DriveProvider {
   async folders() { return DRIVE_FOLDERS; }
   async list(id: string) { return id === "root" ? DRIVE_FOLDERS.map((x) => ({ id: x.id, name: x.name, kind: "DIR" as const, webUrl: "#", path: "/", modified: new Date().toISOString(), by: "", children: this.files[x.id]?.length ?? 0 })) : this.files[id] ?? []; }
   async recent() { return Object.values(this.files).flat().sort((a, b) => b.modified.localeCompare(a.modified)).slice(0, 4); }
+  async listPath() { return null; }
   async search(q: string) { const s = q.toLowerCase(); return Object.values(this.files).flat().filter((x) => x.name.toLowerCase().includes(s)).slice(0, 10); }
   async createFolder(_: string, name: string): Promise<DriveItem> { return this.f("DIR", name, "", 0, "/"); }
   async createOffice(_: string, kind: "docx" | "xlsx" | "pptx", name: string): Promise<DriveItem> { return this.f(kindOf(`x.${kind}`), name, "", 0, "/"); }

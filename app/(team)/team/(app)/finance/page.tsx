@@ -1,4 +1,4 @@
-import { Finance, type Budget, type Exp } from "@/components/team/Finance";
+import { Finance, type Budget, type Exp, type Income } from "@/components/team/Finance";
 import { requireMe } from "@/lib/auth";
 import { getShell } from "@/lib/data/shell";
 import { supabaseAdmin, supabaseServer } from "@/lib/supabase/server";
@@ -25,5 +25,9 @@ export default async function Page() {
   const ops = spent(null);
   if (ops || opsBudget) budgets.push({ id: "ops", name: lang === "ar" ? "العمليات" : "Operations", budget: opsBudget, currency: "KWD", spent: ops, note: lang === "ar" ? "النطاقات والأدوات وMicrosoft 365" : "Domains, tools, Microsoft 365" });
   const canDecide = me.team_role !== "member" || me.functions.includes("finance");
-  return <Finance lang={lang} budgets={budgets} expenses={ex} people={shell.people} projects={shell.projects} categories={cats || []} canDecide={canDecide} />;
+  // Income is Finance-only (RLS): everyone else gets an empty list and sees revenue only as a plan KPI.
+  const [{ data: income }, { data: rels }] = canDecide
+    ? await Promise.all([db.from("income").select("id,received_on,partner,amount_usd,relationship_id,note").order("received_on", { ascending: false }).limit(200), db.from("relationships").select("id,name").order("name")])
+    : [{ data: [] }, { data: [] }];
+  return <Finance lang={lang} budgets={budgets} expenses={ex} people={shell.people} projects={shell.projects} categories={cats || []} canDecide={canDecide} income={(income || []) as Income[]} relationships={rels || []} />;
 }

@@ -96,3 +96,38 @@ export async function renewMailSubscription(log: Log) {
   else await graph(token, "/subscriptions", { method: "POST", body: JSON.stringify({ changeType: "created", notificationUrl: `${env.siteUrl()}/api/graph/notifications`, resource: `/users/${env.tasksMailbox()}/mailFolders('inbox')/messages`, expirationDateTime: expires, clientState: graphClientState() }) });
   log.push("tasks@ subscription renewed");
 }
+
+/** Nightly: today's value of every automatic KPI, so the plan's trend lines have history. */
+export async function snapshotKpis(log: Log) {
+  const { autoValues } = await import("@/lib/plan");
+  const [values, { data: kpis }] = await Promise.all([autoValues(), db().from("kpis").select("id,key").eq("source", "auto")]);
+  const { data: done } = await db().from("kpi_values").select("kpi_id").eq("source", "snapshot").eq("on_date", todayISO());
+  const have = new Set((done || []).map((d) => d.kpi_id)); // one snapshot per KPI per day, even if the cron runs twice
+  const rows = (kpis || []).filter((k) => k.key in values && !have.has(k.id)).map((k) => ({ kpi_id: k.id, value: values[k.key], on_date: todayISO(), source: "snapshot", note: "", created_by: null }));
+  if (rows.length) await db().from("kpi_values").insert(rows);
+  log.push(`kpi snapshot: ${rows.length}`);
+}
+
+/** The 1st of each month: each manual KPI's owner gets a card to enter this month's value. */
+export async function kpiReminders(log: Log) {
+  if (todayISO().slice(8) !== "01") return;
+  const { data: kpis } = await db().from("kpis").select("id,name_en,unit,owner_id").eq("source", "manual").not("owner_id", "is", null);
+  for (const k of kpis || []) {
+    await teams().personal(k.owner_id!, {
+      title: "Enter this month's value", text: k.name_en + (k.unit === "percent" ? " (%)" : k.unit === "usd" ? " (USD)" : ""), href: "/team/plan?tab=kpis",
+      inputs: [{ id: "value", label: "Value", kind: "number", required: true }, { id: "note", label: "Note (optional)", kind: "text" }],
+      actions: [{ title: "Save", verb: "kpi.value", data: { kpi: k.id } }],
+    });
+  }
+  log.push(`kpi reminders: ${kpis?.length ?? 0}`);
+}
+
+/** Once, at the start of the last week of each quarter: the founder gets a "Quarterly review due" card. */
+export async function reviewReminder(log: Log) {
+  const today = todayISO(), y = Number(today.slice(0, 4)), q = Math.floor((Number(today.slice(5, 7)) - 1) / 3) + 1;
+  const end = new Date(Date.UTC(y, q * 3, 0)).toISOString().slice(0, 10);
+  if (addDays(end, -6) !== today) return;
+  const { data: owners } = await db().from("profiles").select("id").eq("active", true).eq("team_role", "owner");
+  for (const o of owners || []) await teams().personal(o.id, { title: "Quarterly review due", text: `Q${q} ${y} ends on ${end}. Take the snapshot and write the three notes.`, href: "/team/plan?tab=reviews" });
+  log.push(`review reminder: Q${q}`);
+}

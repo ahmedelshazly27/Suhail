@@ -25,6 +25,15 @@
 - Production: apply the tour migration, merge this branch to main and redeploy (BLOCKERS item 1).
 - `/season` mobile performance (it varies between about 72 and 94 from run to run), then the visual RTL review of every Arabic screen.
 
+## Done on 2 November
+- **Plan page** (`/team/plan`): Why, Roadmap (2027 grid, gates, three-year view), KPIs and Reviews, plus the Plan 2027 card on Home.
+  - Tables: `plan_years`, `milestones`, `gates`, `gate_criteria`, `kpis`, `kpi_targets`, `kpi_values`, `income` and `plan_reviews`.
+  - RLS: the team reads; owners and admins edit; milestone owners update their own; manual KPI owners add values; income is Finance-only; reviews and KPI values can't be edited.
+  - Automatic KPIs are counted on read (`lib/plan.ts`), with a nightly snapshot for the trend lines.
+  - Teams: monthly KPI value cards (with an input), a quarterly review reminder, and an At risk card to the owner and the founder.
+  - Revenue is the total of Finance's new income list.
+  - The Why tab starts empty: the plan document wasn't available to seed it.
+
 ## Done on 30 October
 - **Fonts.** Newsreader, Amiri and IBM Plex Sans Arabic are self-hosted (`styles/fonts.css`), and each language preloads only its own H1 face. The Arabic files are subset to the core Arabic block (`scripts/subset-fonts.py`), about a third smaller. The Arabic wordmark is an SVG of the same Amiri Bold glyphs. Mobile Lighthouse on the Arabic home went from 80 to 95 to 97, and most other pages score 93 to 99.
 - **First-sign-in tour** (`components/team/Tour.tsx`) after the "You're in" screen. It can be replayed from Settings. Tested in both languages on desktop and phone.

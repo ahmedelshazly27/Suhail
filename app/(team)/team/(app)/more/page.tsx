@@ -4,7 +4,7 @@ import { tt, type TKey } from "@/lib/team-i18n";
 import { teamPrefs } from "@/lib/team-prefs";
 
 export const metadata = { title: "More" };
-const ITEMS: [TKey, string][] = [["projects", "/team/projects"], ["sprints", "/team/sprints"], ["applications", "/team/applications"], ["relationships", "/team/relationships"], ["content", "/team/content"], ["newsletter", "/team/newsletter"], ["finance", "/team/finance"], ["settings", "/team/settings"], ["design", "/team/design"]];
+const ITEMS: [TKey, string][] = [["plan", "/team/plan"], ["projects", "/team/projects"], ["sprints", "/team/sprints"], ["applications", "/team/applications"], ["relationships", "/team/relationships"], ["content", "/team/content"], ["newsletter", "/team/newsletter"], ["finance", "/team/finance"], ["settings", "/team/settings"], ["design", "/team/design"]];
 
 /** Phone only: everything that isn't one of the four main tabs. */
 export default async function More() {

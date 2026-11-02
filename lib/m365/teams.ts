@@ -1,7 +1,8 @@
 import "server-only";
 import { env } from "@/lib/env";
 
-export type Card = { title: string; text: string; href?: string; facts?: [string, string][]; actions?: { title: string; verb: string; data?: Record<string, string> }[] };
+export type CardInput = { id: string; label: string; kind: "number" | "text"; placeholder?: string; required?: boolean };
+export type Card = { title: string; text: string; href?: string; facts?: [string, string][]; inputs?: CardInput[]; actions?: { title: string; verb: string; data?: Record<string, string> }[] };
 
 export interface TeamsNotifier {
   readonly live: boolean;
@@ -20,6 +21,8 @@ export function adaptiveCard(card: Card) {
       { type: "TextBlock", text: card.title, weight: "Bolder", size: "Medium", wrap: true },
       ...(card.text ? [{ type: "TextBlock", text: card.text, wrap: true, isSubtle: true }] : []),
       ...(card.facts?.length ? [{ type: "FactSet", facts: card.facts.map(([title, value]) => ({ title, value })) }] : []),
+      // Input values are sent back with the action's data, under each input's id.
+      ...(card.inputs || []).map((i) => ({ type: i.kind === "number" ? "Input.Number" : "Input.Text", id: i.id, label: i.label, placeholder: i.placeholder, isRequired: !!i.required, min: i.kind === "number" ? 0 : undefined })),
     ],
     actions: [
       ...(card.href ? [{ type: "Action.OpenUrl", title: "Open", url: card.href.startsWith("http") ? card.href : base + card.href }] : []),
