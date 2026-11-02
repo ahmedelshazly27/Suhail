@@ -3,7 +3,7 @@
 export type TLang = "ar" | "en";
 
 const en = {
-  home: "Home", inbox: "Inbox", myWork: "My work", workspace: "Workspace", projects: "Projects", sprints: "Sprints",
+  home: "Home", plan: "Plan", inbox: "Inbox", myWork: "My work", workspace: "Workspace", projects: "Projects", sprints: "Sprints",
   applications: "Applications", relationships: "Relationships", content: "Content calendar", newsletter: "Newsletter",
   drive: "Drive", finance: "Budget and expenses", settings: "Settings", more: "More", work: "Work", design: "Design system",
   team: "Team", search: "Search or jump to…", newTicket: "New ticket", m365on: "Microsoft 365 connected", m365off: "Microsoft 365 not connected yet",
@@ -59,7 +59,7 @@ const en = {
 export type TKey = keyof typeof en;
 
 const ar: Record<TKey, string> = {
-  home: "الرئيسية", inbox: "البريد", myWork: "شغلي", workspace: "مساحة العمل", projects: "المشاريع", sprints: "الدورات",
+  home: "الرئيسية", plan: "الخطة", inbox: "البريد", myWork: "شغلي", workspace: "مساحة العمل", projects: "المشاريع", sprints: "الدورات",
   applications: "الطلبات", relationships: "العلاقات", content: "تقويم المحتوى", newsletter: "النشرة",
   drive: "الملفات", finance: "الميزانية والمصاريف", settings: "الإعدادات", more: "المزيد", work: "الشغل", design: "نظام التصميم",
   team: "الفريق", search: "ابحث أو انتقل…", newTicket: "مهمة جديدة", m365on: "Microsoft 365 متصل", m365off: "Microsoft 365 مو متصل للحين",

@@ -39,6 +39,16 @@ export async function POST(req: Request) {
       else if (p && (p.team_role !== "member" || (p.functions as string[]).includes("finance"))) { await db.from("expenses").update({ status: verb === "expense.approve" ? "approved" : "rejected", approver_id: me.id, decided_at: new Date().toISOString() }).eq("id", d.id); text = verb === "expense.approve" ? "Approved." : "Rejected."; }
       else text = "Only Finance can decide expenses.";
     }
+    if (verb === "kpi.value" && d.kpi) {
+      // A manual KPI's owner (or an owner/admin) records this month's value from the reminder card.
+      const value = Number(d.value);
+      const { data: k } = await db.from("kpis").select("owner_id,source").eq("id", d.kpi).maybeSingle();
+      const { data: p } = await db.from("profiles").select("team_role").eq("id", me.id).single();
+      if (!k || k.source !== "manual") text = "That KPI isn't entered by hand.";
+      else if (k.owner_id !== me.id && p?.team_role === "member") text = "Only this KPI's owner can enter its value.";
+      else if (!Number.isFinite(value) || value < 0 || d.value === "") text = "Enter a number.";
+      else { await db.from("kpi_values").insert({ kpi_id: d.kpi, value, on_date: todayISO(), note: (d.note || "").slice(0, 500), source: "manual", created_by: me.id }); text = "Saved."; }
+    }
     if (verb === "comment" && d.id && d.comment) await db.from("comments").insert({ entity_type: d.type || "ticket", entity_id: d.id, body: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: d.comment }] }] }, created_by: me.id });
     return Response.json({ statusCode: 200, type: "application/vnd.microsoft.activity.message", value: text });
   }

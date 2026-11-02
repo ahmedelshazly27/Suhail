@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { addIncome } from "@/app/actions/plan";
 import { decideExpense, submitExpense } from "@/app/actions/workspace";
 import { useToast } from "@/components/ui/Toast";
 import { todayISO } from "@/lib/dates";
@@ -8,9 +9,11 @@ import { tt, type TKey, type TLang } from "@/lib/team-i18n";
 import type { Person, ProjectLite } from "@/lib/data/shell";
 
 export type Exp = { id: string; description: string; amount: number; currency: string; status: string; spent_on: string; project_id: string | null; created_by: string | null; receipt_url: string | null; receipt_path: string | null; receiptSigned?: string | null };
+export type Income = { id: string; received_on: string; partner: string; amount_usd: number; relationship_id: string | null; note: string };
 export type Budget = { id: string; name: string; budget: number; currency: string; spent: number; note: string };
 
-export function Finance({ lang, budgets, expenses, people, projects, categories, canDecide }: { lang: TLang; budgets: Budget[]; expenses: Exp[]; people: Person[]; projects: ProjectLite[]; categories: { key: string; name: string }[]; canDecide: boolean }) {
+export function Finance({ lang, budgets, expenses, people, projects, categories, canDecide, income = [], relationships = [] }: { lang: TLang; budgets: Budget[]; expenses: Exp[]; people: Person[]; projects: ProjectLite[]; categories: { key: string; name: string }[]; canDecide: boolean; income?: Income[]; relationships?: { id: string; name: string }[] }) {
+  const [incomeOpen, setIncomeOpen] = useState(false);
   const [filter, setFilter] = useState<"pending" | "all">(expenses.some((e) => e.status === "pending") ? "pending" : "all");
   const [open, setOpen] = useState(false);
   const [pending, start] = useTransition();
@@ -51,6 +54,31 @@ export function Finance({ lang, budgets, expenses, people, projects, categories,
         {!rows.length ? <div className="card-f">{tt(lang, "emptyList")}</div> : null}
       </div>
       <p className="muted" style={{ fontSize: ".78rem" }}>{lang === "ar" ? "طلبات الاعتماد توصل كبطاقات Teams لمسؤول المالية. الإيصالات تنحفظ في SharePoint، مجلد Finance." : "Approvals also arrive as Teams cards for the Finance Lead. Receipts are stored in SharePoint, Suhail Finance."}</p>
+      {canDecide ? (
+        <div className="card">
+          <div className="card-h"><h2>{lang === "ar" ? "الدخل" : "Income"} <span className="muted num" style={{ fontWeight: 400 }}>${income.filter((i) => i.received_on.slice(0, 4) === todayISO().slice(0, 4)).reduce((n, i) => n + Number(i.amount_usd), 0).toLocaleString("en")} {lang === "ar" ? "هالسنة" : "this year"}</span></h2>
+            <button type="button" className="b quiet" onClick={() => setIncomeOpen(true)}>{lang === "ar" ? "سجّل دخل" : "Record income"}</button></div>
+          {income.length ? <div className="tbl-wrap" tabIndex={0}><table className="tbl" style={{ margin: "0 1.125rem", width: "calc(100% - 2.25rem)" }}>
+            <thead><tr><th>{tt(lang, "when")}</th><th>{lang === "ar" ? "الشريك" : "Partner"}</th><th>{tt(lang, "relationships")}</th><th className="n">USD</th></tr></thead>
+            <tbody>{income.map((i) => <tr key={i.id} style={{ cursor: "default" }}><td className="key">{fmt(i.received_on)}</td><td>{i.partner}{i.note ? <span className="muted"> · {i.note}</span> : null}</td><td>{relationships.find((r) => r.id === i.relationship_id)?.name ?? "–"}</td><td className="n">${Number(i.amount_usd).toLocaleString("en")}</td></tr>)}</tbody>
+          </table></div> : <div className="card-f">{lang === "ar" ? "ما فيه دخل مسجّل. الإيرادات في الخطة تنحسب من هنا." : "No income recorded yet. Revenue on the Plan is the total of this list."}</div>}
+        </div>
+      ) : null}
+      {incomeOpen ? (
+        <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && setIncomeOpen(false)} onKeyDown={(e) => e.key === "Escape" && setIncomeOpen(false)}>
+          <form className="dialog" role="dialog" aria-modal="true" aria-labelledby="in-h" action={(f) => start(async () => { try { await addIncome({ received_on: String(f.get("received_on")), partner: String(f.get("partner")), amount_usd: Number(f.get("amount_usd")), relationship_id: String(f.get("relationship_id") || "") || null, note: String(f.get("note") || "") }); setIncomeOpen(false); toast(tt(lang, "saved")); router.refresh(); } catch (e) { toast((e as Error).message); } })}>
+            <div style={{ display: "flex", alignItems: "center" }}><h2 id="in-h">{lang === "ar" ? "سجّل دخل" : "Record income"}</h2><button type="button" className="x" aria-label={tt(lang, "close")} onClick={() => setIncomeOpen(false)}>×</button></div>
+            <div className="grid-2" style={{ gap: ".75rem" }}>
+              <label className="fld"><span>{lang === "ar" ? "الشريك" : "Partner"}</span><input name="partner" required maxLength={160} autoFocus /></label>
+              <label className="fld"><span>{tt(lang, "amount")} (USD)</span><input name="amount_usd" type="number" min="0.01" step="0.01" inputMode="decimal" required /></label>
+              <label className="fld"><span>{tt(lang, "when")}</span><input name="received_on" type="date" defaultValue={todayISO()} required /></label>
+              <label className="fld"><span>{tt(lang, "relationships")}</span><select name="relationship_id" defaultValue=""><option value="">–</option>{relationships.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</select></label>
+            </div>
+            <label className="fld"><span>{lang === "ar" ? "ملاحظة" : "Note"}</span><input name="note" maxLength={500} /></label>
+            <div style={{ display: "flex", gap: ".5rem", justifyContent: "flex-end" }}><button type="button" className="b quiet" onClick={() => setIncomeOpen(false)}>{tt(lang, "cancel")}</button><button className="b" type="submit" disabled={pending}>{tt(lang, "save")}</button></div>
+          </form>
+        </div>
+      ) : null}
       {open ? (
         <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && setOpen(false)} onKeyDown={(e) => e.key === "Escape" && setOpen(false)}>
           <form className="dialog" role="dialog" aria-modal="true" aria-labelledby="ex-h" action={(f) => start(async () => { try { await submitExpense(f); setOpen(false); toast(tt(lang, "saved")); router.refresh(); } catch (e) { toast((e as Error).message); } })}>

@@ -8,7 +8,7 @@ import { tt, type TKey, type TLang } from "@/lib/team-i18n";
 import type { ProjectLite } from "@/lib/data/shell";
 
 type Props = { lang: TLang; me: { name: string; avatar_url: string | null; team_role: string }; counts: Record<string, number>; projects: ProjectLite[]; m365: boolean };
-const TOP: [TKey, string, string?][] = [["home", "/team"], ["inbox", "/team/inbox", "inbox"], ["myWork", "/team/my-work"]];
+const TOP: [TKey, string, string?][] = [["home", "/team"], ["plan", "/team/plan"], ["inbox", "/team/inbox", "inbox"], ["myWork", "/team/my-work"]];
 const WORK: [TKey, string, string?][] = [["projects", "/team/projects", "projects"], ["sprints", "/team/sprints"], ["applications", "/team/applications", "applications"],
   ["relationships", "/team/relationships"], ["content", "/team/content"], ["newsletter", "/team/newsletter"], ["drive", "/team/drive"], ["finance", "/team/finance", "finance"]];
 const DOTS = ["var(--st-review)", "var(--st-done)", "var(--muted)"];

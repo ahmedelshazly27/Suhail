@@ -8,6 +8,7 @@ import { ago, dueLabel, hourNow, longDate, shortTime } from "@/lib/dates";
 import { getHome } from "@/lib/data/home";
 import { getShell } from "@/lib/data/shell";
 import { mail } from "@/lib/m365/mail";
+import { fmtKpi, getPlanSummary } from "@/lib/plan";
 import { tt } from "@/lib/team-i18n";
 import { teamPrefs } from "@/lib/team-prefs";
 
@@ -16,7 +17,7 @@ export const metadata = { title: "Home" };
 export default async function Home() {
   const me = await requireMe();
   const { lang } = await teamPrefs();
-  const [h, shell, mp] = await Promise.all([getHome(me), getShell(me.id), mail(me.id)]);
+  const [h, shell, mp, plan] = await Promise.all([getHome(me), getShell(me.id), mail(me.id), getPlanSummary().catch(() => null)]);
   const boxes = await mp.mailboxes().catch(() => []);
   const msgs = (await Promise.all(boxes.slice(0, 4).map((b) => mp.list(b.id).then((l) => l.slice(0, 2).map((m) => ({ ...m, box: b.name }))).catch(() => [])))).flat().sort((a, b) => b.received.localeCompare(a.received)).slice(0, 3);
   const hr = hourNow();
@@ -64,6 +65,17 @@ export default async function Home() {
               <><h2 style={{ margin: 0, fontSize: ".875rem", fontWeight: 500 }}>{tt(lang, "sprint")}</h2><span className="muted" style={{ fontSize: ".8125rem" }}>{tt(lang, "noSprint")}</span><Link href="/team/sprints" style={{ fontSize: ".75rem" }}>{tt(lang, "startSprint")}</Link></>
             )}
           </div>
+          {plan ? (
+            <Link href="/team/plan" className="card pad plan-card" style={{ textDecoration: "none", color: "inherit" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}><h2>{lang === "ar" ? `خطة ${plan.year}` : `Plan ${plan.year}`}</h2><span className="key">Q{plan.quarter}</span></div>
+              <span style={{ fontSize: ".8125rem" }}><span className="num">{plan.milestones.done}</span> {tt(lang, "of")} {plan.milestones.total} {lang === "ar" ? `إنجازات الربع ${plan.quarter} خلصت` : `Q${plan.quarter} milestones done`}{plan.started ? "" : lang === "ar" ? " · تبدأ ١ يناير" : " · starts 1 January"}</span>
+              <span className="track ink"><span style={{ width: `${plan.milestones.total ? Math.round((plan.milestones.done / plan.milestones.total) * 100) : 0}%` }} /></span>
+              <div className="kpis">{plan.kpis.map((k) => { const t = k.targets[plan.year] ?? 0; return (
+                <div key={k.id} className="kp"><span>{lang === "ar" ? k.name_ar : k.name_en}</span><span className="num">{fmtKpi(k.unit, k.actual)} <span className="muted">/ {fmtKpi(k.unit, t)}</span></span>
+                  <span className={`track${k.onTrack ? " ink" : ""}`}><span style={{ width: `${t ? Math.min(100, Math.round(((k.actual ?? 0) / t) * 100)) : 0}%` }} /></span></div>); })}</div>
+              {plan.nextGate ? <span className="muted" style={{ fontSize: ".75rem" }}>{lang === "ar" ? "البوابة الجاية" : "Next gate"}: {plan.nextGate.title} · {plan.nextGate.met} {tt(lang, "of")} {plan.nextGate.total} {lang === "ar" ? "شروط تحقّقت" : "criteria met"}</span> : null}
+            </Link>
+          ) : null}
           <div className="card">
             <div className="card-h"><h2>{tt(lang, "inbox")}</h2><Link href="/team/inbox" style={{ fontSize: ".75rem" }}>{tt(lang, "open")}</Link></div>
             {msgs.map((m) => (

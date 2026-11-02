@@ -14,7 +14,7 @@ test.beforeEach(async ({ page, context }, info) => {
   await expect(page).toHaveURL(/\/team$/);
 });
 
-const SCREENS = ["/team", "/team/inbox", "/team/my-work", "/team/projects", "/team/sprints", "/team/applications", "/team/relationships", "/team/content", "/team/newsletter", "/team/drive", "/team/finance", "/team/settings", "/team/design"];
+const SCREENS = ["/team", "/team/plan", "/team/plan?tab=why", "/team/plan?tab=kpis", "/team/plan?tab=reviews", "/team/plan?tab=roadmap&view=3y", "/team/inbox", "/team/my-work", "/team/projects", "/team/sprints", "/team/applications", "/team/relationships", "/team/content", "/team/newsletter", "/team/drive", "/team/finance", "/team/settings", "/team/design"];
 for (const lang of ["en", "ar"] as const) for (const path of SCREENS) {
   test(`[${lang}] ${path} renders, no sideways scroll, no serious axe issues`, async ({ page }) => {
     const res = await page.goto(path);

@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/Toast";
 import { tt, type TKey, type TLang } from "@/lib/team-i18n";
 import type { ProjectLite } from "@/lib/data/shell";
 
-const GO: [TKey, string, string][] = [["home", "/team", "G H"], ["inbox", "/team/inbox", "G I"], ["myWork", "/team/my-work", "G M"], ["projects", "/team/projects", "G P"],
+const GO: [TKey, string, string][] = [["home", "/team", "G H"], ["plan", "/team/plan", "G L"], ["inbox", "/team/inbox", "G I"], ["myWork", "/team/my-work", "G M"], ["projects", "/team/projects", "G P"],
   ["sprints", "/team/sprints", "G S"], ["applications", "/team/applications", "G A"], ["relationships", "/team/relationships", ""], ["content", "/team/content", ""],
   ["newsletter", "/team/newsletter", ""], ["drive", "/team/drive", ""], ["finance", "/team/finance", ""], ["settings", "/team/settings", ""], ["design", "/team/design", ""]];
 
@@ -32,7 +32,7 @@ export function Palette({ lang, projects }: { lang: TLang; projects: ProjectLite
       if (e.key === "c" || e.key === "C") { e.preventDefault(); setMode("new"); setQ(""); setOpen(true); return; }
       if (e.key === "g") { g.current = Date.now(); return; }
       if (Date.now() - g.current < 900) {
-        const to = { h: "/team", i: "/team/inbox", m: "/team/my-work", p: "/team/projects", s: "/team/sprints", a: "/team/applications" }[e.key];
+        const to = { h: "/team", l: "/team/plan", i: "/team/inbox", m: "/team/my-work", p: "/team/projects", s: "/team/sprints", a: "/team/applications" }[e.key];
         if (to) { e.preventDefault(); router.push(to); }
         g.current = 0;
       }
