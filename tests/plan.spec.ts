@@ -12,6 +12,11 @@ test.beforeEach(async ({ page, context }, info) => {
   test.skip(info.project.name !== "desktop-light", "data-changing flow, once");
   await context.addCookies([{ name: "team-lang", value: "en", url: "http://localhost:3000" }]);
   await signInOwner(page);
+  // A fresh database (CI) shows the one-time welcome screen first.
+  if (page.url().includes("/welcome")) {
+    await page.getByRole("button", { name: /Go to Home|روح للرئيسية/ }).click();
+    await expect(page).toHaveURL(/\/team$/);
+  }
 });
 
 test("the seeded 2027 plan shows the grid, the gates and every KPI", async ({ page }) => {
