@@ -3,7 +3,7 @@
   [
    "09:30",
    "Doors open and breakfast",
-   "فتح الأبواب والفطور"
+   "نفتح الأبواب، والفطور"
   ],
   [
    "10:00",
@@ -47,14 +47,14 @@
    "scene": "pattern",
    "desc": [
     "Build agents that work in Arabic, from anywhere. Open to anyone. Challenges and partners are announced to applicants.",
-    "ابنِ وكلاء يشتغلون بالعربي، من أي مكان. مفتوح للجميع. التحديات والشركاء يُعلنون للمتقدّمين."
+    "ابنِ وكلاء ذكاء اصطناعي يشتغلون بالعربي، من أي مكان. مفتوح للكل، ونعلن التحديات والشركاء للي قدّموا."
    ]
   },
   {
    "id": "applied-ai-kuwait",
    "t": [
     "Applied AI Hack",
-    "هاكاثون الذكاء التطبيقي"
+    "هاكاثون الذكاء الاصطناعي التطبيقي"
    ],
    "fmt": "inperson",
    "city": [
@@ -64,7 +64,7 @@
    "scene": "skyline",
    "desc": [
     "Meet, build and demo in one day. The schedule, challenges and partners below are kept up to date by the event team.",
-    "تقابل وتبني وتعرض في يوم واحد. البرنامج والتحديات والشركاء يحدّثها فريق الفعالية."
+    "تتعرّف على ناس، وتبني، وتعرض شغلك في يوم واحد. فريق الفعالية يحدّث البرنامج والتحديات والشركاء أول بأول."
    ]
   },
   {
@@ -81,14 +81,14 @@
    "scene": "tent",
    "desc": [
     "Grids, cooling and water for the hottest places on earth. One day, real data from partners.",
-    "شبكات وتبريد ومياه لأحرّ أماكن على الأرض. يوم واحد، وبيانات حقيقية من الشركاء."
+    "الكهربا والتبريد والمياه في أحرّ مكان على الأرض. يوم واحد، وبيانات حقيقية من الشركاء."
    ]
   },
   {
    "id": "physical-cairo",
    "t": [
     "Physical AI Hack",
-    "هاكاثون الذكاء المادي"
+    "هاكاثون الروبوتات والذكاء الاصطناعي"
    ],
    "fmt": "inperson",
    "city": [
@@ -98,38 +98,38 @@
    "scene": "dhow",
    "desc": [
     "Robots, sensors and machines that leave the screen. Hardware is provided on site.",
-    "روبوتات وحسّاسات وآلات تطلع من الشاشة. الأجهزة متوفرة في المكان."
+    "روبوتات وحسّاسات وآلات تطلع من الشاشة للواقع. الأجهزة نوفّرها في المكان."
    ]
   }
  ],
  "who": [
   [
    "Engineers",
-   "مهندسون"
+   "مهندسين"
   ],
   [
    "Founders",
-   "مؤسّسون"
+   "مؤسّسين"
   ],
   [
    "Investors",
-   "مستثمرون"
+   "مستثمرين"
   ],
   [
    "Technical leaders",
-   "قادة تقنيون"
+   "قادة تقنيين"
   ],
   [
    "Researchers",
-   "باحثون"
+   "باحثين"
   ],
   [
    "Product designers",
-   "مصمّمو منتجات"
+   "مصمّمين منتجات"
   ],
   [
    "Operators",
-   "مشغّلون"
+   "مدراء تشغيل"
   ],
   [
    "Students",

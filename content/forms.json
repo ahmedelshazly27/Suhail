@@ -213,7 +213,7 @@
   "coll": "talent",
   "submit": [
    "Join the pool",
-   "انضم"
+   "انضم للقائمة"
   ],
   "fields": [
    [
@@ -292,7 +292,7 @@
    {
     "id": "next",
     "en": "What do you want next?",
-    "ar": "وش تبي تسوي بعدين؟",
+    "ar": "وش الخطوة الجاية اللي تبيها؟",
     "type": "textarea"
    }
   ]
@@ -323,7 +323,7 @@
    {
     "id": "bring",
     "en": "You bring",
-    "ar": "أنت تجيب",
+    "ar": "وش عندك",
     "type": "radio",
     "req": 1,
     "opts": [
@@ -663,7 +663,7 @@
    {
     "id": "why",
     "en": "Why them?",
-    "ar": "ليش هو؟",
+    "ar": "ليش هالشخص؟",
     "type": "textarea",
     "req": 1
    }

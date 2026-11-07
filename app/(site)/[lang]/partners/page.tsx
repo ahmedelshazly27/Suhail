@@ -7,14 +7,14 @@ import { pageMeta } from "@/lib/seo";
 
 const AREAS = {
   ar: [["01", "المواهب", "وظّف مهندسين ومؤسّسين تقنيين.", ["مسار شريك في الهاكاثون", "التوظيف", "لوحة الفرص", "قسم الوظائف في النشرة"]],
-    ["02", "الانتشار", "حط منتجك بإيد البُناة.", ["شريك تقني في الهاكاثون", "استضافة هاكاثون مشترك", "شريك تقني للفريج", "موسم سهيل", "ظهور في النشرة"]],
+    ["02", "الانتشار", "حط منتجك بين إيدين المهندسين والمؤسّسين.", ["شريك تقني في الهاكاثون", "استضافة هاكاثون مشترك", "شريك تقني للفريج", "موسم سهيل", "ظهور في النشرة"]],
     ["03", "المجتمع", "ابنِ علاقات مع المؤسّسين والمهندسين.", ["استضافة فعالية", "شراكة مجتمعية", "رعاية النشرة", "عشاوات وفعاليات خاصة", "شريك علامة في موسم سهيل"]]],
   en: [["01", "Talent", "Hire engineers and technical founders.", ["Hackathon track partner", "Recruiting", "Opportunities board", "Newsletter roles section"]],
     ["02", "Distribution", "Put your product in builders' hands.", ["Hackathon technology partner", "Hackathon co-host", "Al Freej technology partner", "Suhail Season", "Newsletter placement"]],
     ["03", "Community", "Build relationships with founders and engineers.", ["Host an event", "Community partnership", "Newsletter sponsorship", "Dinners and custom events", "Suhail Season brand partner"]]],
 } as const;
 const HOW = {
-  ar: ["قل لنا وش تبي: توظيف، أو استخدام، أو انتشار.", "نختار الصيغة: هاكاثون، أو توظيف، أو النشرة، أو فعالية.", "ننفّذها معك من البداية للنهاية."],
+  ar: ["قول لنا وش تبي: توظيف، أو ناس يستخدمون منتجك، أو انتشار.", "نختار الصيغة: هاكاثون، أو توظيف، أو النشرة، أو فعالية.", "ننفّذها معك من البداية لين النهاية."],
   en: ["Tell us what you're after: hiring, usage or reach.", "We pick the format: a hackathon, recruiting, the newsletter or an event.", "We run it with you, end to end."],
 };
 

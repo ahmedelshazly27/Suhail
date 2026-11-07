@@ -6,7 +6,7 @@ import { t, type Lang } from "@/lib/i18n";
 import { pageMeta } from "@/lib/seo";
 
 const EP = {
-  ar: [["00 · البيان", "ليش سهيل، وليش الحين. قريبًا."], ["01 · الحلقة الأولى", "الضيف يُعلن للمشتركين. قيد التسجيل."]],
+  ar: [["00 · البيان", "ليش سهيل، وليش الحين. قريبًا."], ["01 · الحلقة الأولى", "نعلن الضيف للمشتركين أول. قاعدين نسجّلها."]],
   en: [["00 · The manifesto", "Why Suhail, and why now. Soon."], ["01 · Episode one", "Guest announced to subscribers. Recording."]],
 };
 
