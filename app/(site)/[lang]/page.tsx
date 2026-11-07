@@ -9,11 +9,11 @@ import { pageMeta } from "@/lib/seo";
 
 export const revalidate = 300;
 const LEDE = {
-  ar: "سهيل يجمع المؤسّسين والمهندسين والمستثمرين والمشغّلين عبر الهاكاثونات والفعاليات، ومجتمع يمتد من المحيط إلى الخليج.",
+  ar: "سهيل يجمع المؤسّسين والمهندسين والمستثمرين واللي يديرون الشركات، في هاكاثونات وفعاليات ومجتمع واحد من المحيط إلى الخليج.",
   en: "Suhail brings together founders, engineers, investors and operators through hackathons, events and a community that runs from the Atlantic to the Gulf.",
 };
 const PROGS = {
-  ar: [["الهاكاثونات", "هاكاثونات أونلاين وحضورية في مدن المنطقة."], ["الفريج", "بيت يسكنه المؤسّسون ويبنون فيه موسمًا كاملًا."], ["الفرص", "وظائف مختارة في الشركات اللي تبني المنطقة."], ["موسم سهيل", "مؤتمر سنوي في أسبوع طلوع سهيل."], ["الشراكات", "للشركات والمستثمرين اللي يبون يوصلون للبُناة."], ["المجلس", "بودكاست مع ناس يبنون هنا."]],
+  ar: [["الهاكاثونات", "هاكاثونات أونلاين وحضورية في مدن المنطقة."], ["الفريج", "بيت يسكن فيه المؤسّسين مع بعض كم شهر، ويتفرّغون لبناء شركاتهم."], ["الفرص", "وظائف نختارها بعناية في الشركات اللي تبني المنطقة."], ["موسم سهيل", "مؤتمرنا السنوي، في الأسبوع اللي يطلع فيه نجم سهيل."], ["الشراكات", "للشركات والمستثمرين اللي يبون يوصلون للمهندسين والمؤسّسين."], ["المجلس", "بودكاست نسولف فيه مع ناس يبنون شركاتهم هنا."]],
   en: [["Hackathons", "Online and in-person hackathons across the region's cities."], ["Al Freej", "A house where founders live and build for a season."], ["Opportunities", "Hand-picked roles at the companies building the region."], ["Suhail Season", "A yearly conference in the week Suhail rises."], ["Partnerships", "For companies and investors who want to reach builders."], ["The Majlis", "A podcast with people building here."]],
 };
 
@@ -28,7 +28,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   return (
     <section className="page on" data-page="home">
       <div className="wrap hero">
-        <h1>{lang === "ar" ? "منظومة واحدة للناس اللي يبنون مستقبل التقنية العربية." : "One ecosystem for the people building the future of Arab tech."}</h1>
+        <h1>{lang === "ar" ? "مكان واحد يجمع الناس اللي يبنون مستقبل التقنية العربية." : "One ecosystem for the people building the future of Arab tech."}</h1>
         <p className="text muted">{LEDE[lang]}</p>
         <div id="subscribe">
           <p className="label" style={{ marginBottom: ".4rem" }}>{t(lang, "news_label")}</p>
