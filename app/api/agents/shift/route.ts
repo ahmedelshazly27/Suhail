@@ -1,4 +1,5 @@
 import { agentAuth, agentsPaused, kuwait, scheduledNow, shiftAt, shiftPlan, type Agent } from "@/lib/agents";
+import { syncDefaults } from "@/lib/agent-defaults";
 import { supabaseAdmin } from "@/lib/supabase/server";
 
 // The routine calls this a few times a day and gets back, as plain text, which agents to run now and how.
@@ -7,6 +8,7 @@ import { supabaseAdmin } from "@/lib/supabase/server";
 export async function GET(req: Request) {
   if (!(await agentAuth(req))) return new Response("Unauthorized", { status: 401 });
   const db = supabaseAdmin();
+  await syncDefaults().catch(() => {});
   await db.from("agent_runs").update({ status: "failed", error: "Did not report back", finished_at: new Date().toISOString() })
     .eq("status", "running").lt("started_at", new Date(Date.now() - 3 * 3600e3).toISOString());
   const k = kuwait();

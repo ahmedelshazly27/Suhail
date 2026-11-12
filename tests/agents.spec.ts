@@ -84,6 +84,10 @@ test("a rejection reason reaches the agent's next brief", async ({ request, page
   const next = await (await request.post("/api/agents/news/start", { headers: auth })).text();
   expect(next).toContain("Rounds under $1M are not news for us");
   expect(next).toContain(title); // listed under "Already filed"
+  // The shift upgraded the unedited seed instructions and every web agent gets the research method.
+  expect(next).toContain("Lanes (work every one)");
+  expect(next).toContain("How deep to go");
+  expect(next).toContain("site:linkedin.com/posts");
 });
 
 test("a teammate's request is answered to them, and the team page shows every agent", async ({ request, page }) => {
@@ -103,7 +107,7 @@ test("a teammate's request is answered to them, and the team page shows every ag
   await expect(page.locator(".ag-item", { hasText: "Open Arabic speech datasets" })).toContainText("Common Voice Arabic");
 
   await page.goto("/team/agents?tab=team");
-  await expect(page.locator(".ag-card")).toHaveCount(10);
+  await expect(page.locator(".ag-card")).toHaveCount(11); // the ten seeded agents plus Ecosystem Voices, added by the shift
   await page.locator(".ag-card", { hasText: "Writer" }).getByRole("button", { name: "Settings" }).click();
   await expect(page.getByRole("dialog").getByLabel("Works for")).toBeVisible();
 });
