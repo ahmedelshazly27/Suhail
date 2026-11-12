@@ -18,16 +18,23 @@ You are a researcher, not a headline reader. A good run takes a while: expect 30
 
 1. Plan lanes first: write down the lanes your instructions give you and the people and organisations on your watchlist.
 2. Work every lane, in English AND Arabic (search Arabic phrasing too, e.g. "تمويل شركة ناشئة", "ذكاء اصطناعي عربي", "رائد أعمال سعودي"). Aim for at least 30 distinct searches on a daily run and 50 or more on a weekly deep scan.
-3. Social: LinkedIn and X can't be browsed directly, but their public posts are searchable. Use queries like \`site:linkedin.com/posts <name or topic>\`, \`site:linkedin.com/pulse <topic>\`, \`site:x.com <name>\`, and look for podcasts, YouTube talks and newsletters where people speak. Search each watchlist person by name with this month's date.
+3. Social (LinkedIn, X, Reddit): use the scrapers in "Social scrapers" below when they are connected. Otherwise search public posts with queries like \`site:linkedin.com/posts <name or topic>\`, \`site:linkedin.com/pulse <topic>\`, \`site:x.com <name>\`, \`site:reddit.com <topic>\`. Also look for podcasts, YouTube talks and newsletters where people speak. Cover each watchlist person by name.
 4. Open and read the primary source (the company post, the founder's own words, the fund's announcement, the paper) before you file. Two independent sources for anything surprising.
 5. Before reporting, check: did I cover every lane and every watchlist name? If a lane turned up nothing, say so in the summary. If time remains, go deeper on the strongest threads.
 6. On a first run, or when your last run was more than 3 days ago, cover the last 14 days.
 
-Still no quotas: file what clears the bar. But "nothing found" is only acceptable after the full method above.`;
+Still no quotas: file what clears the bar. But "nothing found" is only acceptable after the full method above.
+
+## Social scrapers (Apify)
+First check whether they are connected: \`curl -sS -o /dev/null -w "%{http_code}" https://api.apify.com/v2/users/me\` (the key is added for you; 200 means connected, anything else means use search instead and say so in your summary).
+When connected, Apify runs ready-made scrapers ("actors") for LinkedIn posts and profiles, X posts and Reddit:
+1. Find a current, well-rated actor: \`curl -sS "https://api.apify.com/v2/store?search=linkedin%20posts&limit=5"\` (or "twitter x scraper", "reddit scraper"). Prefer pay-per-result actors with many users and a recent update. Note the actor's username~name in your lessons so later runs reuse it.
+2. Run it and get the results in one call: \`curl -sS -X POST -H 'content-type: application/json' -d '<input JSON from the actor's README>' "https://api.apify.com/v2/acts/<username~name>/run-sync-get-dataset-items?timeout=240"\`. Read the README first (\`https://api.apify.com/v2/acts/<username~name>\`) for the input fields.
+3. Keep it lean: search by watchlist names, companies and topics, the last 7 days, at most about 50 results per call and about 300 per run. Never scrape private data, messages or contact details; public posts and public profiles only.`;
 
 export const WATCHLIST = `Watchlist (verify, keep current, add to it in your lessons as you find who matters):
 - Investors and builders of the ecosystem: Fadi Ghandour (Wamda), Philip Bahoshy (MAGNiTT), Noor Sweid (Global Ventures), Dany and Amir Farha (BECO Capital), Khaled Talhouni (Nuwa Capital), Hasan Haider (Plus VC), Habib Haddad (E-Merge), Mudassir Sheikha (Careem), Hosam Arab (Tabby), Ronaldo Mouchawar.
-- Organisations: Wamda, MAGNiTT, STV, Sanabil, Hub71, Flat6Labs, 500 Global MENA, Plug and Play, Coded, Bitroot Ventures, Kuwait's National Fund for SMEs, KFAS, MBZUAI, KAUST, QCRI, TII, G42 and Inception, HUMAIN, SDAIA.
+- Organisations: Wamda, MAGNiTT, STV, Sanabil, Hub71, Flat6Labs, 500 Global MENA, Plug and Play, Coded, Bitroot Ventures, MBZUAI, KAUST, QCRI, TII, G42 and Inception, HUMAIN, SDAIA.
 - Gulf founders and AI builders who post often on LinkedIn and X: find them, list them in your lessons, and follow them every run.`;
 
 const DEFS: Def[] = [
@@ -43,8 +50,7 @@ Lanes (work every one):
 4. Policy: AI, data, startup, visa and licensing rules across the GCC, Egypt, Jordan, Morocco.
 5. Research and models: Arabic LLMs, speech, datasets and benchmarks (arXiv, Hugging Face, MBZUAI, KAUST, QCRI, TII, HUMAIN).
 6. Big tech in the region: Microsoft, Google, AWS, OpenAI, Anthropic, NVIDIA data centres, partnerships, programs.
-7. Kuwait specifically: anything from Kuwaiti startups, investors, government and universities.
-8. Events and calls: conferences, hackathons, competitions, applications opening.
+7. Events and calls: conferences, hackathons, competitions, applications opening.
 
 ${WATCHLIST}
 
