@@ -475,3 +475,42 @@ footer a:hover{color:var(--fg)}
 a.lang{display:inline-block; text-decoration:none}
 .skip:focus{position:fixed; inset-block-start:.5rem; inset-inline-start:.5rem; width:auto; height:auto; clip:auto; margin:0; padding:.6rem .9rem; background:var(--fg); color:var(--bg); z-index:60}
 .ts:empty{display:none}
+
+/* ---------------------------------------------------------------- manifesto */
+.mf-film{margin:0; display:grid; gap:0}
+.mf-film video{display:block; width:100%; aspect-ratio:16/9; height:auto; background:var(--band-bg); border-radius:0}
+.mf-film video::cue{font-family:var(--f-body); font-size:1.05em; line-height:1.5; background:rgba(11,10,9,.72)} /* ds-allow: caption backdrop over moving video, the band ink at 72% */
+.mf-text{display:grid; gap:5rem; padding-block:4.5rem 6rem}
+.mf-words{display:grid; gap:1.6rem; max-width:40rem}
+.mf-words h2.label{margin-bottom:.4rem}
+.mf-words p{margin:0}
+.mf-words .hl{color:var(--accent-ink)}
+.mf-ar p{font-family:var(--f-display); font-size:clamp(1.35rem, 2.6vw, 1.75rem); line-height:2}
+.mf-en p{font-family:var(--f-display); font-size:clamp(1.2rem, 2.2vw, 1.45rem); line-height:1.6; font-weight:300}
+.mf-words .mf-lines{display:grid; gap:.2rem; font-family:var(--f-mono); font-size:clamp(1.1rem, 2vw, 1.35rem); line-height:1.6}
+.mf-ar .mf-lines{font-family:var(--f-body); font-weight:500}
+.mf-quote{margin:1.2rem 0; padding-block:1.6rem; border-block:1px solid var(--line); display:grid; gap:.8rem}
+.mf-quote blockquote{margin:0}
+.mf-quote blockquote p{font-family:var(--f-display); font-size:clamp(1.7rem, 4vw, 2.6rem); line-height:1.45; color:var(--fg)}
+.mf-en .mf-quote blockquote p{font-style:italic; line-height:1.3}
+.mf-quote figcaption{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.mf-ar .mf-quote figcaption{letter-spacing:0; font-size:.95rem; text-transform:none}
+.mf-close{--fg:var(--band-fg); --muted:color-mix(in oklab, var(--band-fg) 62%, var(--band-bg)); --line:color-mix(in oklab, var(--band-fg) 22%, var(--band-bg)); color:var(--band-fg); overflow:hidden}
+.mf-close .mf-scene{position:absolute; inset-inline:0; bottom:0; width:100%; height:clamp(220px, 30vw, 400px); -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 40%); mask-image:linear-gradient(to bottom, transparent 0, #000 40%)} /* ds-allow: mask colour is alpha only */
+.mf-close-in{position:relative; display:grid; gap:1.2rem; padding-block:6rem calc(clamp(220px, 30vw, 400px) + 1rem); padding-inline:max(20px, env(safe-area-inset-left, 0px))}
+.mf-lead{margin:0; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+:root[lang="ar"] .mf-lead{letter-spacing:0; font-size:1rem}
+.mf-q{font-family:var(--f-display); font-weight:300; font-size:clamp(2.2rem, 6.5vw, 4.6rem); line-height:1.15; max-width:16ch; color:var(--fg)}
+:root[lang="ar"] .mf-q{line-height:1.5; font-weight:400}
+.mf-q .hl, .mf-q-other .hl{color:var(--accent)}
+.mf-q-other{margin:0; font-family:var(--f-display); font-size:clamp(1.1rem, 2.2vw, 1.4rem); color:var(--muted); max-width:34rem}
+.mf-act{display:flex; flex-wrap:wrap; align-items:flex-end; gap:1.5rem 2.5rem; margin-top:2rem}
+.mf-sub{flex:1 1 18rem; max-width:28rem; display:grid; gap:.4rem}
+.mf-sub .sub-msg{color:var(--muted)}
+.mf-close .btn{background:var(--band-fg); color:var(--band-bg); border-color:var(--band-fg)}
+.mf-close .btn:hover{background:var(--accent); border-color:var(--accent); color:var(--band-bg)}
+.home-film{display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.2fr); gap:1.5rem 2.5rem; align-items:center; text-decoration:none; color:var(--fg); border-top:1px solid var(--line); padding-top:2rem}
+.home-film img{width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; display:block}
+.home-film .t{font-family:var(--f-display); font-size:clamp(1.4rem, 2.6vw, 2rem); line-height:1.35}
+.home-film:hover .t{color:var(--accent-ink)}
+@media (max-width: 720px){ .home-film{grid-template-columns:minmax(0, 1fr)} }

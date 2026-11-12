@@ -66,6 +66,11 @@
   --f-display:var(--ff-amiri, "Amiri"), "Noto Naskh Arabic", "Geeza Pro", serif;
   --f-body:var(--ff-plex-arabic, "IBM Plex Sans Arabic"), "Geeza Pro", system-ui, sans-serif;
 }
+/* English inside an Arabic page (for example the manifesto's English text) goes back to the Latin faces */
+:root[lang="ar"] [lang="en"]{
+  --f-display:var(--ff-newsreader, "Newsreader"), Georgia, serif;
+  --f-body:var(--ff-plex, "IBM Plex Sans"), system-ui, sans-serif;
+}
 
 /* dark: follows the system unless the user picks light */
 @media (prefers-color-scheme: dark){
