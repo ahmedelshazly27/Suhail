@@ -93,17 +93,18 @@ test("a rejection reason reaches the agent's next brief", async ({ request, page
 test("a teammate's request is answered to them, and the team page shows every agent", async ({ request, page }) => {
   await page.goto("/team/agents?tab=asks");
   await page.locator('select[name="agent"]').selectOption("research");
-  await page.getByLabel("What do you need?").fill("Which Arabic speech datasets are open?");
+  const ask = `Which Arabic speech datasets are open? ${Date.now()}`;
+  await page.getByLabel("What do you need?").fill(ask);
   await page.getByRole("button", { name: "Send" }).click();
-  await expect(page.locator(".row", { hasText: "Which Arabic speech datasets are open?" })).toBeVisible();
+  await expect(page.locator(".row", { hasText: ask })).toBeVisible();
   const shift = await (await request.get("/api/agents/shift", { headers: auth })).text();
   expect(shift).toContain("Research and Projects Scout");
   const brief = await (await request.post("/api/agents/research/start", { headers: auth })).text();
-  const reqId = /request_id ([0-9a-f-]{36})/.exec(brief)![1];
+  const reqId = new RegExp(`request_id ([0-9a-f-]{36}) from [^:]*: ${ask.replace(/[?]/g, "\\?")}`).exec(brief)![1];
   const runId = /"run_id": "([0-9a-f-]{36})"/.exec(brief)![1];
   await request.post("/api/agents/research/finish", { headers: auth, data: { run_id: runId, items: [{ kind: "answer", title: "Open Arabic speech datasets", body: "- MGB-2\n- Common Voice Arabic", request_id: reqId }] } });
   await page.reload();
-  await page.getByRole("link", { name: "Answer" }).first().click();
+  await page.locator(".row", { hasText: ask }).getByRole("link", { name: "Answer" }).click();
   await expect(page.locator(".ag-item", { hasText: "Open Arabic speech datasets" })).toContainText("Common Voice Arabic");
 
   await page.goto("/team/agents?tab=team");
