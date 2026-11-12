@@ -19,7 +19,8 @@ const TITLE: [string, TKey][] = [["/team/plan", "plan"], ["/team/agents", "agent
 
 /** Phone layout from reference/mobile-prototype.html: sticky header and a five-tab bar with 44px+ targets. */
 export function MobileNav({ lang, me, inbox }: { lang: TLang; me: { name: string; avatar_url: string | null }; inbox: number }) {
-  const path = usePathname();
+  // On team.suhail.build the address bar has no /team prefix (the proxy adds it), so match on the app path.
+  const raw = usePathname(), path = raw.startsWith("/team") ? raw : `/team${raw === "/" ? "" : raw}`;
   const title = TITLE.find(([p]) => path.startsWith(p))?.[1] ?? "home";
   const cur = (href: string) => (href === "/team" ? path === "/team" : path.startsWith(href) || (href === "/team/more" && /\/team\/(plan|agents|projects|tickets|sprints|applications|relationships|content|newsletter|finance|settings)/.test(path)));
   return (

@@ -14,7 +14,8 @@ const WORK: [TKey, string, string?][] = [["projects", "/team/projects", "project
 const DOTS = ["var(--st-review)", "var(--st-done)", "var(--muted)"];
 
 export function Sidebar({ lang, me, counts, projects, m365 }: Props) {
-  const path = usePathname();
+  // On team.suhail.build the address bar has no /team prefix (the proxy adds it), so match on the app path.
+  const raw = usePathname(), path = raw.startsWith("/team") ? raw : `/team${raw === "/" ? "" : raw}`;
   const cur = (href: string) => (href === "/team" ? path === "/team" : path === href || path.startsWith(href + "/"));
   const item = ([k, href, c]: [TKey, string, string?]) => (
     <Link key={href} href={href} className="side-item" data-tour={k} aria-current={cur(href) ? "page" : undefined}>
