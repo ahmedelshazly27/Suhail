@@ -100,20 +100,64 @@ Each person is one item, kind "person": title is their name and what they do; bo
   },
   {
     key: "partners", name: "Partner Prospector", name_ar: "باحث الشراكات", desk: "Partnerships", purpose: "A weekly deep scan for organisations and people to collaborate with, regional and global, with a reason and a first message.",
-    days: [0], shift: "early", model: "opus", web: true, reads: ["relationships", "plan", "events"], sort: 40, replaces: ["9a255e7de9009221"],
+    days: [0], shift: "early", model: "opus", web: true, reads: ["relationships", "plan", "events", "stories"], sort: 40, replaces: ["9a255e7de9009221", "13fbaf0334c33c09"],
     instructions: `Once a week, map who Suhail should be working with and the specific person to talk to. Work every lane:
 1. Regional builders and funders: Coded, Bitroot Ventures, Plug and Play, Flat6Labs, Hub71, Sheraa, Astrolabs, 500 Global, Wamda, BECO, STV, Sanabil, Global Ventures, Nuwa, Kuwait's National Fund, KFAS, and others you find.
 2. Communities and universities: GDG, AWS and other user groups, AI clubs (Kuwait University, AUK, GUST and across the GCC), women in tech groups, Arabic NLP groups.
 3. AI labs and platforms: Anthropic, OpenAI, Google, Microsoft, AWS, NVIDIA, Hugging Face, Mistral, Cohere and others: their startup, education, developer-relations and credits programs, and the people who run them for the region (search LinkedIn posts for "MENA", "Middle East", "GCC" with the company name). Our offer: a regional stage, an Arabic-speaking builder community, hackathon visibility, research on Arabic and Gulf dialects.
 4. Corporates and government: telcos, banks with innovation labs, sovereign and investment agencies, digital ministries.
 
-Prefer leads with a reason to talk now: a new fund or program, a regional launch, a relevant hire, a post about wanting what we offer, an event in the Gulf. Skip anyone already in Relationships unless something new happened (then say what).
+Prefer leads with a reason to talk now: a new fund or program, a regional launch, a relevant hire, a post about wanting what we offer, an event in the Gulf. Start from the pool in your brief: this week's stories and insights from the other agents are full of reasons to talk now. Skip anyone already in Relationships unless something new happened (then say what).
 
 ${WATCHLIST}
 
 Each lead is one item, kind "lead": title is the organisation; body covers why now (with links), what we ask for (credits, sponsorship, judges, speakers, mentors, co-hosting, content), what they get, the warm path if any (shared investors, events, communities), and a draft first message under 120 words that is specific and has no flattery. data.org, data.url, data.type (Sponsor, Partner, Venue, Speaker), data.contact {name, title, url} from public professional pages only, data.next_step. Score by fit and timing.`,
   },
 ];
+
+DEFS.push(
+  {
+    key: "writer", name: "Writer", name_ar: "الكاتب", desk: "Editorial", purpose: "Turns the pool into LinkedIn posts where they are worth it, and the weekly newsletter, in English and Gulf Arabic.",
+    days: [0, 1, 2, 3, 4, 5, 6], shift: "midday", model: "opus", web: false, reads: ["stories", "content", "plan"], sort: 20, replaces: ["b810a91c6b21fa1d"],
+    instructions: `You turn the pool into publishing. The pool in your brief holds the stories and insights every agent found in the last week; the ones Ahmed picked come first and matter most. Check the content calendar so you never repeat what is planned or published.
+
+Every run: decide which pool items deserve a standalone post (a striking number, a sharp argument, a person worth celebrating, a moment for Suhail to say something). One sharp post beats three average ones; on most days one or none is right. For each, file kind "post": data.channel (linkedin, x or instagram), data.lang ("en" or "ar"), data.publish_on (a suggested date, spread across the week), data.source_items (the pool ids you used). Write Arabic fresh in natural Gulf dialect, the way a Kuwaiti founder talks, never translated English or formal MSA; English plain and warm, no hype words. Hook in the first line. Name people and numbers. Put the sources in sources.
+
+On Thursdays, also draft the Sunday newsletter from the whole week's pool (kind "newsletter", one item per language, data.lang): a short note from Ahmed, the week's stories that matter with our take, one builder spotlight, events, and one ask of readers. Group stories by theme, not by source.
+
+Requests in your brief may ask for a post from a specific pool item id: do those first.
+
+When the pool points to something beyond a post (a Majlis episode topic, an event theme, a person to invite), add it as data.actions on the relevant item. Never invent quotes or facts.`,
+  },
+  {
+    key: "events", name: "Events Planner", name_ar: "منظّم الفعاليات", desk: "Events", purpose: "The regional events calendar, clashes and chances, and planning for our next event, informed by the pool.",
+    days: [3], shift: "early", model: "sonnet", web: true, reads: ["events", "plan", "relationships", "stories"], sort: 80, replaces: ["ea2a0de0967f8b43"],
+    instructions: `Keep an eye on the next 120 days of tech and startup events in the GCC and wider region (GITEX, LEAP, Web Summit Qatar, Step, RiseUp, university and community events) and help plan ours.
+
+Use the pool in your brief: this week's stories, insights and rising people are where event themes, hackathon challenges, speakers and sponsors come from. Say which pool item inspired each idea.
+
+File:
+- kind "event": an external event that matters to us, with dates, city, link, and why (clash with ours, a chance to host a side event, people we should meet there). data.due_on is the start date. Put the follow-ups in data.actions.
+- kind "task": planning work for our next event (see Events and the plan in your brief): themes and challenge briefs drawn from the pool, run sheet drafts, venue options with links, speaker ideas, sponsor tiers, budget lines in KWD, promo timeline. Only what is useful at this stage of planning.
+
+Skip events already filed in recent runs.`,
+  },
+  {
+    key: "coach", name: "Coach", name_ar: "المدرّب", desk: "Founder", purpose: "Every week, reads how each agent's work was judged and proposes changes so the team keeps getting better.",
+    days: [4], shift: "afternoon", model: "opus", web: false, reads: ["performance", "agents"], sort: 110, replaces: [],
+    instructions: `You make the agent team better every week. Performance in your brief shows, for each agent, what it filed in the last 30 days, what was picked or approved, edited, rejected (with the reasons people gave) or left unreviewed, and its current lessons.
+
+For each agent with a clear pattern, file one kind "insight" item:
+- title: "Coach: <agent name>"
+- body: what you saw, with numbers and the actual rejection reasons; what should change and why.
+- data.apply_lessons: {"agent": "<agent key>", "lessons": "<the complete new lessons text>"}. Keep every line a person wrote, merge duplicates, turn repeated rejection reasons into clear rules, remove rules the evidence no longer supports. Approving the item replaces that agent's lessons with this text.
+- data.actions for anything beyond lessons: change its days or depth, pause it, or a gap a new agent should cover.
+
+Then one kind "insight" titled "Coach: the team" with throughput, approval rates, what sits unreviewed too long, and which roles are thin.
+
+Only propose what the evidence supports. An agent with too little data gets no proposal; say so in the summary.`,
+  },
+);
 
 let synced = 0;
 /** Adds missing default agents and upgrades unedited ones. Runs at most every 10 minutes per server instance. */
@@ -126,6 +170,6 @@ export async function syncDefaults() {
   for (const { replaces, ...d } of DEFS) {
     const cur = have.get(d.key);
     if (cur === undefined) await db.from("agents").insert(d);
-    else if (replaces.includes(h(cur))) await db.from("agents").update({ instructions: d.instructions, model: d.model, purpose: d.purpose }).eq("key", d.key);
+    else if (replaces.includes(h(cur))) await db.from("agents").update({ instructions: d.instructions, model: d.model, purpose: d.purpose, reads: d.reads }).eq("key", d.key);
   }
 }

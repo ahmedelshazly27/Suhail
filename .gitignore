@@ -45,3 +45,5 @@ next-env.d.ts
 !.env.example
 /test-results
 /playwright-report
+# the manifesto film lives in Vercel Blob, never in git
+public/media/manifesto/*.mp4

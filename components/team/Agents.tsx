@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type ReactNode } from "react";
 import { askAgent, cancelAsk, createAgentKey, decideItem, pauseAgents, revokeAgentKey, saveAgent, setAgent } from "@/app/actions/agents";
+import { Md } from "@/components/ui/Md";
 import { useToast } from "@/components/ui/Toast";
 import { tt, type TLang } from "@/lib/team-i18n";
 
@@ -47,33 +48,21 @@ function Dialog({ title, onClose, children, lang, onSubmit, wide }: { title: str
   );
 }
 
-/** Light Markdown for agent drafts: headings, bullets and links, nothing else. Text stays text (no HTML is injected). */
-export function Md({ text }: { text: string }) {
-  const blocks = text.replace(/\r/g, "").split(/\n{2,}/).filter((b) => b.trim());
-  const inline = (s: string, k: number) => s.split(/(https?:\/\/[^\s)]+|\*\*[^*]+\*\*)/g).map((p, i) =>
-    /^https?:\/\//.test(p) ? <a key={`${k}-${i}`} href={p} target="_blank" rel="noreferrer">{p.replace(/^https?:\/\/(www\.)?/, "").slice(0, 60)}</a>
-      : /^\*\*.+\*\*$/.test(p) ? <b key={`${k}-${i}`}>{p.slice(2, -2)}</b> : p);
-  return (
-    <div className="md" dir="auto">
-      {blocks.map((b, i) => {
-        const h = /^#{1,4}\s+(.*)$/.exec(b.trim());
-        if (h && !b.trim().includes("\n")) return <h3 key={i}>{inline(h[1], i)}</h3>;
-        const lines = b.split("\n");
-        if (lines.every((l) => /^\s*[-*]\s+/.test(l))) return <ul key={i}>{lines.map((l, j) => <li key={j}>{inline(l.replace(/^\s*[-*]\s+/, ""), i * 100 + j)}</li>)}</ul>;
-        return <p key={i}>{lines.map((l, j) => <span key={j}>{j ? <br /> : null}{inline(l, i * 100 + j)}</span>)}</p>;
-      })}
-    </div>
-  );
-}
-
 /** One draft in the review queue: approve (optionally after editing), reject with a reason the agent learns from. */
-export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart }: { lang: TLang; item: ItemRow; agentName: string; canDecide: boolean; open?: boolean }) {
+type Act = { title: string; due_on?: string };
+const actionsOf = (d: Record<string, unknown>): Act[] => (Array.isArray(d.actions) ? d.actions : []).slice(0, 20)
+  .map((a) => (typeof a === "string" ? { title: a } : a && typeof a === "object" && typeof (a as Act).title === "string" ? (a as Act) : null)).filter((a): a is Act => Boolean(a && a.title.trim()));
+
+export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart, pool }: { lang: TLang; item: ItemRow; agentName: string; canDecide: boolean; open?: boolean; pool?: boolean }) {
   const { run, pending } = useRun(lang);
   const [open, setOpen] = useState(Boolean(openAtStart) || item.kind === "brief");
   const [mode, setMode] = useState<"" | "edit" | "reject">("");
+  const acts = actionsOf(item.data || {});
+  const [ticked, setTicked] = useState<number[]>(() => acts.map((_, i) => i));
+  const lessonsFor = (item.data?.apply_lessons as { agent?: string } | undefined)?.agent;
   const dest = DEST[item.kind], routed = item.routed_type ? ROUTE_L[item.routed_type] : null;
   const meta = [item.data.channel, item.data.lang, item.data.publish_on && `${L(lang, "publish", "نشر")} ${item.data.publish_on}`, item.data.due_on && `${L(lang, "due", "موعد")} ${item.data.due_on}`, item.data.org !== item.title && item.data.org].filter(Boolean).map(String);
-  const approve = (title?: string, body?: string) => run(() => decideItem({ id: item.id, action: "approve", title, body }), dest ? `${L(lang, "Sent to", "انرسل إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approved", "تمام، اعتمدناه"));
+  const approve = (title?: string, body?: string) => run(() => decideItem({ id: item.id, action: "approve", title, body, actions: ticked }), dest ? `${L(lang, "Sent to", "انرسل إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approved", "تمام، اعتمدناه"));
   return (
     <article className={`card pad ag-item${item.kind === "brief" ? " brief" : ""}`} id={`item-${item.id}`}>
       <div className="ag-item-h">
@@ -96,6 +85,17 @@ export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart }
           {item.sources.length ? (
             <ul className="ag-src">{item.sources.map((s, i) => <li key={i}><a href={s.url} target="_blank" rel="noreferrer" dir="auto">{s.title || s.url.replace(/^https?:\/\/(www\.)?/, "").slice(0, 70)}</a>{s.date ? <span className="muted"> · {s.date}</span> : null}</li>)}</ul>
           ) : null}
+          {acts.length ? (
+            <fieldset className="ag-acts" disabled={item.status !== "new" || !canDecide}>
+              <legend>{item.status === "new" ? L(lang, "Suggested actions: ticked ones become tickets when you approve", "خطوات مقترحة: اللي تأشّر عليها تصير مهام لما تعتمد") : L(lang, "Suggested actions", "خطوات مقترحة")}</legend>
+              {acts.map((a, i) => (
+                <label key={i} className="ag-chk" dir="auto">
+                  <input type="checkbox" checked={ticked.includes(i)} onChange={(e) => setTicked(e.target.checked ? [...ticked, i] : ticked.filter((x) => x !== i))} />
+                  <span>{a.title}{a.due_on ? <span className="muted"> · {a.due_on}</span> : null}</span>
+                </label>
+              ))}
+            </fieldset>
+          ) : null}
           {item.feedback ? <p className="muted ag-fb" dir="auto">{L(lang, "Feedback", "الملاحظة")}: {item.feedback}</p> : null}
         </>
       ) : null}
@@ -107,15 +107,27 @@ export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart }
       ) : null}
       {canDecide && mode === "" ? (
         <div className="row-btns">
-          {item.status === "new" ? (
+          {item.status === "new" && pool ? (
+            <>
+              <button type="button" className="b" disabled={pending} onClick={() => run(() => decideItem({ id: item.id, action: "approve" }), L(lang, "Picked. The Writer starts from picked items.", "اخترناه. الكاتب يبدأ من اللي تختاره."))}>{L(lang, "Pick", "اختار")}</button>
+              <button type="button" className="b quiet" disabled={pending} onClick={() => run(() => askAgent("writer", `Draft a LinkedIn post from pool item ${item.id}: ${item.title}`), L(lang, "The Writer drafts it at its next shift.", "الكاتب بيكتبه في وقته الجاي."))}>{L(lang, "Ask the Writer for a post", "اطلب بوست من الكاتب")}</button>
+              <button type="button" className="b ghost" onClick={() => { setOpen(true); setMode("reject"); }}>{L(lang, "Dismiss", "شيله")}</button>
+            </>
+          ) : item.status === "new" && lessonsFor ? (
+            <>
+              <button type="button" className="b" disabled={pending} onClick={() => approve()}>{L(lang, `Apply to ${lessonsFor}`, `طبّقه على ${lessonsFor}`)}</button>
+              <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("edit"); }}>{L(lang, "Edit", "عدّل")}</button>
+              <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("reject"); }}>{L(lang, "Reject", "ارفض")}</button>
+            </>
+          ) : item.status === "new" ? (
             item.kind === "brief" || item.kind === "answer" || item.kind === "insight" ? (
               <>
-                <button type="button" className="b" disabled={pending} onClick={() => run(() => decideItem({ id: item.id, action: item.kind === "insight" ? "approve" : "done" }))}>{item.kind === "insight" ? L(lang, "Useful", "مفيد") : L(lang, "Done", "تم")}</button>
+                <button type="button" className="b" disabled={pending} onClick={() => run(() => decideItem({ id: item.id, action: item.kind === "insight" ? "approve" : "done", actions: ticked }))}>{item.kind === "insight" ? L(lang, "Useful", "مفيد") : L(lang, "Done", "تم")}{ticked.length && item.kind !== "brief" && acts.length ? ` · ${ticked.length} ${L(lang, "tickets", "مهام")}` : ""}</button>
                 {item.kind === "insight" ? <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("reject"); }}>{L(lang, "Not useful", "مو مفيد")}</button> : null}
               </>
             ) : (
               <>
-                <button type="button" className="b" disabled={pending} onClick={() => approve()}>{dest ? `${L(lang, "Approve to", "اعتمد إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approve", "اعتمد")}</button>
+                <button type="button" className="b" disabled={pending} onClick={() => approve()}>{dest ? `${L(lang, "Approve to", "اعتمد إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approve", "اعتمد")}{ticked.length && acts.length ? ` + ${ticked.length} ${L(lang, "tickets", "مهام")}` : ""}</button>
                 <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("edit"); }}>{L(lang, "Edit", "عدّل")}</button>
                 <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("reject"); }}>{L(lang, "Reject", "ارفض")}</button>
               </>

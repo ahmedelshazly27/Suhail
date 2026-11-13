@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { Scene } from "@/components/site/Scene";
 import { Poster } from "@/components/site/Poster";
 import { SoonBlock } from "@/components/site/Soon";
 import { QuickSubscribe } from "@/components/site/forms/QuickSubscribe";
-import { t, type Lang } from "@/lib/i18n";
+import { href, t, type Lang } from "@/lib/i18n";
+import { FILM_LENGTH } from "@/lib/manifesto";
 import { getHackathons } from "@/lib/public-data";
 import { pageMeta } from "@/lib/seo";
 
@@ -36,6 +39,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </div>
       </div>
       <div className="scene-wrap"><Scene kind="home" style={{ height: "clamp(220px, 34vw, 430px)" }} /><span className="cap">{t(lang, "cap_home")}</span></div>
+      <div className="wrap sec" style={{ paddingBottom: 0 }}>
+        <Link className="home-film" href={href(lang, "/manifesto")}>
+          <Image src="/media/manifesto/poster.jpg" alt="" width={1920} height={1080} sizes="(max-width: 720px) 100vw, 45vw" />
+          <span style={{ display: "grid", gap: ".6rem" }}>
+            <span className="label">{lang === "ar" ? `البيان · فيلم ${FILM_LENGTH}` : `The manifesto · a film, ${FILM_LENGTH}`}</span>
+            <span className="t">{lang === "ar" ? "كان في زمن، العالم كله يجي هنا عشان يتعلّم. شوف الفيلم ↖" : "There was a time when the whole world came here to learn. Watch the film ↗"}</span>
+          </span>
+        </Link>
+      </div>
       <div className="wrap sec">
         <div className="sec-head"><div className="row"><p className="label">{t(lang, "upcoming")}</p></div></div>
         <div className="evlist posters">{events.length ? events.map((e) => <Poster key={e.slug} lang={lang} e={e} />) : <SoonBlock lang={lang} />}</div>
