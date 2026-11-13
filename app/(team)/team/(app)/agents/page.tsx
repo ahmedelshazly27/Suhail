@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AgentButtons, AgentSettings, AskForm, CancelAsk, ItemCard, KeyPanel, PauseAll, type AgentRow, type ItemRow } from "@/components/team/Agents";
 import { Avatar } from "@/components/ui/Avatar";
-import { agentsPaused, daysAgo, scheduleText, SHIFT_HOUR, type Agent } from "@/lib/agents";
+import { agentsPaused, daysAgo, POOL_KINDS, scheduleText, SHIFT_HOUR, type Agent } from "@/lib/agents";
 import { isAdmin, requireMe } from "@/lib/auth";
 import { getShell } from "@/lib/data/shell";
 import { ago } from "@/lib/dates";
@@ -11,9 +11,9 @@ import { tt, type TLang } from "@/lib/team-i18n";
 import { teamPrefs } from "@/lib/team-prefs";
 
 export const metadata = { title: "Agents" };
-const TABS = ["review", "team", "asks", "runs", "connect"] as const;
+const TABS = ["review", "pool", "team", "asks", "runs", "connect"] as const;
 type Tab = (typeof TABS)[number];
-const TAB_L: Record<Tab, [string, string]> = { review: ["Review", "المراجعة"], team: ["The team", "الفريق"], asks: ["Requests", "الطلبات"], runs: ["Runs", "التشغيل"], connect: ["Connect", "الربط"] };
+const TAB_L: Record<Tab, [string, string]> = { review: ["Review", "المراجعة"], pool: ["Pool", "الحصيلة"], team: ["The team", "الفريق"], asks: ["Requests", "الطلبات"], runs: ["Runs", "التشغيل"], connect: ["Connect", "الربط"] };
 const L = (lang: TLang, en: string, ar: string) => (lang === "ar" ? ar : en);
 const STATUSES = ["new", "approved", "rejected"] as const;
 
@@ -40,7 +40,7 @@ export default async function AgentsPage({ searchParams }: PageProps<"/team/agen
     let q = db.from("agent_items").select("id,agent_key,kind,title,body,data,sources,score,status,feedback,routed_type,routed_id,created_at,request_id,for_id");
     if (focus) q = q.eq("id", focus);
     else {
-      q = q.eq("status", status);
+      q = q.eq("status", status).or(`kind.not.in.(${POOL_KINDS.join(",")}),agent_key.eq.coach`); // stories and insights live in the pool
       if (only) q = q.eq("agent_key", only);
       if (who === "mine") {
         const mine = agents.filter((a) => a.owner_id === me.id).map((a) => a.key);
@@ -52,6 +52,30 @@ export default async function AgentsPage({ searchParams }: PageProps<"/team/agen
     // The latest brief first, then by score.
     items = [...all.filter((i) => i.kind === "brief").slice(0, 1), ...all.filter((i) => i.kind !== "brief").sort((a, b) => (b.score ?? 0) - (a.score ?? 0) || b.created_at.localeCompare(a.created_at))];
   }
+
+  // The pool: stories and insights from every agent, grouped by day, week or month.
+  const by = sp.by === "day" || sp.by === "month" ? sp.by : "week";
+  const poolStatus = sp.status === "approved" || sp.status === "rejected" ? sp.status : "new";
+  let pool: ItemRow[] = [];
+  if (tab === "pool") {
+    let q = db.from("agent_items").select("id,agent_key,kind,title,body,data,sources,score,status,feedback,routed_type,routed_id,created_at,request_id,for_id")
+      .in("kind", [...POOL_KINDS]).neq("agent_key", "coach").eq("status", poolStatus).gte("created_at", daysAgo(by === "day" ? 14 : by === "week" ? 56 : 186));
+    if (only) q = q.eq("agent_key", only);
+    pool = ((await q.order("created_at", { ascending: false }).limit(500)).data || []) as ItemRow[];
+  }
+  const period = (iso: string) => {
+    const d = new Date(new Date(iso).getTime() + 3 * 3600e3); // Kuwait
+    if (by === "day") return d.toISOString().slice(0, 10);
+    if (by === "month") return d.toISOString().slice(0, 7);
+    const sun = new Date(d); sun.setUTCDate(d.getUTCDate() - d.getUTCDay()); return sun.toISOString().slice(0, 10); // weeks start on Sunday
+  };
+  const fmtPeriod = (k: string) => {
+    const loc = lang === "ar" ? "ar-KW-u-nu-latn" : "en-GB";
+    if (by === "month") return new Intl.DateTimeFormat(loc, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(k + "-01T00:00:00Z"));
+    const f = new Intl.DateTimeFormat(loc, { weekday: by === "day" ? "long" : undefined, day: "numeric", month: "long", timeZone: "UTC" }).format(new Date(k + "T00:00:00Z"));
+    return by === "week" ? L(lang, `Week of ${f}`, `أسبوع ${f}`) : f;
+  };
+  const groups = [...new Set(pool.map((i) => period(i.created_at)))].map((k) => ({ k, items: pool.filter((i) => period(i.created_at) === k).sort((a, b) => (b.score ?? 0) - (a.score ?? 0)) }));
 
   const since = daysAgo(30);
   const [{ data: runs }, { data: decided }, { data: waiting }, { data: asks }, { data: keys }] = await Promise.all([
@@ -104,6 +128,23 @@ export default async function AgentsPage({ searchParams }: PageProps<"/team/agen
               </div>
             )}
           </div>
+        </>
+      ) : null}
+
+      {tab === "pool" ? (
+        <>
+          <p className="muted" style={{ margin: 0, fontSize: ".875rem", maxWidth: "44rem" }}>{L(lang, "Everything the agents find lands here. The Writer turns the best into posts and the Thursday newsletter; the Events Planner and Partner Prospector read it too. Pick what matters most; dismiss with a reason and the scouts learn.", "كل اللي يلقونه الوكلاء ينحط هني. الكاتب يحوّل الأفضل لبوستات ونشرة الخميس، ومنظّم الفعاليات وباحث الشراكات يقرونه بعد. اختار الأهم، وإذا شلت شي قول ليش عشان يتعلّمون.")}</p>
+          <div className="ag-filters">
+            {(["day", "week", "month"] as const).map((b) => <Link key={b} className="pill-s" href={`?tab=pool&by=${b}&status=${poolStatus}${only ? `&agent=${only}` : ""}`} aria-current={by === b ? "true" : undefined}>{L(lang, { day: "By day", week: "By week", month: "By month" }[b], { day: "باليوم", week: "بالأسبوع", month: "بالشهر" }[b])}</Link>)}
+            <span className="faint" aria-hidden="true">·</span>
+            {(["new", "approved", "rejected"] as const).map((st) => <Link key={st} className="pill-s" href={`?tab=pool&by=${by}&status=${st}${only ? `&agent=${only}` : ""}`} aria-current={poolStatus === st ? "true" : undefined}>{L(lang, { new: "In the pool", approved: "Picked", rejected: "Dismissed" }[st], { new: "بالحصيلة", approved: "المختار", rejected: "المشال" }[st])}</Link>)}
+          </div>
+          {groups.length ? groups.map((g) => (
+            <section key={g.k} className="ag-queue" aria-label={fmtPeriod(g.k)}>
+              <h2 className="sect-t">{fmtPeriod(g.k)} <span className="muted">· {g.items.length}</span></h2>
+              {g.items.map((i) => <ItemCard key={i.id} lang={lang} item={i} agentName={name(i.agent_key)} canDecide={owns(i.agent_key)} pool />)}
+            </section>
+          )) : <div className="empty"><p style={{ margin: 0 }}>{L(lang, "Nothing here yet. The scouts fill the pool every morning.", "ما فيه شي للحين. الراصدين يعبّون الحصيلة كل صبح.")}</p></div>}
         </>
       ) : null}
 

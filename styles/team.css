@@ -559,8 +559,15 @@ button.ms:hover { border-color: var(--fg); }
 .ag-score .faint { color: var(--line); }
 .ag-src { margin: 0; padding-inline-start: 1.1rem; font-size: .78rem; display: grid; gap: .25rem; overflow-wrap: anywhere; }
 .ag-fb { font-size: .8125rem; margin: 0; }
+.ag-acts { border: 1px solid var(--line); padding: .625rem .75rem .75rem; margin: 0; display: grid; gap: .45rem; }
+.ag-acts legend { font-size: .75rem; color: var(--st-review); padding: 0 .25rem; }
+.ag-acts .ag-chk { align-items: flex-start; }
+.ag-acts .ag-chk input { margin-top: .2rem; }
 .md { font-size: .875rem; line-height: 1.65; overflow-wrap: anywhere; }
 .md p, .md ul { margin: 0 0 .65rem; }
+.md-b > :last-child { margin-bottom: .65rem; }
+.md-sm { font-size: .8125rem; line-height: 1.55; }
+.md-sm h3 { font-size: .8125rem; margin: .5rem 0 .2rem; }
 .md ul { padding-inline-start: 1.1rem; }
 .md h3 { font: 500 .875rem/1.4 var(--f-body); margin: .9rem 0 .35rem; }
 .ag-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 1.25rem; }

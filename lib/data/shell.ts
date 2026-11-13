@@ -15,7 +15,7 @@ export const getShell = cache(async (meId: string) => {
     db.from("applications").select("id", { count: "exact", head: true }).eq("stage", "New").is("deleted_at", null),
     db.from("expenses").select("id", { count: "exact", head: true }).eq("status", "pending"),
     db.from("projects").select("id", { count: "exact", head: true }).neq("status", "done"),
-    db.from("agent_items").select("id", { count: "exact", head: true }).eq("status", "new").or(`for_id.eq.${meId},for_id.is.null`),
+    db.from("agent_items").select("id", { count: "exact", head: true }).eq("status", "new").not("kind", "in", "(story,insight)").or(`for_id.eq.${meId},for_id.is.null`),
   ]);
   return {
     people: (people.data || []) as Person[],
