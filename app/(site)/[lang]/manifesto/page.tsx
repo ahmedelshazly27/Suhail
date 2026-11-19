@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Scene } from "@/components/site/Scene";
-import { QuickSubscribe } from "@/components/site/forms/QuickSubscribe";
-import { href, t, type Lang } from "@/lib/i18n";
+import { t, type Lang } from "@/lib/i18n";
 import { CLOSING, TRANSCRIPT, type Block } from "@/lib/manifesto";
 import { pageMeta } from "@/lib/seo";
 
@@ -58,13 +56,6 @@ export default async function Manifesto({ params }: PageProps<"/[lang]/manifesto
         <div className="wrap mf-close-in">
           <p className="mf-lead">{CLOSING[lang].lead}</p>
           <h2 id="mf-q" className="mf-q"><Text s={CLOSING[lang].q} /></h2>
-          <div className="mf-act">
-            <div className="mf-sub">
-              <p className="label">{t(lang, "news_label")}</p>
-              <QuickSubscribe lang={lang} source="manifesto" variant="sub" label={t(lang, "subscribe")} />
-            </div>
-            <Link className="btn mf-join" href={href(lang, "/careers")}>{L(lang, "انضم لنا", "Join us")}</Link>
-          </div>
         </div>
       </section>
     </section>

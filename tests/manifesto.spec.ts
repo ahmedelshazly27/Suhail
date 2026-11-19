@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 // The manifesto: text only, one language per page (the header toggle switches), the opening words quoted and
-// attributed, Ibn Khaldun as a pull quote, and the closing question with the signup.
+// attributed, Ibn Khaldun as a pull quote, and the closing question.
 for (const lang of ["ar", "en"] as const) {
   test(`manifesto ${lang}: one language, quoted opening, closing`, async ({ page }, info) => {
     test.skip(info.project.name.includes("dark"), "layout is checked in light; axe covers dark in site.spec");
@@ -17,7 +17,8 @@ for (const lang of ["ar", "en"] as const) {
     await expect(page.locator(".mf-quote blockquote")).toContainText(lang === "ar" ? "المغلوبُ مولعٌ أبداً بالاقتداء بالغالب" : "The defeated always love to imitate the victor");
     await expect(page.locator("#mf-q")).toContainText(lang === "ar" ? "إيش بنكون صنعنا" : "what will we have made");
     await expect(page.locator(".mf-close")).not.toContainText(lang === "ar" ? "what will we have made" : "إيش بنكون صنعنا");
-    await expect(page.locator(".mf-close").getByRole("link", { name: lang === "ar" ? "انضم لنا" : "Join us" })).toBeVisible();
+    // The page ends on the question: no signup or call to action.
+    await expect(page.locator(".mf-close form, .mf-close a")).toHaveCount(0);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/media\/manifesto\/poster\.jpg$/);
   });
 }

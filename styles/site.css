@@ -505,11 +505,6 @@ a.lang{display:inline-block; text-decoration:none}
 .mf-q{font-family:var(--f-display); font-weight:300; font-size:clamp(2.2rem, 6.5vw, 4.6rem); line-height:1.15; max-width:16ch; color:var(--fg)}
 :root[lang="ar"] .mf-q{line-height:1.5; font-weight:400}
 .mf-q .hl{color:var(--accent)}
-.mf-act{display:flex; flex-wrap:wrap; align-items:flex-end; gap:1.5rem 2.5rem; margin-top:2rem}
-.mf-sub{flex:1 1 18rem; max-width:28rem; display:grid; gap:.4rem}
-.mf-sub .sub-msg{color:var(--muted)}
-.mf-close .btn{background:var(--band-fg); color:var(--band-bg); border-color:var(--band-fg)}
-.mf-close .btn:hover{background:var(--accent); border-color:var(--accent); color:var(--band-bg)}
 .home-film{display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.2fr); gap:1.5rem 2.5rem; align-items:center; text-decoration:none; color:var(--fg); border-top:1px solid var(--line); padding-top:2rem}
 .home-film img{width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; display:block}
 .home-film .t{font-family:var(--f-display); font-size:clamp(1.4rem, 2.6vw, 2rem); line-height:1.35}
