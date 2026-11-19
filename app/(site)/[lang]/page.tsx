@@ -37,7 +37,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <QuickSubscribe lang={lang} source="home" variant="sub" label={t(lang, "subscribe")} />
         </div>
       </div>
-      <div className="scene-wrap"><Scene kind="home" style={{ height: "clamp(220px, 34vw, 430px)" }} /><span className="cap">{t(lang, "cap_home")}</span></div>
+      <div className="scene-wrap"><Scene kind="home" style={{ height: "clamp(220px, 34vw, 430px)" }} /></div>
       <div className="wrap sec" style={{ paddingBottom: 0 }}>
         <Link className="home-film" href={href(lang, "/manifesto")}>
           <Image src="/media/manifesto/poster.jpg" alt="" width={1920} height={1080} sizes="(max-width: 720px) 100vw, 45vw" />
