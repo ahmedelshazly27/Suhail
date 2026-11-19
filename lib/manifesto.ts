@@ -1,16 +1,12 @@
-// The manifesto film's words as a text: the on-screen captions (public/media/manifesto/*.vtt) grouped at the film's
-// natural pauses. Arabic is the film's own words; English is the translation. A block is a paragraph, a pull quote,
-// or a pair of contrasts set one per line. The closing question ends the page, set large.
+// The manifesto, grouped into paragraphs at its natural pauses. Arabic is the original; English is the translation.
+// A block is a paragraph, a quotation (the opening words we answer, cited) or a pull quote (Ibn Khaldun), or a pair
+// of contrasts set one per line. Each language shows on its own page; the closing question ends the page, set large.
 
-export type Block = { p: string } | { quote: string; by: string } | { lines: string[] };
-
-/** The film, hosted in Vercel Blob (store suhail-media). Override with NEXT_PUBLIC_MANIFESTO_FILM. */
-export const FILM_URL = process.env.NEXT_PUBLIC_MANIFESTO_FILM || "https://vanzkpreflc5ycd2.public.blob.vercel-storage.com/manifesto/suhail-manifesto.mp4";
-export const FILM_LENGTH = "2:26";
+export type Block = { p: string } | { quote: string; by: string; style: "cited" | "pull" } | { lines: string[] };
 
 export const TRANSCRIPT: Record<"ar" | "en", Block[]> = {
   ar: [
-    { p: "فيه خمسمية مليون عربي… ومع ذلك… ما ينتجون علم. ما ياخذون جائزة نوبل. ولا جائزة فيلدز، ولا جائزة وولف. ما ينتجون أدب." },
+    { quote: "«فيه خمسمية مليون عربي… ومع ذلك… ما ينتجون علم. ما ياخذون جائزة نوبل. ولا جائزة فيلدز، ولا جائزة وولف. ما ينتجون أدب.»", by: "روبرت إف. كينيدي الابن، وزير الصحة الأمريكي (C-SPAN / Spectrum News)", style: "cited" },
     { p: "شوفوا… هذا وزير الصحة في أكبر دولة في العالم، وواضح إنه ما فتح كتاب تاريخ في حياته." },
     { p: "طيّب يا معالي الوزير… خلّنا نعلّمك شوي." },
     { p: "كان في زمن، العالم كله يجي هنا عشان يتعلّم. الحضارة العربية والإسلامية كانت تقود العالم في الطب، والرياضيات، والفلك، والكيمياء، والبصريات، والهندسة، والجغرافيا، والفلسفة." },
@@ -20,7 +16,7 @@ export const TRANSCRIPT: Record<"ar" | "en", Block[]> = {
     { p: "يا معالي الوزير… قبل لا تتكلّم عنّا… اقرا عنّا." },
     { p: "بس خلّونا نكون صادقين مع نفسنا. هو ما يعرف تاريخنا… بس إحنا بعد، نسيناه." },
     { p: "مع الوقت… بطّلنا نصنع. وصرنا نقلّد… وابن خلدون قالها من زمان:" },
-    { quote: "«المغلوبُ مولعٌ أبداً بالاقتداء بالغالب»", by: "ابن خلدون" },
+    { quote: "«المغلوبُ مولعٌ أبداً بالاقتداء بالغالب»", by: "ابن خلدون", style: "pull" },
     { p: "وأذكى شبابنا راحوا يبدعون عند غيرنا… وصار خيرنا لغيرنا. وصار الطموح: شهادة، ووظيفة مضمونة، وراتب آخر الشهر. ورضينا بهذا." },
     { p: "اليوم، ثورة صناعية جديدة تنكتب قدّام عيوننا. والأدوات صارت بإيد أي واحد عنده فكرة. بس في فرق بين…" },
     { lines: ["تستخدم ≠ تصنع", "موجود ≠ مؤثّر"] },
@@ -30,7 +26,7 @@ export const TRANSCRIPT: Record<"ar" | "en", Block[]> = {
     { p: "أهلنا كانوا يقولون: إذا طلع سُهَيْل… برد الليل." },
   ],
   en: [
-    { p: "There are five hundred million Arabs… And yet… they don't produce science. They don't win Nobel Prizes. No Fields Medal, no Wolf Prize. They don't produce literature." },
+    { quote: "“There are five hundred million Arabs… And yet… they don't produce science. They don't win Nobel Prizes. No Fields Medal, no Wolf Prize. They don't produce literature.”", by: "Robert F. Kennedy Jr., US Secretary of Health and Human Services (C-SPAN / Spectrum News)", style: "cited" },
     { p: "Look… this is the health secretary of the most powerful country in the world, and he has clearly never opened a history book." },
     { p: "Well, Mr. Secretary… let us teach you a little." },
     { p: "There was a time when the whole world came here to learn. Arab and Islamic civilisation led the world in medicine, mathematics, astronomy, chemistry, optics, engineering, geography and philosophy." },
@@ -40,7 +36,7 @@ export const TRANSCRIPT: Record<"ar" | "en", Block[]> = {
     { p: "Mr. Secretary… before you talk about us… read about us." },
     { p: "But let's be honest with ourselves. He doesn't know our history… but we've forgotten it too." },
     { p: "Over time… we stopped making things. And we started imitating… Ibn Khaldun said it long ago:" },
-    { quote: "“The defeated always love to imitate the victor.”", by: "Ibn Khaldun" },
+    { quote: "“The defeated always love to imitate the victor.”", by: "Ibn Khaldun", style: "pull" },
     { p: "Our brightest young people went to create for others… and our best went to someone else. And ambition became: a degree, a secure job, and a salary at the end of the month. And we settled for that." },
     { p: "Today, a new industrial revolution is being written in front of us. And the tools are in the hands of anyone with an idea. But there's a difference between…" },
     { lines: ["using ≠ making", "present ≠ influential"] },

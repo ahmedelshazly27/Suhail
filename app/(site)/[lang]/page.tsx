@@ -6,7 +6,6 @@ import { Poster } from "@/components/site/Poster";
 import { SoonBlock } from "@/components/site/Soon";
 import { QuickSubscribe } from "@/components/site/forms/QuickSubscribe";
 import { href, t, type Lang } from "@/lib/i18n";
-import { FILM_LENGTH } from "@/lib/manifesto";
 import { getHackathons } from "@/lib/public-data";
 import { pageMeta } from "@/lib/seo";
 
@@ -43,8 +42,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <Link className="home-film" href={href(lang, "/manifesto")}>
           <Image src="/media/manifesto/poster.jpg" alt="" width={1920} height={1080} sizes="(max-width: 720px) 100vw, 45vw" />
           <span style={{ display: "grid", gap: ".6rem" }}>
-            <span className="label">{lang === "ar" ? `البيان · فيلم ${FILM_LENGTH}` : `The manifesto · a film, ${FILM_LENGTH}`}</span>
-            <span className="t">{lang === "ar" ? "كان في زمن، العالم كله يجي هنا عشان يتعلّم. شوف الفيلم ↖" : "There was a time when the whole world came here to learn. Watch the film ↗"}</span>
+            <span className="label">{t(lang, "nav_manifesto")}</span>
+            <span className="t">{lang === "ar" ? "كان في زمن، العالم كله يجي هنا عشان يتعلّم. اقرا البيان ↖" : "There was a time when the whole world came here to learn. Read the manifesto ↗"}</span>
           </span>
         </Link>
       </div>
