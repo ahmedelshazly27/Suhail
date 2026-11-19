@@ -43,7 +43,7 @@
   --f-num:var(--f-mono);
   /* email: web fonts don't load reliably in mail clients */
   --f-email-display:Georgia, 'Times New Roman', serif;
-  --f-email-display-ar:'Amiri', Georgia, 'Times New Roman', serif;
+  --f-email-display-ar:'Almarai', Tahoma, Arial, sans-serif;
   --f-email-body:-apple-system, 'Segoe UI', Roboto, Tahoma, Arial, sans-serif;
 
   /* layout */
@@ -63,8 +63,10 @@
 
 /* Arabic: different faces, no tracking, looser leading */
 :root[lang="ar"], [lang="ar"]{
-  --f-display:var(--ff-amiri, "Amiri"), "Noto Naskh Arabic", "Geeza Pro", serif;
-  --f-body:var(--ff-plex-arabic, "IBM Plex Sans Arabic"), "Geeza Pro", system-ui, sans-serif;
+  --f-display:var(--ff-almarai, "Almarai"), "Geeza Pro", system-ui, sans-serif;
+  --f-body:var(--ff-almarai, "Almarai"), "Geeza Pro", system-ui, sans-serif;
+  /* Plex Mono has no Arabic letters: Arabic words in mono labels (dates, keys) use Almarai, joined, not a system mono */
+  --f-mono:var(--ff-plex-mono, "IBM Plex Mono"), var(--ff-almarai, "Almarai"), ui-monospace, monospace;
 }
 /* English inside an Arabic page (for example the manifesto's English text) goes back to the Latin faces */
 :root[lang="ar"] [lang="en"]{

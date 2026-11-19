@@ -42,7 +42,7 @@ nav.links a:hover, nav.links a[aria-current="page"]{color:var(--fg)}
 nav.links a[aria-current="page"]::after{content:""; display:block; height:1px; background:var(--accent); margin-top:2px}
 .lang{font:400 .85rem/1 var(--f-body); background:none; color:var(--muted); border:0; padding:.3rem 0; cursor:pointer; flex:none}
 .lang:hover{color:var(--fg)}
-.lang .ar{font-family:var(--ff-plex-arabic), system-ui, sans-serif; font-size:1rem}
+.lang .ar{font-family:var(--ff-almarai), system-ui, sans-serif; font-size:1rem}
 @media (max-width:900px){ .top .wrap{flex-wrap:wrap; gap:.6rem 1rem; justify-content:space-between; padding-block:1rem} nav.links{flex-basis:100%; justify-content:flex-start; order:3; gap:1.25rem} }
 
 .btn{display:inline-flex; align-items:center; gap:.6rem; font:400 .95rem/1 var(--f-body); padding:.95rem 1.4rem; border:1px solid var(--fg); background:var(--fg); color:var(--bg); text-decoration:none; cursor:pointer; border-radius:0}
@@ -487,7 +487,7 @@ a.lang{display:inline-block; text-decoration:none}
 .mf-ar .mf-cited figcaption{letter-spacing:0; font-size:.9rem}
 .mf-words p{margin:0}
 .mf-words .hl{color:var(--accent-ink)}
-.mf-ar p{font-family:var(--f-display); font-size:clamp(1.35rem, 2.6vw, 1.75rem); line-height:2}
+.mf-ar p{font-family:var(--f-display); font-size:clamp(1.3rem, 2.5vw, 1.65rem); line-height:1.8}
 .mf-en p{font-family:var(--f-display); font-size:clamp(1.2rem, 2.2vw, 1.45rem); line-height:1.6; font-weight:300}
 .mf-words .mf-lines{display:grid; gap:.2rem; font-family:var(--f-mono); font-size:clamp(1.1rem, 2vw, 1.35rem); line-height:1.6}
 .mf-ar .mf-lines{font-family:var(--f-body); font-weight:500}

@@ -434,8 +434,8 @@
 .cal-i .key { font-size: .625rem; }
 @media (max-width: 75rem) { .content-grid { grid-template-columns: minmax(0, 1fr) !important; } }
 @media (max-width: 47.5rem) { .cal-d { min-height: 4.5rem; padding: .25rem; } .cal-i .key { display: none; } }
-.nl-ar .rt { font-family: var(--ff-plex-arabic), system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.95; min-height: 24rem; }
-.nl-ar .rt h2 { font-family: var(--ff-amiri), serif; font-size: 1.75rem; line-height: 1.4; }
+.nl-ar .rt { font-family: var(--ff-almarai), system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.95; min-height: 24rem; }
+.nl-ar .rt h2 { font-family: var(--ff-almarai), system-ui, sans-serif; font-weight: 700; font-size: 1.75rem; line-height: 1.4; }
 .nl-en .rt { font-family: var(--ff-plex), system-ui, sans-serif; font-size: .9375rem; line-height: 1.7; min-height: 24rem; }
 .nl-en .rt h2 { font-family: var(--ff-newsreader), serif; font-size: 1.75rem; }
 
