@@ -75,9 +75,12 @@ test("a rejection reason reaches the agent's next brief", async ({ request, page
   const runId = /"run_id": "([0-9a-f-]{36})"/.exec(start)![1];
   const title = `Seed round ${Date.now()}`;
   await request.post("/api/agents/news/finish", { headers: auth, data: { run_id: runId, items: [{ kind: "story", title, body: "Small round.", score: 2 }] } });
-  await page.goto("/team/agents?agent=news");
+  // Stories go to the pool, not the review queue.
+  await page.goto("/team/agents?who=all&agent=news");
+  await expect(page.locator(".ag-item", { hasText: title })).toHaveCount(0);
+  await page.goto("/team/agents?tab=pool&by=day&agent=news");
   const card = page.locator(".ag-item", { hasText: title });
-  await card.getByRole("button", { name: "Reject" }).click();
+  await card.getByRole("button", { name: "Dismiss" }).click();
   await card.getByLabel(/Why\?/).fill("Rounds under $1M are not news for us");
   await card.getByRole("button", { name: "Reject" }).click();
   await expect(card).toBeHidden();
@@ -108,7 +111,41 @@ test("a teammate's request is answered to them, and the team page shows every ag
   await expect(page.locator(".ag-item", { hasText: "Open Arabic speech datasets" })).toContainText("Common Voice Arabic");
 
   await page.goto("/team/agents?tab=team");
-  await expect(page.locator(".ag-card")).toHaveCount(11); // the ten seeded agents plus Ecosystem Voices, added by the shift
+  await expect(page.locator(".ag-card")).toHaveCount(12); // the ten seeded agents plus Ecosystem Voices and the Coach, added by the shift
   await page.locator(".ag-card", { hasText: "Writer" }).getByRole("button", { name: "Settings" }).click();
   await expect(page.getByRole("dialog").getByLabel("Works for")).toBeVisible();
+});
+
+test("approving a person sets its type and next step, and ticked actions become tickets", async ({ request, page }) => {
+  const brief = await (await request.post("/api/agents/people/start", { headers: auth })).text();
+  const runId = /"run_id": "([0-9a-f-]{36})"/.exec(brief)![1];
+  const who = `Test Founder ${Date.now()}`;
+  await request.post("/api/agents/people/finish", { headers: auth, data: { run_id: runId, items: [{
+    kind: "person", title: who, body: "## Who\n**Founder** of Echelon. [Dealroom](https://example.com/echelon)\n\n## Best fit\n- Majlis guest\n- Talent partner",
+    data: { type: "Podcast guest", org: `Echelon ${Date.now()}`, actions: [{ title: `Invite ${who} to the Majlis`, due_on: "2026-12-01" }, { title: `Explore ${who}'s institute as a partner` }] },
+  }] } });
+  await page.goto("/team/agents?who=all");
+  const card = page.locator(".ag-item", { hasText: who });
+  await card.getByRole("button", { name: who }).click();
+  await expect(card.locator(".md h3", { hasText: "Who" })).toBeVisible(); // formatted, not raw Markdown
+  await expect(card.getByRole("link", { name: "Dealroom" })).toHaveAttribute("href", "https://example.com/echelon");
+  await card.getByRole("checkbox", { name: /Explore/ }).uncheck();
+  await card.getByRole("button", { name: "Approve to Relationships + 1 tickets" }).click();
+  await expect(card).toBeHidden();
+  const db = admin();
+  const { data: rel } = await db.from("relationships").select("id,type,next_step,next_due").eq("name", who).single();
+  expect(rel).toMatchObject({ type: "Podcast guest", next_step: `Invite ${who} to the Majlis`, next_due: "2026-12-01" });
+  const { data: tickets } = await db.from("tickets").select("title").eq("source_ref", rel!.id);
+  expect(tickets!.map((t) => t.title)).toEqual([`Invite ${who} to the Majlis`]);
+});
+
+test("the Coach's proposal, once approved, becomes the agent's lessons", async ({ request, page }) => {
+  const brief = await (await request.post("/api/agents/coach/start", { headers: auth })).text();
+  expect(brief).toContain("How each agent's work was judged");
+  const runId = /"run_id": "([0-9a-f-]{36})"/.exec(brief)![1];
+  const rule = `Skip rounds under $1M (${Date.now()})`;
+  await request.post("/api/agents/coach/finish", { headers: auth, data: { run_id: runId, items: [{ kind: "insight", title: "Coach: Growth Analyst", body: "Two rejections asked for this.", data: { apply_lessons: { agent: "growth", lessons: rule } } }] } });
+  await page.goto("/team/agents?who=all&agent=coach");
+  await page.locator(".ag-item", { hasText: "Coach: Growth Analyst" }).last().getByRole("button", { name: "Apply to growth" }).click();
+  await expect.poll(async () => (await admin().from("agents").select("lessons").eq("key", "growth").single()).data?.lessons).toBe(rule);
 });

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Rebuilds public/fonts/amiri-* and plex-arabic-*, the self-hosted Arabic faces (see styles/fonts.css).
+"""Rebuilds public/fonts/almarai-*, the self-hosted Arabic face (see styles/fonts.css). Amiri and IBM Plex Sans Arabic
+were the faces before Almarai and can still be rebuilt by name.
 
 The Latin subsets are Google Fonts' files as served. The Arabic subset is cut down to the core Arabic block,
 with every OpenType feature kept so shaping and ligatures are unchanged: that drops the Persian, Urdu and
 Quranic extensions and makes the files about a third smaller. The newsreader-* files are Google's as served.
 
     python3 -m venv .venv && .venv/bin/pip install fonttools brotli
-    .venv/bin/python scripts/subset-fonts.py
+    .venv/bin/python scripts/subset-fonts.py            # almarai
+    .venv/bin/python scripts/subset-fonts.py amiri      # any family below by name
 
 After a change, bump ?v= in styles/fonts.css and lib/fonts.ts: /fonts is cached as immutable.
 """
@@ -19,7 +21,7 @@ import urllib.request
 
 # Keep in step with the unicode-range of the *-arabic faces in styles/fonts.css.
 UNICODES = "U+0600-06FF,U+200C-200F,U+FE70-FEFF"
-FAMILIES = {"amiri": ("Amiri", [400, 700]), "plex-arabic": ("IBM+Plex+Sans+Arabic", [300, 400, 500, 600])}
+FAMILIES = {"almarai": ("Almarai", [300, 400, 700, 800]), "amiri": ("Amiri", [400, 700]), "plex-arabic": ("IBM+Plex+Sans+Arabic", [300, 400, 500, 600])}
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
 OUT = pathlib.Path(__file__).resolve().parent.parent / "public" / "fonts"
 
@@ -30,6 +32,8 @@ def get(url: str) -> bytes:
 
 
 for slug, (family, weights) in FAMILIES.items():
+    if slug not in (sys.argv[1:] or ["almarai"]):
+        continue
     css = get(f"https://fonts.googleapis.com/css2?family={family}:wght@{';'.join(map(str, weights))}&display=swap").decode()
     # Google labels each @font-face with a /* subset */ comment.
     for subset, weight, url in re.findall(r"/\* ([a-z-]+) \*/\s*@font-face\s*{[^}]*?font-weight:\s*(\d+);[^}]*?src:\s*url\(([^)]+)\)", css):

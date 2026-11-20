@@ -47,5 +47,5 @@ async function withSession(req: NextRequest, res: NextResponse) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/|favicon.ico|icon|apple-icon|manifest.webmanifest|robots.txt|sitemap.xml|opengraph-image|.*\\.(?:png|jpg|jpeg|svg|webp|ico|txt|xml|webmanifest|js|css|woff2?)$).*)"],
+  matcher: ["/((?!_next/|favicon.ico|icon|apple-icon|manifest.webmanifest|robots.txt|sitemap.xml|opengraph-image|.*\\.(?:png|jpg|jpeg|svg|webp|ico|txt|xml|webmanifest|js|css|woff2?|vtt|mp4|webm)$).*)"],
 };

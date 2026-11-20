@@ -1,4 +1,5 @@
 "use client";
+import { Md } from "@/components/ui/Md";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
@@ -76,7 +77,7 @@ export function Relationships({ lang, rows, people, projects }: { lang: TLang; r
           </div>
           <div className="sect-h">{lang === "ar" ? "الخط الزمني · من Outlook وTeams" : "Timeline · pulled from Outlook and Teams"}</div>
           <div className="feed">{cur.events.map((e, i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "3.5rem minmax(0,1fr)", gap: ".75rem" }}><span className="key">{dueLabel(lang, e.happened_at.slice(0, 10)).text}</span><span className="stack-t"><span>{e.what}</span><span className="s">{e.via}</span></span></div>
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "3.5rem minmax(0,1fr)", gap: ".75rem" }}><span className="key">{dueLabel(lang, e.happened_at.slice(0, 10)).text}</span><span className="stack-t"><Md text={e.what} className="md md-sm" /><span className="s">{e.via}</span></span></div>
           ))}</div>
           <form onSubmit={(e) => { e.preventDefault(); const f = e.currentTarget; const v = String(new FormData(f).get("note") || "").trim(); if (v) start(async () => { await addRelationshipEvent(cur.id, v); f.reset(); toast(tt(lang, "saved")); router.refresh(); }); }}>
             <input name="note" className="inp" placeholder={lang === "ar" ? "أضف ملاحظة للخط الزمني" : "Add a note to the timeline"} aria-label={lang === "ar" ? "ملاحظة" : "Note"} />

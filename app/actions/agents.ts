@@ -21,7 +21,12 @@ const decision = z.object({
   title: z.string().trim().min(1).max(300).optional(),
   body: z.string().max(20000).optional(),
   feedback: z.string().trim().max(1000).default(""),
+  actions: z.array(z.number().int().min(0).max(20)).max(20).optional(), // which suggested actions to turn into tickets
 });
+
+const action = z.object({ title: z.string().trim().min(1).max(300), due_on: date }).passthrough();
+/** The actions an agent suggested on an item, cleaned up. */
+const suggested = (d: Record<string, unknown>) => (Array.isArray(d.actions) ? d.actions : []).slice(0, 20).map((a) => action.safeParse(typeof a === "string" ? { title: a } : a)).flatMap((r) => (r.success ? [r.data] : []));
 
 /**
  * Approve sends the draft where the team works: a post to the Content calendar, a newsletter draft to Newsletter, a
@@ -40,7 +45,12 @@ export async function decideItem(input: z.input<typeof decision>) {
   const edited = title !== item.title || body !== item.body;
   let routed: { type: string; id: string } | null = null;
 
-  if (v.action === "approve" && !item.routed_id) routed = await route(db, me.id, { ...item, title, body });
+  if (v.action === "approve" && !item.routed_id) {
+    routed = await route(db, me.id, { ...item, title, body });
+    const picked = suggested(item.data || {}).filter((_, i) => (v.actions ?? []).includes(i));
+    if (picked.length) await createActions(db, me.id, { ...item, title }, picked, routed);
+    await applyLessons(db, me.id, item);
+  }
   const status = v.action === "approve" ? "approved" : v.action === "reject" ? "rejected" : v.action === "done" ? "done" : "new";
   const { error } = await db.from("agent_items").update({
     status, title, body, edited: item.edited || edited, feedback: v.action === "reopen" ? item.feedback : v.feedback || item.feedback,
@@ -53,6 +63,30 @@ export async function decideItem(input: z.input<typeof decision>) {
 }
 
 type Db = Awaited<ReturnType<typeof supabaseServer>>;
+
+/** Ticked actions become tickets for the desk owner; on a relationship, the first one is also its next step. */
+async function createActions(db: Db, meId: string, item: Item, picked: z.infer<typeof action>[], routed: { type: string; id: string } | null) {
+  const { data: agent } = await db.from("agents").select("name,owner_id").eq("key", item.agent_key).single();
+  const owner = (agent?.owner_id as string | null) || meId;
+  const about = routed?.type === "relationship" ? `relationship ${item.title}` : item.title;
+  for (const a of picked) {
+    const { data, error } = await db.from("tickets").insert({
+      title: a.title.slice(0, 300), status: "todo", assignee_id: owner, due_on: a.due_on ?? null, source: "agent", source_ref: routed?.id ?? item.id,
+      description: textToDoc(`Suggested by ${agent?.name ?? "an agent"} for ${about}.\n\nOpen it in Agents: /team/agents?item=${item.id}`),
+    }).select("id").single();
+    if (error) throw new Error(error.message);
+    await logActivity(db, meId, "ticket", data.id, "created", { from: "agent", agent: item.agent_key });
+  }
+  if (routed?.type === "relationship") await db.from("relationships").update({ next_step: picked[0].title.slice(0, 300), next_due: picked[0].due_on ?? null }).eq("id", routed.id);
+}
+
+/** The Coach proposes new lessons for an agent; approving the proposal applies them. */
+async function applyLessons(db: Db, meId: string, item: Item) {
+  const p = (item.data || {}).apply_lessons as { agent?: unknown; lessons?: unknown } | undefined;
+  if (!p || typeof p.agent !== "string" || typeof p.lessons !== "string" || !p.lessons.trim()) return;
+  const { data, error } = await db.from("agents").update({ lessons: p.lessons.slice(0, 8000), updated_by: meId }).eq("key", p.agent).select("key");
+  if (error || !data?.length) throw new Error("Only that agent's desk owner or an admin can change what it has learned.");
+}
 async function route(db: Db, meId: string, item: Item): Promise<{ type: string; id: string } | null> {
   const d = item.data || {};
   const srcs = item.sources.map((s) => `- ${s.title ? s.title + ": " : ""}${s.url}${s.date ? ` (${s.date})` : ""}`).join("\n");

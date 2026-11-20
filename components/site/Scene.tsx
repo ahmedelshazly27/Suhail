@@ -4,7 +4,7 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 import { DRAW, RAMP } from "./scene-draw";
 
-export type SceneKind = "home" | "skyline" | "astrolabe" | "tent" | "pattern" | "house" | "dhow" | "dallah" | "rise";
+export type SceneKind = "home" | "skyline" | "astrolabe" | "tent" | "pattern" | "house" | "dhow" | "dallah" | "rise" | "dunes";
 
 type S = { cv: HTMLCanvasElement; kind: SceneKind; hi: HTMLCanvasElement; lo: HTMLCanvasElement; vis: boolean; cols: number; rows: number; cw: number; ch: number; dpr: number; font: string; sc: string; hi2: string; ac: string };
 const list = new Set<S>();

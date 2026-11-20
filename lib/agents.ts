@@ -17,7 +17,9 @@ export const SHIFT_HOUR: Record<Shift, string> = { early: "05:00", morning: "08:
 export const MODELS = ["haiku", "sonnet", "opus"] as const;
 export const KINDS = ["brief", "story", "post", "newsletter", "lead", "person", "grant", "project", "event", "insight", "task", "answer"] as const;
 export type Kind = (typeof KINDS)[number];
-export const SECTIONS = ["plan", "relationships", "content", "stories", "projects", "tickets", "events", "metrics", "agents"] as const;
+export const SECTIONS = ["plan", "relationships", "content", "stories", "projects", "tickets", "events", "metrics", "agents", "performance"] as const;
+/** Kinds that go to the pool (browsed by day, week or month) rather than the review queue. */
+export const POOL_KINDS = ["story", "insight"] as const;
 export type Section = (typeof SECTIONS)[number];
 
 export type Agent = {
@@ -124,12 +126,31 @@ export async function section(name: Section, opts: { q?: string; limit?: number;
       (data || []).filter((c) => match(c.title)).slice(0, lim).map((c) => `- ${c.publish_on || "no date"} · ${c.channel} · ${c.status} · ${c.title}`).join("\n");
   }
   if (name === "stories") {
-    const since = new Date(Date.now() - 10 * 864e5).toISOString();
-    const { data } = await db.from("agent_items").select("id,title,body,sources,score,status,created_at").eq("kind", "story").gte("created_at", since)
-      .or("status.eq.approved,and(status.eq.new,score.gte.4)").order("created_at", { ascending: false }).limit(60);
-    return "Stories from the News Scout (approved, or new and scored 4+), newest first:\n" +
-      (data || []).filter((s) => match(s.title, s.body)).slice(0, Math.min(lim, 25)).map((s) =>
-        `### ${s.title} [${s.status}${s.score ? `, ${s.score}/5` : ""}, ${d10(s.created_at)}]\n${clip(s.body, 700)}\nSource: ${((s.sources as { url: string }[]) || []).map((x) => x.url).slice(0, 2).join(" ") || "-"}`).join("\n\n");
+    // The pool: what every agent found this week (stories and insights), picked ones first, dismissed ones out.
+    const since = new Date(Date.now() - 8 * 864e5).toISOString();
+    const { data } = await db.from("agent_items").select("id,agent_key,kind,title,body,sources,score,status,created_at").in("kind", [...POOL_KINDS]).neq("agent_key", "coach")
+      .in("status", ["new", "approved"]).gte("created_at", since).order("created_at", { ascending: false }).limit(200);
+    const rows = (data || []).filter((s) => match(s.title, s.body))
+      .sort((a, b) => Number(b.status === "approved") - Number(a.status === "approved") || (b.score ?? 0) - (a.score ?? 0)).slice(0, Math.min(lim, 40));
+    return "The pool: stories and insights from all agents in the last 8 days (picked = Ahmed starred it). Cite an item by its id.\n" +
+      rows.map((s) => `### ${s.title}\nid ${s.id} · ${s.agent_key} · ${s.kind} · ${s.status === "approved" ? "PICKED" : "in pool"}${s.score ? ` · ${s.score}/5` : ""} · ${d10(s.created_at)}\n${clip(s.body, 600)}\nSource: ${((s.sources as { url: string }[]) || []).map((x) => x.url).slice(0, 2).join(" ") || "-"}`).join("\n\n");
+  }
+  if (name === "performance") {
+    const since = new Date(Date.now() - 30 * 864e5).toISOString();
+    const [{ data: agents }, { data: items }] = await Promise.all([
+      db.from("agents").select("key,name,enabled,model,days,shift,lessons").order("sort"),
+      db.from("agent_items").select("agent_key,kind,status,edited,feedback,title,decided_at").gte("created_at", since).limit(3000),
+    ]);
+    return "How each agent's work was judged in the last 30 days (picked = approved; dismissed = rejected):\n\n" + (agents || []).map((a) => {
+      const mine = (items || []).filter((i) => i.agent_key === a.key);
+      const n = (st: string) => mine.filter((i) => i.status === st).length;
+      const reasons = mine.filter((i) => i.status === "rejected" && i.feedback).slice(0, 12).map((i) => `  - "${clip(i.title, 70)}": ${i.feedback}`);
+      const kinds = [...new Set(mine.map((i) => i.kind))].map((k) => `${k} ${mine.filter((i) => i.kind === k).length}`).join(", ");
+      return [`## ${a.name} (${a.key})${a.enabled ? "" : " [paused]"} · ${a.model} · days ${a.days.join(",")} · ${a.shift}`,
+        `Filed ${mine.length} (${kinds || "none"}). Approved ${n("approved")}, edited before approval ${mine.filter((i) => i.edited).length}, rejected ${n("rejected")}, done ${n("done")}, still unreviewed ${n("new")}.`,
+        reasons.length ? "Rejection reasons:\n" + reasons.join("\n") : "No rejection reasons.",
+        `Current lessons:\n${a.lessons ? clip(a.lessons, 1500) : "(none)"}`].join("\n");
+    }).join("\n\n");
   }
   if (name === "projects") {
     const { data } = await db.from("projects").select("name,status,target_date").neq("status", "done").order("sort");
@@ -206,10 +227,14 @@ report.json:
     { "kind": "story|post|newsletter|lead|person|grant|project|event|insight|task|answer|brief",
       "title": "short and specific", "body": "Markdown", "score": 1-5,
       "sources": [{ "url": "https://...", "title": "...", "date": "YYYY-MM-DD" }],
-      "data": { }, "request_id": "only for answers to a request" }
+      "data": { "actions": [{ "title": "Invite to the Majlis podcast", "due_on": "YYYY-MM-DD" }] },
+      "request_id": "only for answers to a request" }
   ]
 }
 \`\`\`
+How to write "body": readable at a glance on a phone. Short sections, each a "## Heading" or a **bold label** on its own line, then one to three short lines or a bullet list. Links as [title](https://...). Never one long paragraph.
+"data.actions": the concrete next steps you recommend, as short imperative titles with an optional due date (e.g. "Invite to the Majlis as a guest on the last mile of AI", "Explore the training institute as a talent-network partner"). Each ticked action becomes a ticket when the item is approved, and the first one becomes the relationship's next step. Only real, specific actions; none is fine.
+
 The reply says how many items were saved, or what to fix. Fix and send again if it reports an error. "items" can be empty.
 If you hit a problem you cannot get past, send {"run_id": "${runId}", "failed": "what went wrong"}.
 
