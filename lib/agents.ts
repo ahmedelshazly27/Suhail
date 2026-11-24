@@ -234,6 +234,7 @@ report.json:
 \`\`\`
 How to write "body": readable at a glance on a phone. Short sections, each a "## Heading" or a **bold label** on its own line, then one to three short lines or a bullet list. Links as [title](https://...). Never one long paragraph.
 "data.actions": the concrete next steps you recommend, as short imperative titles with an optional due date (e.g. "Invite to the Majlis as a guest on the last mile of AI", "Explore the training institute as a talent-network partner"). Each ticked action becomes a ticket when the item is approved, and the first one becomes the relationship's next step. Only real, specific actions; none is fine.
+For a "lead" or "person": add "data.email_draft": {"subject": "...", "body": "..."}, the first email Ahmed would send them. Under 120 words, specific to them (what they did, why Suhail, one clear ask), in the language they work in (Gulf Arabic or English), plain text, no greeting fluff, no flattery, and no signature (it is added automatically). Put a public contact address in "data.contact.email" only when they or their organisation publish it (a partnerships@ address, a press page, their own site); never guess or construct one. On approval the email goes to Ahmed's Outlook Drafts, signed, for him to send.
 
 The reply says how many items were saved, or what to fix. Fix and send again if it reports an error. "items" can be empty.
 If you hit a problem you cannot get past, send {"run_id": "${runId}", "failed": "what went wrong"}.

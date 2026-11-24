@@ -16,6 +16,8 @@ export interface MailProvider {
   list(mailbox: string): Promise<MailMsg[]>;
   get(mailbox: string, id: string): Promise<MailBody | null>;
   reply(mailbox: string, id: string, text: string): Promise<void>;
+  /** A new message in this person's own Outlook: saved to Drafts, and sent when send is true. */
+  compose(m: { to: string; subject: string; html: string; send: boolean }): Promise<{ id: string; webLink: string }>;
 }
 
 const SHARED = (process.env.SHARED_MAILBOXES || "hello@suhail.build,partners@suhail.build,tasks@suhail.build").split(",").map((s) => s.trim()).filter(Boolean);
@@ -47,6 +49,14 @@ class GraphMail implements MailProvider {
     // Sent through Outlook, so it lands in Sent Items of that mailbox.
     await graph(this.token, `${root(mb)}/messages/${id}/reply`, { method: "POST", body: JSON.stringify({ comment: text }) });
   }
+  async compose(m: { to: string; subject: string; html: string; send: boolean }) {
+    // Always created as a draft first, so a sent message has the same id and link as the draft it came from.
+    const d = await graph<{ id: string; webLink: string }>(this.token, "/me/messages", { method: "POST", body: JSON.stringify({
+      subject: m.subject, body: { contentType: "HTML", content: m.html }, toRecipients: [{ emailAddress: { address: m.to } }],
+    }) });
+    if (m.send) await graph(this.token, `/me/messages/${d.id}/send`, { method: "POST" });
+    return { id: d.id, webLink: d.webLink };
+  }
 }
 
 const ago = (h: number) => new Date(Date.now() - h * 36e5).toISOString();
@@ -69,6 +79,7 @@ class SampleMail implements MailProvider {
   async list(mb: string) { return SAMPLE.filter((m) => m.mailbox === mb); }
   async get(mb: string, id: string) { return SAMPLE.find((m) => m.mailbox === mb && m.id === id) ?? null; }
   async reply() { throw new Error("Replies are sent through Outlook once Microsoft 365 is connected."); }
+  async compose(): Promise<{ id: string; webLink: string }> { throw new Error("Emails go through your Outlook once Microsoft 365 is connected."); }
 }
 
 export async function mail(profileId: string): Promise<MailProvider> {

@@ -60,6 +60,9 @@ export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart, 
   const acts = actionsOf(item.data || {});
   const [ticked, setTicked] = useState<number[]>(() => acts.map((_, i) => i));
   const lessonsFor = (item.data?.apply_lessons as { agent?: string } | undefined)?.agent;
+  const ed = item.data?.email_draft as { subject?: unknown; body?: unknown } | undefined;
+  const emailDraft = ed && typeof ed.subject === "string" && typeof ed.body === "string" ? { subject: ed.subject, body: ed.body } : null;
+  const emailTo = String((item.data?.contact as { email?: unknown } | undefined)?.email ?? item.data?.email ?? "") || "";
   const dest = DEST[item.kind], routed = item.routed_type ? ROUTE_L[item.routed_type] : null;
   const meta = [item.data.channel, item.data.lang, item.data.publish_on && `${L(lang, "publish", "نشر")} ${item.data.publish_on}`, item.data.due_on && `${L(lang, "due", "موعد")} ${item.data.due_on}`, item.data.org !== item.title && item.data.org].filter(Boolean).map(String);
   const approve = (title?: string, body?: string) => run(() => decideItem({ id: item.id, action: "approve", title, body, actions: ticked }), dest ? `${L(lang, "Sent to", "انرسل إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approved", "تمام، اعتمدناه"));
@@ -84,6 +87,14 @@ export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart, 
           ) : <Md text={item.body} />}
           {item.sources.length ? (
             <ul className="ag-src">{item.sources.map((s, i) => <li key={i}><a href={s.url} target="_blank" rel="noreferrer" dir="auto">{s.title || s.url.replace(/^https?:\/\/(www\.)?/, "").slice(0, 70)}</a>{s.date ? <span className="muted"> · {s.date}</span> : null}</li>)}</ul>
+          ) : null}
+          {emailDraft ? (
+            <section className="ag-mail" aria-label={L(lang, "First email", "أول إيميل")}>
+              <span className="ag-mail-h">{L(lang, "First email", "أول إيميل")} · {emailTo ? <span dir="ltr">{emailTo}</span> : <span className="muted">{L(lang, "no public address yet", "ما فيه عنوان منشور للحين")}</span>}</span>
+              <b dir="auto">{emailDraft.subject}</b>
+              <p className="pre" dir="auto">{emailDraft.body}</p>
+              <span className="muted ag-mail-n">{emailTo ? L(lang, "Approving puts it in your Outlook Drafts with your signature. You send it.", "لما تعتمد، ينحط في مسودات Outlook مع توقيعك. وإنت اللي ترسله.") : L(lang, "Approving keeps it on the relationship until you add their email.", "لما تعتمد، ينحفظ في العلاقة لين تضيف إيميلهم.")}</span>
+            </section>
           ) : null}
           {acts.length ? (
             <fieldset className="ag-acts" disabled={item.status !== "new" || !canDecide}>
@@ -127,7 +138,7 @@ export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart, 
               </>
             ) : (
               <>
-                <button type="button" className="b" disabled={pending} onClick={() => approve()}>{dest ? `${L(lang, "Approve to", "اعتمد إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approve", "اعتمد")}{ticked.length && acts.length ? ` + ${ticked.length} ${L(lang, "tickets", "مهام")}` : ""}</button>
+                <button type="button" className="b" disabled={pending} onClick={() => approve()}>{dest ? `${L(lang, "Approve to", "اعتمد إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approve", "اعتمد")}{ticked.length && acts.length ? ` + ${ticked.length} ${L(lang, "tickets", "مهام")}` : ""}{emailDraft && emailTo ? ` + ${L(lang, "Outlook draft", "مسودة Outlook")}` : ""}</button>
                 <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("edit"); }}>{L(lang, "Edit", "عدّل")}</button>
                 <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("reject"); }}>{L(lang, "Reject", "ارفض")}</button>
               </>

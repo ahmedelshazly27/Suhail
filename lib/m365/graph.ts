@@ -39,5 +39,6 @@ export async function appToken(): Promise<string> {
 export async function graph<T>(token: string, path: string, init: RequestInit = {}): Promise<T> {
   const r = await fetch(path.startsWith("http") ? path : `https://graph.microsoft.com/v1.0${path}`, { ...init, headers: { authorization: `Bearer ${token}`, "content-type": "application/json", ...(init.headers || {}) } });
   if (!r.ok) throw new Error(`graph ${r.status} ${path}`);
-  return (r.status === 204 ? null : await r.json()) as T;
+  const body = r.status === 204 ? "" : await r.text(); // send and some actions answer 202 with no body
+  return (body ? JSON.parse(body) : null) as T;
 }

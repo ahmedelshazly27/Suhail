@@ -1,7 +1,8 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { isAdmin, requireMe } from "@/lib/auth";
+import { isAdmin, requireMe, type Me } from "@/lib/auth";
+import { writeEmail } from "@/lib/outreach";
 import { logActivity } from "@/lib/activity";
 import { hashKey, MODELS, newKey, SECTIONS, SHIFTS, textToDoc, type Item } from "@/lib/agents";
 import { supabaseAdmin, supabaseServer } from "@/lib/supabase/server";
@@ -49,6 +50,7 @@ export async function decideItem(input: z.input<typeof decision>) {
     routed = await route(db, me.id, { ...item, title, body });
     const picked = suggested(item.data || {}).filter((_, i) => (v.actions ?? []).includes(i));
     if (picked.length) await createActions(db, me.id, { ...item, title }, picked, routed);
+    if (routed?.type === "relationship") await draftFirstEmail(db, me, item, routed.id);
     await applyLessons(db, me.id, item);
   }
   const status = v.action === "approve" ? "approved" : v.action === "reject" ? "rejected" : v.action === "done" ? "done" : "new";
@@ -78,6 +80,23 @@ async function createActions(db: Db, meId: string, item: Item, picked: z.infer<t
     await logActivity(db, meId, "ticket", data.id, "created", { from: "agent", agent: item.agent_key });
   }
   if (routed?.type === "relationship") await db.from("relationships").update({ next_step: picked[0].title.slice(0, 300), next_due: picked[0].due_on ?? null }).eq("id", routed.id);
+}
+
+/**
+ * An approved lead's first email: in the approver's Outlook Drafts (signed) when the agent found a public address for
+ * them, otherwise kept on the relationship's timeline until someone adds the address. Never sent from here.
+ */
+async function draftFirstEmail(db: Db, me: Me, item: Item, relationshipId: string) {
+  const d = (item.data || {}) as { email_draft?: { subject?: unknown; body?: unknown }; contact?: { email?: unknown }; email?: unknown };
+  const subject = str(d.email_draft?.subject, 200), body = typeof d.email_draft?.body === "string" ? d.email_draft.body.trim().slice(0, 20000) : "";
+  if (!subject || !body) return;
+  const to = z.string().trim().toLowerCase().email().safeParse(d.contact?.email ?? d.email);
+  const { data: agent } = await db.from("agents").select("name").eq("key", item.agent_key).single();
+  if (to.success) {
+    try { await writeEmail(db, me, { relationship_id: relationshipId, to: to.data, subject, body, send: false }, `Drafted by ${agent?.name ?? "an agent"}`); return; }
+    catch { /* Outlook not reachable: keep the draft on the timeline instead */ }
+  }
+  await db.from("relationship_events").insert({ relationship_id: relationshipId, what: `First email, ready to send: **${subject}**\n\n${body}`, via: `email-draft · ${agent?.name ?? "agent"}` });
 }
 
 /** The Coach proposes new lessons for an agent; approving the proposal applies them. */

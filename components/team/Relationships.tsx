@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { addRelationshipEvent, saveRelationship } from "@/app/actions/workspace";
+import { emailRelationship } from "@/app/actions/outreach";
 import { Peek } from "@/components/ui/Peek";
 import { useToast } from "@/components/ui/Toast";
 import { ago, dueLabel, todayISO } from "@/lib/dates";
@@ -11,17 +12,60 @@ import { tt, type TLang } from "@/lib/team-i18n";
 import { Board } from "./Board";
 import type { Person, ProjectLite } from "@/lib/data/shell";
 
-export type Rel = { id: string; name: string; type: string; stage: string; owner_id: string | null; next_step: string; next_due: string | null; project_ids: string[]; value: number | null; last_contact_at: string | null; last_contact_via: string | null; events: { what: string; via: string; happened_at: string }[] };
+export type Rel = { id: string; name: string; type: string; stage: string; owner_id: string | null; next_step: string; next_due: string | null; project_ids: string[]; value: number | null; last_contact_at: string | null; last_contact_via: string | null; contact?: { name: string; email: string | null } | null; events: { what: string; via: string; happened_at: string }[] };
 const STAGES = ["Prospect", "Contacted", "In talks", "Confirmed", "Active", "Past"];
 const TYPES = ["Sponsor", "Partner", "Speaker", "Podcast guest", "Venue", "Judge"];
 const PLURAL: Record<string, [string, string]> = { Sponsor: ["Sponsors", "رعاة"], Partner: ["Partners", "شركاء"], Speaker: ["Speakers", "متحدثون"], "Podcast guest": ["Podcast guests", "ضيوف البودكاست"], Venue: ["Venues", "أماكن"], Judge: ["Judges", "حكّام"] };
 const stageDot = (s: string) => ({ Prospect: "var(--st-todo)", Contacted: "var(--muted)", "In talks": "var(--st-progress)", Confirmed: "var(--st-review)", Active: "var(--st-done)", Past: "var(--faint)" })[s];
 
-export function Relationships({ lang, rows, people, projects }: { lang: TLang; rows: Rel[]; people: Person[]; projects: ProjectLite[] }) {
+/** The newest first email an agent drafted for this relationship and nobody has sent yet, to start the composer. */
+function agentDraft(r: Rel) {
+  const e = r.events.find((x) => x.via.startsWith("email-draft"));
+  const m = e && /^First email, ready to send: \*\*(.+?)\*\*\n\n([\s\S]*)$/.exec(e.what);
+  return m ? { subject: m[1], body: m[2] } : null;
+}
+
+function EmailDialog({ lang, r, signature, onClose }: { lang: TLang; r: Rel; signature: string; onClose: () => void }) {
+  const router = useRouter(), toast = useToast();
+  const [pending, start] = useTransition();
+  const draft = agentDraft(r);
+  const L = (en: string, ar: string) => (lang === "ar" ? ar : en);
+  const go = (f: HTMLFormElement, send: boolean) => {
+    const d = new FormData(f);
+    start(async () => {
+      try {
+        const res = await emailRelationship({ relationship_id: r.id, to: String(d.get("to")), subject: String(d.get("subject")), body: String(d.get("body")), send });
+        toast(send ? L("Sent from your Outlook.", "انرسل من Outlook حقك.") : L("Saved in your Outlook Drafts.", "انحفظ في مسودات Outlook."));
+        if (!send && res.webLink) window.open(res.webLink, "_blank", "noopener");
+        onClose(); router.refresh();
+      } catch (e) { toast((e as Error).message || tt(lang, "error")); }
+    });
+  };
+  return (
+    <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()} onKeyDown={(e) => e.key === "Escape" && onClose()}>
+      <form className="dialog wide" role="dialog" aria-modal="true" aria-labelledby="em-h" onSubmit={(e) => { e.preventDefault(); go(e.currentTarget, false); }}>
+        <div style={{ display: "flex", alignItems: "center" }}><h2 id="em-h">{L(`Email ${r.name}`, `إيميل إلى ${r.name}`)}</h2><button type="button" className="x" aria-label={tt(lang, "close")} onClick={onClose}>×</button></div>
+        <label className="fld"><span>{L("To", "إلى")}</span><input name="to" type="email" required dir="ltr" defaultValue={r.contact?.email ?? ""} autoFocus={!r.contact?.email} /></label>
+        <label className="fld"><span>{L("Subject", "الموضوع")}</span><input name="subject" required maxLength={200} dir="auto" defaultValue={draft?.subject ?? ""} /></label>
+        <label className="fld"><span>{L("Message", "الرسالة")}</span><textarea name="body" required rows={10} dir="auto" defaultValue={draft?.body ?? ""} />
+          {draft ? <span className="help">{L("Started from the draft an agent wrote. Edit anything.", "بدأنا من مسودة كتبها وكيل. عدّل اللي تبي.")}</span> : null}</label>
+        <div className="fld"><span>{L("Your signature, added automatically", "توقيعك، ينضاف تلقائي")}</span><pre className="sig-prev">{signature}</pre></div>
+        <div className="row-btns">
+          <button className="b" disabled={pending}>{L("Save to Outlook Drafts", "احفظه في مسودات Outlook")}</button>
+          <button type="button" className="b quiet" disabled={pending} onClick={(e) => { const f = e.currentTarget.form!; if (f.reportValidity()) go(f, true); }}>{L("Send now", "أرسله الحين")}</button>
+          <button type="button" className="b ghost" onClick={onClose}>{tt(lang, "cancel")}</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export function Relationships({ lang, rows, people, projects, signature = "", canEmail = false }: { lang: TLang; rows: Rel[]; people: Person[]; projects: ProjectLite[]; signature?: string; canEmail?: boolean }) {
   const sp = useSearchParams(), path = usePathname(), router = useRouter(), toast = useToast();
   const [layout, setLayout] = useState<"table" | "board">("table");
   const [type, setType] = useState<string>("all");
   const [, start] = useTransition();
+  const [emailing, setEmailing] = useState(false);
   const id = sp.get("id");
   const today = todayISO();
   const overdue = (r: Rel) => !!r.next_due && r.next_due < today && r.stage !== "Past";
@@ -71,6 +115,10 @@ export function Relationships({ lang, rows, people, projects }: { lang: TLang; r
             <dt>{tt(lang, "project")}</dt><dd style={{ flexWrap: "wrap" }}>{projects.filter((p) => cur.project_ids.includes(p.id)).map((p) => <Link key={p.id} href={`/team/projects/${p.slug}`}>{p.name}</Link>)}
               <select className="chip-add" value="" aria-label={tt(lang, "project")} onChange={(e) => e.target.value && save(cur.id, { project_ids: [...cur.project_ids, e.target.value] })}><option value="">+</option>{projects.filter((p) => !cur.project_ids.includes(p.id)).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></dd>
           </dl>
+          <div className="rel-contact">
+            <span className="stack-t"><span>{cur.contact?.name ?? (lang === "ar" ? "ما فيه شخص مرتبط" : "No contact yet")}</span><span className="s" dir="ltr">{cur.contact?.email ?? (lang === "ar" ? "ما فيه إيميل" : "No email yet")}</span></span>
+            <button type="button" className="b" disabled={!canEmail} title={canEmail ? undefined : lang === "ar" ? "يشتغل بعد ربط Microsoft 365" : "Works once Microsoft 365 is connected"} onClick={() => setEmailing(true)}>{lang === "ar" ? "إيميل" : "Email"}{agentDraft(cur) ? (lang === "ar" ? " · مسودة جاهزة" : " · draft ready") : ""}</button>
+          </div>
           <div style={{ border: "1px solid var(--fg)", padding: ".875rem 1rem", display: "flex", flexDirection: "column", gap: ".5rem" }}>
             <span className="sect-h" style={{ border: 0, padding: 0 }}>{tt(lang, "nextStep")} · <input type="date" defaultValue={cur.next_due ?? ""} aria-label={tt(lang, "due")} style={{ border: 0, background: "transparent", font: "inherit", color: "inherit" }} onChange={(e) => save(cur.id, { next_due: e.target.value || null })} /></span>
             <textarea className="inline-title" style={{ font: "400 .875rem/1.5 var(--f-body)" }} rows={2} defaultValue={cur.next_step} aria-label={tt(lang, "nextStep")} onBlur={(e) => e.target.value !== cur.next_step && save(cur.id, { next_step: e.target.value })} />
@@ -84,6 +132,7 @@ export function Relationships({ lang, rows, people, projects }: { lang: TLang; r
           </form>
         </Peek>
       ) : null}
+      {cur && emailing ? <EmailDialog lang={lang} r={cur} signature={signature} onClose={() => setEmailing(false)} /> : null}
     </>
   );
 }

@@ -149,3 +149,25 @@ test("the Coach's proposal, once approved, becomes the agent's lessons", async (
   await page.locator(".ag-item", { hasText: "Coach: Growth Analyst" }).last().getByRole("button", { name: "Apply to growth" }).click();
   await expect.poll(async () => (await admin().from("agents").select("lessons").eq("key", "growth").single()).data?.lessons).toBe(rule);
 });
+
+test("an approved lead's first email waits on the relationship, signed, until there is an address", async ({ request, page }) => {
+  const brief = await (await request.post("/api/agents/partners/start", { headers: auth })).text();
+  expect(brief).toContain("data.email_draft");
+  const runId = /"run_id": "([0-9a-f-]{36})"/.exec(brief)![1];
+  const org = `Draft Co ${Date.now()}`;
+  await request.post("/api/agents/partners/finish", { headers: auth, data: { run_id: runId, items: [{
+    kind: "lead", title: org, body: "## Why now\nNew fund.", data: { org, type: "Partner", email_draft: { subject: "Suhail x Draft Co", body: "Hi team,\n\nShort and specific." } },
+  }] } });
+  await page.goto("/team/agents?who=all");
+  const card = page.locator(".ag-item", { hasText: org });
+  await card.getByRole("button", { name: org }).click();
+  await expect(card.locator(".ag-mail")).toContainText("Suhail x Draft Co");
+  await expect(card.locator(".ag-mail")).toContainText("no public address yet");
+  await card.getByRole("button", { name: /^Approve to Relationships/ }).click();
+  await expect(card).toBeHidden();
+  const { data: rel } = await admin().from("relationships").select("id").eq("name", org).single();
+  const { data: ev } = await admin().from("relationship_events").select("what,via").eq("relationship_id", rel!.id);
+  expect(ev!.some((e) => e.via.startsWith("email-draft") && e.what.includes("Suhail x Draft Co"))).toBe(true);
+  await page.goto(`/team/relationships?id=${rel!.id}`);
+  await expect(page.getByRole("button", { name: /Email · draft ready/ })).toBeVisible();
+});
