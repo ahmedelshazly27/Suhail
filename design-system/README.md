@@ -23,8 +23,8 @@ Suhail looks like a well-made printed page: warm paper, near-black ink and one o
 
 | Role | Latin | Arabic | Use |
 |---|---|---|---|
-| Display | Newsreader 300 | Amiri 400 | h1, h2, pull quotes, the manifesto |
-| Body | IBM Plex Sans 300/400/500 | IBM Plex Sans Arabic 300 to 600 | everything else |
+| Display | Newsreader 300 | Almarai 400 (700 for emphasis) | h1, h2, pull quotes, the manifesto |
+| Body | IBM Plex Sans 300/400/500 | Almarai 300/400/700 | everything else |
 | Mono | IBM Plex Mono 400 | (falls back to body) | eyebrows, numbers, ticket keys, dates, metadata |
 
 - Body text is weight 300 at 1.0625rem with 1.7 line height. In Arabic it's 1.1rem with 1.95.

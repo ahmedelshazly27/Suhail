@@ -94,6 +94,8 @@ const DRAW = {
     [[-.95, .22], [-.7, .18]].forEach(([dx, z]) => { const fx = cx + dx*s, fy = b; c.fillStyle = W+".8)"; c.beginPath(); c.moveTo(fx - s*z*.5, fy - s*z*.6); c.lineTo(fx + s*z*.5, fy - s*z*.6); c.lineTo(fx + s*z*.32, fy); c.lineTo(fx - s*z*.32, fy); c.fill(); });
     for (let i = 0; i < 3; i++){ c.strokeStyle = W + (.35 - i*.08) + ")"; c.lineWidth = 3; c.beginPath(); const ox = cx - s*.52 + i*14; for (let y = 0; y < s*.5; y += 4){ const x = ox + Math.sin(y*.04 - t*2 + i)*12; y ? c.lineTo(x, b - s*.85 - y) : c.moveTo(x, b - s*.85 - y); } c.stroke(); }
     rect(c, 0, b, w, 3, .35); glow(c, w*.25, h*.4, h*.25, .12 + .04*Math.sin(t), true); },
+  dunes(c, w, h, t){ stars(c, w, h, t, 140, 41, .6); const sx = w*.5, sy = h*.3 - Math.sin(t*.25)*3;
+    glow(c, sx, sy, h*.32, .32 + .05*Math.sin(t*.8), true); star4(c, sx, sy, h*.1, A+"1)"); glow(c, sx, sy, h*.07, .9, true); dunes(c, w, h, h*.62, 3, t); },
   rise(c, w, h, t){ stars(c, w, h, t, 120, 31, .9); const hz = h*.86, sx = w*.5, sy = hz - h*.18 - Math.sin(t*.25)*4;
     glow(c, sx, sy, h*.55, .35, true); c.strokeStyle = A+".7)"; c.lineWidth = 2; for (let i = 0; i < 16; i++){ const a = i*Math.PI/8; c.beginPath(); c.moveTo(sx + Math.cos(a)*h*.12, sy + Math.sin(a)*h*.12); c.lineTo(sx + Math.cos(a)*h*(.2 + (i%2)*.14), sy + Math.sin(a)*h*(.2 + (i%2)*.14)); c.stroke(); }
     star4(c, sx, sy, h*.13, A+"1)"); rect(c, 0, hz, w, 3, .7); c.fillStyle = W+".25)"; c.fillRect(0, hz + 3, w, h - hz); }

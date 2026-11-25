@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireMe } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { addDays, todayISO } from "@/lib/dates";
+import { signatureText } from "@/lib/email/signature";
 import { mail } from "@/lib/m365/mail";
 import { notifyPeople } from "@/lib/notify";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -23,7 +24,7 @@ async function linkRow(me: { id: string }, mailbox: string, id: string, extra: R
 export async function replyToMail(input: { mailbox: string; id: string; text: string }) {
   const me = await requireMe();
   const v = ref.extend({ text: z.string().trim().min(1).max(20000) }).parse(input);
-  await (await mail(me.id)).reply(v.mailbox, v.id, v.text);
+  await (await mail(me.id)).reply(v.mailbox, v.id, `${v.text}\n\n${signatureText(me)}`);
 }
 
 export async function ticketFromMail(input: { mailbox: string; id: string; project_id?: string | null }) {
