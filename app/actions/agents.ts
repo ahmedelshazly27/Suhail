@@ -2,7 +2,6 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { isAdmin, requireMe, type Me } from "@/lib/auth";
-import { writeEmail } from "@/lib/outreach";
 import { logActivity } from "@/lib/activity";
 import { hashKey, MODELS, newKey, SECTIONS, SHIFTS, textToDoc, type Item } from "@/lib/agents";
 import { supabaseAdmin, supabaseServer } from "@/lib/supabase/server";
@@ -86,17 +85,36 @@ async function createActions(db: Db, meId: string, item: Item, picked: z.infer<t
  * An approved lead's first email: in the approver's Outlook Drafts (signed) when the agent found a public address for
  * them, otherwise kept on the relationship's timeline until someone adds the address. Never sent from here.
  */
+/**
+ * An approved lead or person goes to Outreach: the agent's reasoning, the contact and its first email, ready to
+ * edit and send from Outlook with a signature. Nothing is sent until someone presses Send there.
+ */
 async function draftFirstEmail(db: Db, me: Me, item: Item, relationshipId: string) {
-  const d = (item.data || {}) as { email_draft?: { subject?: unknown; body?: unknown }; contact?: { email?: unknown }; email?: unknown };
+  const d = (item.data || {}) as { email_draft?: { subject?: unknown; body?: unknown }; contact?: { email?: unknown; name?: unknown; title?: unknown; url?: unknown }; email?: unknown; next_step?: unknown; url?: unknown; actions?: { title?: unknown }[] };
   const subject = str(d.email_draft?.subject, 200), body = typeof d.email_draft?.body === "string" ? d.email_draft.body.trim().slice(0, 20000) : "";
-  if (!subject || !body) return;
   const to = z.string().trim().toLowerCase().email().safeParse(d.contact?.email ?? d.email);
+  const link = (u: unknown) => (z.string().url().safeParse(u).success ? String(u).slice(0, 1000) : null);
   const { data: agent } = await db.from("agents").select("name").eq("key", item.agent_key).single();
+  const { data: cur } = await db.from("outreach").select("status").eq("relationship_id", relationshipId).maybeSingle();
+  if (cur && cur.status !== "ready") return; // already handled there
+  const row = {
+    relationship_id: relationshipId, batch: `agent:${item.agent_key}`, segment: `Found by ${agent?.name ?? "an agent"}`,
+    priority: (item.score ?? 3) >= 4 ? 1 : (item.score ?? 3) >= 3 ? 2 : 3,
+    why_them: item.body.slice(0, 4000), why_us: "", ask: (str(d.next_step, 1000) || str(d.actions?.[0]?.title, 1000) || "").slice(0, 1000),
+    sources: item.sources.map((x) => x.url).filter(Boolean).slice(0, 20),
+    contact_name: str(d.contact?.name, 160) || null, contact_role: str(d.contact?.title, 160) || null, linkedin: link(d.contact?.url) ?? link(d.url),
+    subject, body, created_by: me.id,
+  };
+  const { error } = cur ? await db.from("outreach").update(row).eq("relationship_id", relationshipId) : await db.from("outreach").insert(row);
+  if (error) throw new Error(error.message);
   if (to.success) {
-    try { await writeEmail(db, me, { relationship_id: relationshipId, to: to.data, subject, body, send: false }, `Drafted by ${agent?.name ?? "an agent"}`); return; }
-    catch { /* Outlook not reachable: keep the draft on the timeline instead */ }
+    const { data: rel } = await db.from("relationships").select("contact_id,organisation_id,name").eq("id", relationshipId).single();
+    if (rel?.contact_id) await db.from("contacts").update({ email: to.data }).eq("id", rel.contact_id).is("email", null);
+    else if (rel) {
+      const { data: c } = await db.from("contacts").insert({ name: row.contact_name || rel.name, email: to.data, title: row.contact_role || "", organisation_id: rel.organisation_id }).select("id").single();
+      if (c) await db.from("relationships").update({ contact_id: c.id }).eq("id", relationshipId);
+    }
   }
-  await db.from("relationship_events").insert({ relationship_id: relationshipId, what: `First email, ready to send: **${subject}**\n\n${body}`, via: `email-draft · ${agent?.name ?? "agent"}` });
 }
 
 /** The Coach proposes new lessons for an agent; approving the proposal applies them. */

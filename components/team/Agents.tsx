@@ -93,7 +93,7 @@ export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart, 
               <span className="ag-mail-h">{L(lang, "First email", "أول إيميل")} · {emailTo ? <span dir="ltr">{emailTo}</span> : <span className="muted">{L(lang, "no public address yet", "ما فيه عنوان منشور للحين")}</span>}</span>
               <b dir="auto">{emailDraft.subject}</b>
               <p className="pre" dir="auto">{emailDraft.body}</p>
-              <span className="muted ag-mail-n">{emailTo ? L(lang, "Approving puts it in your Outlook Drafts with your signature. You send it.", "لما تعتمد، ينحط في مسودات Outlook مع توقيعك. وإنت اللي ترسله.") : L(lang, "Approving keeps it on the relationship until you add their email.", "لما تعتمد، ينحفظ في العلاقة لين تضيف إيميلهم.")}</span>
+              <span className="muted ag-mail-n">{L(lang, "Approving puts it in Relationships, Outreach, ready to edit and send from your Outlook with your signature.", "لما تعتمد، ينحط في العلاقات، التواصل، جاهز تعدّله وترسله من Outlook مع توقيعك.")}</span>
             </section>
           ) : null}
           {acts.length ? (
@@ -138,7 +138,7 @@ export function ItemCard({ lang, item, agentName, canDecide, open: openAtStart, 
               </>
             ) : (
               <>
-                <button type="button" className="b" disabled={pending} onClick={() => approve()}>{dest ? `${L(lang, "Approve to", "اعتمد إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approve", "اعتمد")}{ticked.length && acts.length ? ` + ${ticked.length} ${L(lang, "tickets", "مهام")}` : ""}{emailDraft && emailTo ? ` + ${L(lang, "Outlook draft", "مسودة Outlook")}` : ""}</button>
+                <button type="button" className="b" disabled={pending} onClick={() => approve()}>{dest ? `${L(lang, "Approve to", "اعتمد إلى")} ${L(lang, ROUTE_L[dest][0], ROUTE_L[dest][1])}` : L(lang, "Approve", "اعتمد")}{ticked.length && acts.length ? ` + ${ticked.length} ${L(lang, "tickets", "مهام")}` : ""}{emailDraft ? ` + ${L(lang, "email in Outreach", "إيميل في التواصل")}` : ""}</button>
                 <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("edit"); }}>{L(lang, "Edit", "عدّل")}</button>
                 <button type="button" className="b quiet" onClick={() => { setOpen(true); setMode("reject"); }}>{L(lang, "Reject", "ارفض")}</button>
               </>

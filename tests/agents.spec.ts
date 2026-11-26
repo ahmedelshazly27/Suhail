@@ -75,15 +75,17 @@ test("a rejection reason reaches the agent's next brief", async ({ request, page
   const runId = /"run_id": "([0-9a-f-]{36})"/.exec(start)![1];
   const title = `Seed round ${Date.now()}`;
   await request.post("/api/agents/news/finish", { headers: auth, data: { run_id: runId, items: [{ kind: "story", title, body: "Small round.", score: 2 }] } });
-  // Stories go to the pool, not the review queue.
+  // Stories go to the news archive in Content, not the review queue.
   await page.goto("/team/agents?who=all&agent=news");
   await expect(page.locator(".ag-item", { hasText: title })).toHaveCount(0);
-  await page.goto("/team/agents?tab=pool&by=day&agent=news");
-  const card = page.locator(".ag-item", { hasText: title });
-  await card.getByRole("button", { name: "Dismiss" }).click();
-  await card.getByLabel(/Why\?/).fill("Rounds under $1M are not news for us");
-  await card.getByRole("button", { name: "Reject" }).click();
-  await expect(card).toBeHidden();
+  await page.goto("/team/agents?tab=pool");
+  await expect(page).toHaveURL(/\/team\/content\/news/);
+  const row = page.locator(".nd-archive .nd-item", { hasText: title });
+  await row.getByRole("button", { name: title }).click();
+  await row.getByRole("button", { name: "Not for us" }).click();
+  await row.getByLabel(/Why\?/).fill("Rounds under $1M are not news for us");
+  await row.getByRole("button", { name: "Dismiss" }).click();
+  await expect(row).toHaveClass(/off/);
   const next = await (await request.post("/api/agents/news/start", { headers: auth })).text();
   expect(next).toContain("Rounds under $1M are not news for us");
   expect(next).toContain(title); // listed under "Already filed"
@@ -150,7 +152,7 @@ test("the Coach's proposal, once approved, becomes the agent's lessons", async (
   await expect.poll(async () => (await admin().from("agents").select("lessons").eq("key", "growth").single()).data?.lessons).toBe(rule);
 });
 
-test("an approved lead's first email waits on the relationship, signed, until there is an address", async ({ request, page }) => {
+test("an approved lead lands in Outreach with its first email, ready to send", async ({ request, page }) => {
   const brief = await (await request.post("/api/agents/partners/start", { headers: auth })).text();
   expect(brief).toContain("data.email_draft");
   const runId = /"run_id": "([0-9a-f-]{36})"/.exec(brief)![1];
@@ -163,11 +165,33 @@ test("an approved lead's first email waits on the relationship, signed, until th
   await card.getByRole("button", { name: org }).click();
   await expect(card.locator(".ag-mail")).toContainText("Suhail x Draft Co");
   await expect(card.locator(".ag-mail")).toContainText("no public address yet");
-  await card.getByRole("button", { name: /^Approve to Relationships/ }).click();
+  await card.getByRole("button", { name: /^Approve to Relationships.*email in Outreach/ }).click();
   await expect(card).toBeHidden();
   const { data: rel } = await admin().from("relationships").select("id").eq("name", org).single();
-  const { data: ev } = await admin().from("relationship_events").select("what,via").eq("relationship_id", rel!.id);
-  expect(ev!.some((e) => e.via.startsWith("email-draft") && e.what.includes("Suhail x Draft Co"))).toBe(true);
-  await page.goto(`/team/relationships?id=${rel!.id}`);
-  await expect(page.getByRole("button", { name: /Email · draft ready/ })).toBeVisible();
+  const { data: o } = await admin().from("outreach").select("subject,status,segment").eq("relationship_id", rel!.id).single();
+  expect(o).toMatchObject({ subject: "Suhail x Draft Co", status: "ready", segment: "Found by Partner Prospector" });
+  await page.goto("/team/outreach");
+  await expect(page.locator(".or-card", { hasText: org })).toBeVisible();
+});
+
+test("the editor picks a format and an angle, the archive suggests stories, and the Writer gets the request", async ({ request, page }) => {
+  const start = await (await request.post("/api/agents/news/start", { headers: auth })).text();
+  const runId = /"run_id": "([0-9a-f-]{36})"/.exec(start)![1];
+  const t1 = `Saudi AI fund closes ${Date.now()}`, t2 = `Cairo bakery opens ${Date.now()}`;
+  await request.post("/api/agents/news/finish", { headers: auth, data: { run_id: runId, items: [{ kind: "story", title: t1, body: "A new Saudi AI fund backs Arabic language models.", score: 4 }, { kind: "story", title: t2, body: "A bakery.", score: 1 }] } });
+  await page.goto("/team/content/news");
+  await page.getByRole("button", { name: "LinkedIn post" }).click();
+  await page.getByLabel("What's it about? (optional)").fill("saudi arabic models");
+  const sug = page.locator(".nd-sug");
+  await expect(sug.getByText(t1)).toBeVisible();
+  await expect(sug.getByText(t2)).toHaveCount(0);
+  await sug.locator(".nd-item", { hasText: t1 }).getByRole("checkbox").check();
+  await page.getByRole("button", { name: /Ask the Writer to draft it \(1\)/ }).click();
+  await expect(page.getByText(/Sent to the Writer/)).toBeVisible();
+  const { data: asks } = await admin().from("agent_requests").select("body").eq("agent_key", "writer").eq("status", "open").order("created_at", { ascending: false }).limit(1);
+  expect(asks![0].body).toContain("LinkedIn post");
+  expect(asks![0].body).toContain(t1);
+  // The Writer no longer runs on a schedule; it's due because of the request.
+  const shift = await (await request.get("/api/agents/shift", { headers: auth })).text();
+  expect(shift).toContain("Writer");
 });

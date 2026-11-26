@@ -53,6 +53,7 @@ export function scheduledNow(a: Pick<Agent, "days" | "shift" | "last_scheduled_o
 export const DAY_L: [string, string][] = [["Sun", "الأحد"], ["Mon", "الاثنين"], ["Tue", "الثلاثاء"], ["Wed", "الأربعاء"], ["Thu", "الخميس"], ["Fri", "الجمعة"], ["Sat", "السبت"]];
 export function scheduleText(lang: "ar" | "en", a: Pick<Agent, "days" | "shift">) {
   const days = [...a.days].sort();
+  if (!days.length) return lang === "ar" ? "عند الطلب" : "On request";
   const d = days.length === 7 ? (lang === "ar" ? "كل يوم" : "Every day")
     : days.join() === "0,1,2,3,4" ? (lang === "ar" ? "الأحد إلى الخميس" : "Sun to Thu")
     : days.map((x) => DAY_L[x][lang === "ar" ? 1 : 0]).join(lang === "ar" ? "، " : ", ");
