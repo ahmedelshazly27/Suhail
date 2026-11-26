@@ -15,14 +15,14 @@ const I = {
 };
 const TABS: [TKey, string, keyof typeof I][] = [["home", "/team", "home"], ["inbox", "/team/inbox", "inbox"], ["work", "/team/my-work", "work"], ["drive", "/team/drive", "drive"], ["more", "/team/more", "more"]];
 const TITLE: [string, TKey][] = [["/team/plan", "plan"], ["/team/agents", "agents"], ["/team/inbox", "inbox"], ["/team/my-work", "myWork"], ["/team/projects", "projects"], ["/team/tickets", "projects"], ["/team/sprints", "sprints"], ["/team/applications", "applications"],
-  ["/team/relationships", "relationships"], ["/team/content", "content"], ["/team/newsletter", "newsletter"], ["/team/drive", "drive"], ["/team/finance", "finance"], ["/team/settings", "settings"], ["/team/more", "more"], ["/team/design", "design"]];
+  ["/team/relationships", "relationships"], ["/team/outreach", "outreach"], ["/team/members", "members"], ["/team/content", "content"], ["/team/newsletter", "newsletter"], ["/team/drive", "drive"], ["/team/finance", "finance"], ["/team/settings", "settings"], ["/team/more", "more"], ["/team/design", "design"]];
 
 /** Phone layout from reference/mobile-prototype.html: sticky header and a five-tab bar with 44px+ targets. */
 export function MobileNav({ lang, me, inbox }: { lang: TLang; me: { name: string; avatar_url: string | null }; inbox: number }) {
   // On team.suhail.build the address bar has no /team prefix (the proxy adds it), so match on the app path.
   const raw = usePathname(), path = raw.startsWith("/team") ? raw : `/team${raw === "/" ? "" : raw}`;
   const title = TITLE.find(([p]) => path.startsWith(p))?.[1] ?? "home";
-  const cur = (href: string) => (href === "/team" ? path === "/team" : path.startsWith(href) || (href === "/team/more" && /\/team\/(plan|agents|projects|tickets|sprints|applications|relationships|content|newsletter|finance|settings)/.test(path)));
+  const cur = (href: string) => (href === "/team" ? path === "/team" : path.startsWith(href) || (href === "/team/more" && /\/team\/(plan|agents|projects|tickets|sprints|applications|relationships|outreach|members|content|newsletter|finance|settings)/.test(path)));
   return (
     <>
       <header className="m-top">
