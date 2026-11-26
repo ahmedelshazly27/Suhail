@@ -645,3 +645,4 @@ button.ms:hover { border-color: var(--fg); }
 .ctx-ev:last-child { border-block-end: 0; }
 .ctx-ev details summary { cursor: pointer; color: var(--muted); font-size: .75rem; }
 .ctx-ev .md p { margin: 0; }
+.or-warn { margin: 0; padding: .5rem .75rem; background: var(--accent-tint); color: var(--accent-ink); font-size: .8125rem; }

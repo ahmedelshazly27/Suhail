@@ -16,6 +16,13 @@ export type OutRow = {
 };
 
 const STATUS = ["ready", "drafted", "sent", "skipped"] as const;
+const SHARED = /^(info|hello|contact|team|partners?|partnerships|press|media|news|editorial\w*|support|admin|office|enquir\w*|inquir\w*|connect|startups|community|events|careers|jobs|apply\w*|marketing|sales|research|innovation)$/i;
+/** True when the email goes to a shared inbox but opens by greeting one person by name. */
+export const greetsPersonAtSharedInbox = (to: string | null, body: string) => {
+  if (!to || !SHARED.test(to.split("@")[0])) return false;
+  const first = body.trim().split("\n")[0];
+  return /^(hi|hello|dear)\s+/i.test(first) && !/team|فريق/i.test(first);
+};
 const host = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; } };
 
 function Card({ lang, o, canEmail, open, onToggle }: { lang: TLang; o: OutRow; canEmail: boolean; open: boolean; onToggle: () => void }) {
@@ -61,6 +68,7 @@ function Card({ lang, o, canEmail, open, onToggle }: { lang: TLang; o: OutRow; c
                 <Link href={`/team/relationships?id=${o.relationship_id}`}>{L("Open in Relationships", "افتحه في العلاقات")}</Link>
               </span></span>
           </div>
+          {greetsPersonAtSharedInbox(o.rel.email, o.body) ? <p className="or-warn" role="note">{L(`This goes to a shared inbox (${o.rel.email}) but greets one person. Greet the team, or use their own address.`, `هذا رايح لبريد مشترك (${o.rel.email}) لكنه يخاطب شخص واحد. خاطب الفريق، أو استخدم عنوانه الشخصي.`)}</p> : null}
           <form className="or-form" onSubmit={(e) => { e.preventDefault(); go(e.currentTarget, true); }}>
             <label className="fld"><span>{L("To", "إلى")}</span><input name="to" type="email" required dir="ltr" defaultValue={o.rel.email ?? ""} disabled={done} placeholder={L("Paste an address they published", "حط عنوان نشروه")} /></label>
             <label className="fld"><span>{L("Subject", "الموضوع")}</span><input name="subject" required maxLength={200} dir="auto" defaultValue={o.subject} disabled={done} onBlur={(e) => e.target.value.trim() && e.target.value !== o.subject && set({ subject: e.target.value })} /></label>
