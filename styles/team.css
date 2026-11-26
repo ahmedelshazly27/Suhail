@@ -639,3 +639,9 @@ button.ms:hover { border-color: var(--fg); }
 .nd-body { display: flex; flex-direction: column; gap: .5rem; padding-block-start: .5rem; }
 .nd-go { border-block-start: 1px solid var(--line); padding-block-start: .75rem; }
 @media (max-width: 1000px) { .nd { grid-template-columns: 1fr; } .nd-write { position: static; } }
+
+/* Inbox context: the relationship's recent timeline, headline first, the rest folded */
+.ctx-ev { display: flex; flex-direction: column; gap: .125rem; padding-block: .5rem; border-block-end: 1px solid var(--line); overflow-wrap: anywhere; }
+.ctx-ev:last-child { border-block-end: 0; }
+.ctx-ev details summary { cursor: pointer; color: var(--muted); font-size: .75rem; }
+.ctx-ev .md p { margin: 0; }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MailBar, MarkAllRead, ReplyBox } from "@/components/team/MailActions";
 import { Avatar } from "@/components/ui/Avatar";
+import { Md } from "@/components/ui/Md";
 import { requireMe } from "@/lib/auth";
 import { ago, shortTime } from "@/lib/dates";
 import { getShell } from "@/lib/data/shell";
@@ -125,7 +126,11 @@ export default async function Inbox({ searchParams }: PageProps<"/team/inbox">) 
                   {ctx.rel ? <Link href={`/team/relationships?id=${ctx.rel.id}`} className="card sq" style={{ display: "block", padding: ".75rem .875rem", textDecoration: "none" }}><b style={{ fontWeight: 500 }}>{ctx.rel.name}</b><br /><span className="muted" style={{ fontSize: ".75rem" }}>{ctx.rel.type} · {ctx.rel.stage}{ctx.rel.owner_id ? ` · ${lang === "ar" ? "المسؤول" : "owner"} ${shell.people.find((p) => p.id === ctx.rel!.owner_id)?.name.split(" ")[0] ?? ""}` : ""}</span></Link> : <span className="muted">{lang === "ar" ? "مو مربوط" : "Not linked"}</span>}</div>
                 {ctx.tickets.length ? <div><div className="sect-h">{lang === "ar" ? "مهام مرتبطة" : "Linked tickets"}</div>{ctx.tickets.map((t) => <Link key={t.key} href={`/team/tickets/${t.key}`} style={{ display: "grid", gridTemplateColumns: "3.5rem minmax(0,1fr)", gap: ".5rem", textDecoration: "none" }}><span className="key">{t.key}</span><span>{t.title}</span></Link>)}</div> : null}
                 {ctx.assignee ? <div><div className="sect-h">{lang === "ar" ? "المسؤول" : "Assigned"}</div>{ctx.assignee.split(" ")[0]}</div> : null}
-                {ctx.events.length ? <div><div className="sect-h">{lang === "ar" ? "تواصل سابق" : "Earlier with them"}</div>{ctx.events.map((e, i) => <div key={i}>{new Intl.DateTimeFormat(lang === "ar" ? "ar-KW-u-nu-latn" : "en-GB", { day: "numeric", month: "short" }).format(new Date(e.happened_at))} · {e.what}</div>)}</div> : null}
+                {ctx.events.length ? <div><div className="sect-h">{lang === "ar" ? "تواصل سابق" : "Earlier with them"}</div>{ctx.events.map((e, i) => { const [head, ...rest] = e.what.split(/\n{2,}/); return (
+                  <div key={i} className="ctx-ev"><span className="key">{new Intl.DateTimeFormat(lang === "ar" ? "ar-KW-u-nu-latn" : "en-GB", { day: "numeric", month: "short" }).format(new Date(e.happened_at))}</span>
+                    <Md text={head} className="md md-sm" />
+                    {rest.length ? <details><summary>{lang === "ar" ? "التفاصيل" : "Details"}</summary><Md text={rest.join("\n\n")} className="md md-sm" /></details> : null}
+                  </div>); })}</div> : null}
               </>
             ) : null}
           </aside>
