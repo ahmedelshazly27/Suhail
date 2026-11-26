@@ -18,6 +18,8 @@ for (const lang of ["ar", "en"] as const) {
       // hreflang pair
       await expect(page.locator('link[rel="alternate"][hreflang="ar"]')).toHaveCount(1);
       await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(1);
+      // The page fades in over half a second; measure contrast once it has finished, not mid-fade.
+      await page.waitForFunction(() => document.getAnimations().every((x) => x.playState !== "running" || x.effect?.getTiming().iterations === Infinity));
       const axe = await new AxeBuilder({ page }).analyze();
       expect(axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => `${v.id}: ${v.nodes.map((n) => `${n.target} ${n.any[0]?.message ?? ""}`).join(" | ")}`)).toEqual([]);
     });
