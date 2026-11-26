@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Scene } from "@/components/site/Scene";
 import { t, type Lang } from "@/lib/i18n";
-import { CLOSING, TRANSCRIPT, type Block } from "@/lib/manifesto";
+import { TRANSCRIPT, type Block } from "@/lib/manifesto";
 import { pageMeta } from "@/lib/seo";
 
 // The manifesto in the page's language (the header toggle switches), ending on the closing question over Suhail
@@ -32,7 +31,7 @@ function Words({ lang, blocks }: { lang: "ar" | "en"; blocks: Block[] }) {
         ) : "lines" in b ? (
           <p key={i} className="mf-lines">{b.lines.map((l, j) => <span key={j}>{l}</span>)}</p>
         ) : (
-          <p key={i}><Text s={b.p} /></p>
+          <p key={i} {...(b.last ? { id: "mf-q", className: "mf-last" } : {})}><Text s={b.p} /></p>
         ),
       )}
     </div>
@@ -50,14 +49,6 @@ export default async function Manifesto({ params }: PageProps<"/[lang]/manifesto
       <div className="wrap mf-text">
         <Words lang={lang} blocks={TRANSCRIPT[lang]} />
       </div>
-
-      <section className="darkband mf-close" aria-labelledby="mf-q">
-        <Scene kind="dunes" className="scene mf-scene" />
-        <div className="wrap mf-close-in">
-          <p className="mf-lead">{CLOSING[lang].lead}</p>
-          <h2 id="mf-q" className="mf-q"><Text s={CLOSING[lang].q} /></h2>
-        </div>
-      </section>
     </section>
   );
 }

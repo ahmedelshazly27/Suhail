@@ -1,8 +1,8 @@
 // The manifesto, grouped into paragraphs at its natural pauses. Arabic is the original; English is the translation.
 // A block is a paragraph, a quotation (the opening words we answer, cited) or a pull quote (Ibn Khaldun), or a pair
-// of contrasts set one per line. Each language shows on its own page; the closing question ends the page, set large.
+// of contrasts set one per line. Each language shows on its own page; the text itself ends on the question.
 
-export type Block = { p: string } | { quote: string; by: string; style: "cited" | "pull" } | { lines: string[] };
+export type Block = { p: string; last?: true } | { quote: string; by: string; style: "cited" | "pull" } | { lines: string[] };
 
 export const TRANSCRIPT: Record<"ar" | "en", Block[]> = {
   ar: [
@@ -24,6 +24,7 @@ export const TRANSCRIPT: Record<"ar" | "en", Block[]> = {
     { p: "والناس اللي يقدرون يعيدون هذا التأثير، عندنا، من المحيط إلى الخليج. بس متفرّقين." },
     { p: "وعشان هذا، بنجمعهم: اللي يبتكرون، واللي يموّلون، واللي يوظّفون، في مكان واحد. عشان العالم يجي هنا… يتعلّم." },
     { p: "أهلنا كانوا يقولون: إذا طلع سُهَيْل… برد الليل." },
+    { p: "ولما يطلع سهيل هالمرة… إيش بنكون صنعنا؟", last: true },
   ],
   en: [
     { quote: "“There are five hundred million Arabs… And yet… they don't produce science. They don't win Nobel Prizes. No Fields Medal, no Wolf Prize. They don't produce literature.”", by: "Robert F. Kennedy Jr., US Secretary of Health and Human Services (C-SPAN / Spectrum News)", style: "cited" },
@@ -44,10 +45,7 @@ export const TRANSCRIPT: Record<"ar" | "en", Block[]> = {
     { p: "And the people who can bring that influence back are here, from the Atlantic to the Gulf. Just scattered." },
     { p: "So we're bringing them together: the ones who build, the ones who fund, the ones who hire, in one place. So the world comes here… to learn." },
     { p: "Our elders used to say: when Suhail rises… the night turns cool." },
+    { p: "So when Suhail rises this time… what will we have made?", last: true },
   ],
 };
 
-export const CLOSING = {
-  ar: { lead: "والسؤال:", q: "لما يطلع سهيل هالمرة… إيش بنكون صنعنا؟" },
-  en: { lead: "And the question is:", q: "When Suhail rises this time… what will we have made?" },
-};
