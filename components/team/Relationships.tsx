@@ -14,8 +14,8 @@ import type { Person, ProjectLite } from "@/lib/data/shell";
 
 export type Rel = { id: string; name: string; type: string; stage: string; owner_id: string | null; next_step: string; next_due: string | null; project_ids: string[]; value: number | null; last_contact_at: string | null; last_contact_via: string | null; contact?: { name: string; email: string | null } | null; events: { what: string; via: string; happened_at: string }[] };
 const STAGES = ["Prospect", "Contacted", "In talks", "Confirmed", "Active", "Past"];
-const TYPES = ["Sponsor", "Partner", "Speaker", "Podcast guest", "Venue", "Judge"];
-const PLURAL: Record<string, [string, string]> = { Sponsor: ["Sponsors", "رعاة"], Partner: ["Partners", "شركاء"], Speaker: ["Speakers", "متحدثون"], "Podcast guest": ["Podcast guests", "ضيوف البودكاست"], Venue: ["Venues", "أماكن"], Judge: ["Judges", "حكّام"] };
+const TYPES = ["Sponsor", "Partner", "Investor", "Hiring", "Media", "Speaker", "Podcast guest", "Venue", "Judge"];
+const PLURAL: Record<string, [string, string]> = { Sponsor: ["Sponsors", "رعاة"], Partner: ["Partners", "شركاء"], Investor: ["Investors", "مستثمرون"], Hiring: ["Hiring companies", "شركات توظّف"], Media: ["Media", "إعلام"], Speaker: ["Speakers", "متحدثون"], "Podcast guest": ["Podcast guests", "ضيوف البودكاست"], Venue: ["Venues", "أماكن"], Judge: ["Judges", "حكّام"] };
 const stageDot = (s: string) => ({ Prospect: "var(--st-todo)", Contacted: "var(--muted)", "In talks": "var(--st-progress)", Confirmed: "var(--st-review)", Active: "var(--st-done)", Past: "var(--faint)" })[s];
 
 /** The newest first email an agent drafted for this relationship and nobody has sent yet, to start the composer. */
