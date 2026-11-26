@@ -1,0 +1,102 @@
+/* Suhail Members: built on the dashboard's primitives (team.css), laid out as an app: a top bar on wide screens and
+   a tab bar on phones, rows of member cards that scroll sideways, and narrow reading columns. */
+.mb { padding-block-end: 4.5rem; }
+.mb-top { position: sticky; inset-block-start: 0; z-index: 10; display: flex; align-items: center; gap: 1.25rem; padding: .75rem clamp(1rem, 4vw, 2.5rem); background: var(--bg); border-block-end: 1px solid var(--line); }
+.mb-nav { display: flex; gap: 1.25rem; }
+.mb-nav a { text-decoration: none; color: var(--st-review); font-size: .875rem; }
+.mb-nav a:hover { color: var(--fg); }
+.mb-tools { margin-inline-start: auto; display: flex; align-items: center; gap: .5rem; }
+.mb-lang { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .8125rem; }
+.mb-main { padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 2rem; max-inline-size: 72rem; margin-inline: auto; }
+.mb-tabs { display: none; }
+.mb-stack { display: flex; flex-direction: column; gap: 1.5rem; }
+.mb-narrow { max-inline-size: 40rem; margin-inline: auto; display: flex; flex-direction: column; gap: 1rem; }
+.mb-h1 { margin: 0; font: 300 2.25rem/1.15 var(--f-display); letter-spacing: -.01em; }
+.mb-lede { margin: 0; font-size: 1rem; color: var(--fg-2); }
+.mb-form { display: flex; flex-direction: column; gap: .875rem; }
+.mb-form .b { align-self: flex-start; }
+.mb-2col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.mb-checks { display: flex; flex-wrap: wrap; gap: .5rem; border: 0; padding: 0; }
+.mb-checks legend, .mb-form fieldset legend { font-size: .75rem; color: var(--muted); margin-block-end: .375rem; }
+.mb-form fieldset { border: 0; padding: 0; margin: 0; }
+.mb-trip { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .75rem; }
+.mb-trip .fld { min-inline-size: 9rem; flex: 1; }
+.mb-err { margin: 0; color: var(--accent-ink); font-size: .8125rem; }
+.mb-ok { margin: 0; padding: .75rem 1rem; background: var(--soft); }
+.mb-ok-s { color: var(--muted); font-size: .8125rem; }
+.mb-sec { display: flex; flex-direction: column; gap: .75rem; }
+.mb-sec-h { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+.mb-sec-h h2 { margin: 0; font: 300 1.625rem/1.2 var(--f-display); }
+.mb-sec-h p { margin: .125rem 0 0; }
+.mb-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(11rem, 13rem); gap: .75rem; overflow-x: auto; padding-block-end: .5rem; scroll-snap-type: x mandatory; }
+.mb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .75rem; }
+.mb-post-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+.mb-search { display: flex; flex-wrap: wrap; gap: .5rem; }
+.mb-search .inp { flex: 1 1 16rem; }
+.mb-search select { border: 1px solid var(--line); background: var(--bg); padding: .5rem; }
+.mb-chips { display: flex; flex-wrap: wrap; gap: .375rem; }
+.mb-building { white-space: pre-wrap; margin: 0; font-size: .9375rem; line-height: 1.6; }
+.mb-new summary { cursor: pointer; font-weight: 500; }
+.mb-kinds { display: flex; flex-wrap: wrap; gap: .375rem; }
+.mb-posts { display: flex; flex-direction: column; gap: .5rem; }
+.mb-post { text-decoration: none; color: var(--fg); }
+.mb-post h2 { margin: 0; font: 500 1rem/1.4 var(--f-body); }
+.mb-post-k { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.mb-clip { margin: 0; color: var(--fg-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; }
+.mb-c { border-block-end: 1px solid var(--line); padding-block: .5rem; }
+.mb-c p { margin: .25rem 0 0; white-space: pre-wrap; }
+.mb-comment { display: flex; gap: .5rem; }
+.mb-comment .inp { flex: 1; }
+.mb-invite { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .75rem; background: var(--soft); }
+.mb-invite code { overflow-wrap: anywhere; font-size: .8125rem; }
+@media (max-width: 760px) {
+  .mb-nav { display: none; }
+  .mb-tabs { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 10; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--bg); border-block-start: 1px solid var(--line); padding-block-end: env(safe-area-inset-bottom); }
+  .mb-tabs a { text-align: center; padding: .875rem .25rem; text-decoration: none; font-size: .75rem; color: var(--st-review); }
+  .mb-2col { grid-template-columns: 1fr; }
+  .mb-h1 { font-size: 1.875rem; }
+}
+
+/* People are shown by their photos: tall tiles in rows and grids, round ones in feeds. */
+.mb-card { display: flex; flex-direction: column; border: 1px solid var(--line); background: var(--bg); text-decoration: none; color: var(--fg); scroll-snap-align: start; min-inline-size: 0; overflow: hidden; }
+.mb-card:hover { border-color: var(--fg); }
+.mb-card-b { display: flex; flex-direction: column; align-items: flex-start; gap: .25rem; padding: .75rem .875rem .875rem; }
+.mb-card-n { font-weight: 500; }
+.mb-card-h { font-size: .8125rem; color: var(--fg-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mb-card-m { font-size: .75rem; color: var(--muted); }
+.mb-card .chip { margin-block-start: .25rem; white-space: normal; }
+.mb-photo { display: block; position: relative; aspect-ratio: 4 / 5; inline-size: 100%; background: var(--soft); overflow: hidden; }
+.mb-photo img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.mb-ini { position: absolute; inset: 0; display: grid; place-items: center; font: 300 2.5rem/1 var(--f-display); color: var(--muted); }
+.mb-photo.sm { inline-size: 2.5rem; block-size: 2.5rem; aspect-ratio: 1; border-radius: 50%; flex: none; }
+.mb-photo.sm .mb-ini { font-size: .875rem; font-family: var(--f-body); }
+.mb-photo.lg { inline-size: 6rem; block-size: 6rem; aspect-ratio: 1; border-radius: 50%; flex: none; }
+.mb-photo.lg .mb-ini { font-size: 1.75rem; }
+.mb-photo.xl { inline-size: 10rem; aspect-ratio: 4 / 5; flex: none; }
+.mb-hero { display: flex; gap: 1.25rem; align-items: flex-end; }
+.mb-hero .mb-h1 { margin-block-end: .25rem; }
+.mb-photo-field { display: flex; gap: 1rem; align-items: flex-start; }
+.mb-hello { display: flex; flex-wrap: wrap; align-items: baseline; gap: .75rem; }
+.mb-split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1rem; }
+.mb-split h2 { margin: 0; font: 300 1.375rem/1.25 var(--f-display); }
+.mb-ship { background: var(--soft); }
+.mb-ship-row { display: flex; gap: .5rem; align-items: flex-end; }
+.mb-ship-row .fld { flex: 1; }
+.mb-forme .b { align-self: flex-start; }
+.mb-opp-row, .mb-feed-row { display: flex; align-items: center; gap: .75rem; padding: .5rem 0; border-block-end: 1px solid var(--line); text-decoration: none; color: var(--fg); }
+.mb-opp-row:hover, .mb-feed-row:hover { color: var(--accent-ink); }
+.mb-feed { display: flex; flex-direction: column; }
+.mb-opps { display: grid; grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); gap: .75rem; }
+.mb-opp h2 { margin: 0; font: 500 1rem/1.4 var(--f-body); }
+.mb-opp p { margin: 0; color: var(--fg-2); }
+.mb-pill { text-decoration: none; color: var(--st-review); font-size: .8125rem; display: inline-flex; align-items: center; gap: .25rem; }
+.mb-pill:hover { color: var(--fg); }
+.mb-badge { display: inline-grid; place-items: center; min-inline-size: 1.125rem; block-size: 1.125rem; padding-inline: .25rem; border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent); font-size: .6875rem; }
+.mb-nav a[aria-current="page"], .mb-tabs a[aria-current="page"] { color: var(--fg); }
+@media (max-width: 760px) {
+  .mb-split { grid-template-columns: 1fr; }
+  .mb-tools .mb-pill:not(:first-child), .mb-tools form { display: none; }
+  .mb-me-out { display: block; }
+  .mb-hero { flex-direction: column; align-items: flex-start; }
+}
+.mb-me-out { display: none; }
