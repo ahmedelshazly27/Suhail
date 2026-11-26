@@ -26,6 +26,7 @@ export const Entry = z.object({
   contact: z.object({ name: s(160), role: s(160), linkedin: url, email, email_source: url, form_url: url }).partial().nullish().transform((v) => v ?? {}),
   email: z.object({ subject: z.string().trim().max(200).default(""), body: z.string().trim().max(20000).default("") }).nullish().transform((v) => v ?? { subject: "", body: "" }),
   sources: z.array(z.string().trim().url().max(1000)).max(20).catch([]).default([]),
+  sent_on: z.string().date().nullish().catch(null), // sent outside the dashboard (for example straight from Outlook)
 });
 export type Entry = z.infer<typeof Entry>;
 
@@ -62,7 +63,12 @@ export async function importPack(db: Db, by: string) {
       contact_name: c.name ?? null, contact_role: c.role ?? null, linkedin: c.linkedin ?? null, email_source: c.email_source ?? null, form_url: c.form_url ?? null,
       subject: e.email.subject, body: e.email.body,
     };
-    const { error } = cur ? await db.from("outreach").update(row).eq("relationship_id", rel.id) : await db.from("outreach").insert({ ...row, created_by: by });
+    const sent = e.sent_on ? { status: "sent" as const, sent_at: `${e.sent_on}T12:00:00Z` } : {};
+    const { error } = cur ? await db.from("outreach").update({ ...row, ...sent }).eq("relationship_id", rel.id) : await db.from("outreach").insert({ ...row, ...sent, created_by: by });
+    if (e.sent_on && !error) {
+      await db.from("relationships").update({ last_contact_at: `${e.sent_on}T12:00:00Z`, last_contact_via: "Email" }).eq("id", rel.id);
+      await db.from("relationships").update({ stage: "Contacted" }).eq("id", rel.id).eq("stage", "Prospect");
+    }
     if (error) throw new Error(error.message);
     if (c.email && rel.contact_id) await db.from("contacts").update({ email: c.email }).eq("id", rel.contact_id).is("email", null);
     else if (c.email && !rel.contact_id) {
