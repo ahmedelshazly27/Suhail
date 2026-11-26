@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createIssue } from "@/app/actions/newsletter";
+import { SectionTabs } from "@/components/team/SectionTabs";
 import { requireMe } from "@/lib/auth";
 import { ago } from "@/lib/dates";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -21,6 +22,7 @@ export default async function Page({ searchParams }: PageProps<"/team/newsletter
   const c = (l: string, s = "active") => (counts.data || []).filter((x) => x.lang === l && x.status === s).length;
   return (
     <>
+      <SectionTabs lang={lang} group="content" />
       <header className="ph"><div className="ph-t"><span className="eb">Resend · {c("ar")} {tt(lang, "arabic")} · {c("en")} {tt(lang, "english")}</span><h1>{tt(lang, "newsletter")}</h1></div><form action={createIssue}><button className="b" type="submit">{tt(lang, "compose")}</button></form></header>
       <nav className="tabs-u"><Link href="?tab=issues" aria-current={tab === "issues" ? "page" : undefined}>{tt(lang, "issues")}</Link><Link href="?tab=subscribers" aria-current={tab === "subscribers" ? "page" : undefined}>{tt(lang, "subscribers")} <span className="key">{(counts.data || []).length}</span></Link></nav>
       {tab === "issues" ? (

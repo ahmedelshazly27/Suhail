@@ -1,4 +1,5 @@
 import { Outreach, type OutRow } from "@/components/team/Outreach";
+import { SectionTabs } from "@/components/team/SectionTabs";
 import { isAdmin, requireMe } from "@/lib/auth";
 import { signatureText } from "@/lib/email/signature";
 import { m365Live } from "@/lib/m365/graph";
@@ -19,5 +20,5 @@ export default async function Page() {
     const c = Array.isArray(rel.contact) ? rel.contact[0] : rel.contact;
     return { ...r, sources: Array.isArray(r.sources) ? r.sources : [], rel: { name: rel.name, stage: rel.stage, type: rel.type, email: c?.email ?? null } };
   });
-  return <Outreach lang={lang} rows={rows} packSize={PACK.entries.length} admin={isAdmin(me)} canEmail={m365Live()} signature={signatureText(me)} />;
+  return <><SectionTabs lang={lang} group="relationships" /><Outreach lang={lang} rows={rows} packSize={PACK.entries.length} admin={isAdmin(me)} canEmail={m365Live()} signature={signatureText(me)} /></>;
 }

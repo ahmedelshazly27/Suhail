@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { AgentButtons, AgentSettings, AskForm, CancelAsk, ItemCard, KeyPanel, PauseAll, type AgentRow, type ItemRow } from "@/components/team/Agents";
 import { Avatar } from "@/components/ui/Avatar";
 import { agentsPaused, daysAgo, POOL_KINDS, scheduleText, SHIFT_HOUR, type Agent } from "@/lib/agents";
@@ -13,7 +14,7 @@ import { teamPrefs } from "@/lib/team-prefs";
 export const metadata = { title: "Agents" };
 const TABS = ["review", "pool", "team", "asks", "runs", "connect"] as const;
 type Tab = (typeof TABS)[number];
-const TAB_L: Record<Tab, [string, string]> = { review: ["Review", "المراجعة"], pool: ["Pool", "الحصيلة"], team: ["The team", "الفريق"], asks: ["Requests", "الطلبات"], runs: ["Runs", "التشغيل"], connect: ["Connect", "الربط"] };
+const TAB_L: Record<Tab, [string, string]> = { review: ["Review", "المراجعة"], pool: ["News archive", "أرشيف الأخبار"], team: ["The team", "الفريق"], asks: ["Requests", "الطلبات"], runs: ["Runs", "التشغيل"], connect: ["Connect", "الربط"] };
 const L = (lang: TLang, en: string, ar: string) => (lang === "ar" ? ar : en);
 const STATUSES = ["new", "approved", "rejected"] as const;
 
@@ -21,6 +22,7 @@ export default async function AgentsPage({ searchParams }: PageProps<"/team/agen
   const me = await requireMe();
   const admin = isAdmin(me);
   const sp = await searchParams;
+  if (sp.tab === "pool") redirect("/team/content/news"); // the news archive lives in Content now
   const tab: Tab = TABS.includes(sp.tab as Tab) && (sp.tab !== "connect" || admin) ? (sp.tab as Tab) : "review";
   const who = sp.who === "all" ? "all" : "mine";
   const status = STATUSES.includes(sp.status as (typeof STATUSES)[number]) ? (sp.status as string) : "new";
@@ -106,7 +108,7 @@ export default async function AgentsPage({ searchParams }: PageProps<"/team/agen
       </header>
 
       <nav className="tabs-u" aria-label={tt(lang, "agents")}>
-        {TABS.filter((t) => t !== "connect" || admin).map((t) => <Link key={t} href={`?tab=${t}`} aria-current={tab === t ? "page" : undefined}>{L(lang, ...TAB_L[t])}</Link>)}
+        {TABS.filter((t) => t !== "connect" || admin).map((t) => <Link key={t} href={t === "pool" ? "/team/content/news" : `?tab=${t}`} aria-current={tab === t ? "page" : undefined}>{L(lang, ...TAB_L[t])}</Link>)}
       </nav>
 
       {tab === "review" ? (

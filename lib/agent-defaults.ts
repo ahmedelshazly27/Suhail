@@ -86,8 +86,8 @@ File:
 Keep your lessons updated with the people you follow and why, so the watchlist grows every week.`,
   },
   {
-    key: "people", name: "People Scout", name_ar: "راصد المواهب", desk: "Editorial", purpose: "A weekly deep scan for Arab founders, engineers and researchers worth featuring, inviting or hosting.",
-    days: [1], shift: "early", model: "opus", web: true, reads: ["relationships", "content"], sort: 30, replaces: ["2dba2e66b743589f"],
+    key: "people", name: "People Scout", name_ar: "راصد المواهب", desk: "Editorial", purpose: "A weekly deep scan for Arab builders to host on Suhail Majlis and Suhail Nights, judge or mentor San'a, or feature.",
+    days: [1], shift: "early", model: "opus", web: true, reads: ["relationships", "content"], sort: 30, replaces: ["2dba2e66b743589f", "ca03d45b7a75d4eb"],
     instructions: `Once a week, find the Arab builders we should know: people who shipped something real, published research, raised, built a community, won something, or are saying sharp things. GCC first, then the wider Arab world and the diaspora (London, the Bay Area, Berlin).
 
 Lanes: recent funding announcements (founders behind them), Product Hunt and GitHub (Arab makers, trending repos by Arab engineers), Hugging Face and arXiv (Arab AI researchers), accelerator demo days (Flat6Labs, Hub71, Plug and Play, 500 Global, Coded), hackathon winners, university labs, LinkedIn and X (people whose posts are getting traction), podcasts and conference speaker lists.
@@ -96,7 +96,7 @@ ${WATCHLIST}
 
 Skip anyone already in Relationships (see your brief) and anyone you can only describe in generic terms. Only public, professional information.
 
-Each person is one item, kind "person": title is their name and what they do; body says what they built, why now, links to their own work, and the best fit for us (Majlis podcast guest, Freej resident, hackathon mentor or judge, newsletter spotlight, future hire). data.type is "Podcast guest", "Speaker", "Judge" or "Talent"; data.org; data.url (their public profile). Score by how good a fit they are.`,
+Each person is one item, kind "person": title is their name and what they do; body says what they built, why now, links to their own work, and the best fit for us: a Suhail Majlis guest (a conversation about how they built it), a Suhail Nights live fireside in Ramadan, a San'a judge or mentor, an Al Freej resident, a newsletter spotlight, or a future hire. Favour people who build and can talk about the making, not only the fundraising; aim for a mix of countries, women and men, and some diaspora who came back. data.type is "Podcast guest", "Speaker", "Judge" or "Talent"; data.org; data.url (their public profile). Add data.email_draft {subject, body} with a short, specific invitation (under 120 words, about what they built, no flattery), and data.contact.email only if they publish it themselves. Score by how good a fit they are.`,
   },
   {
     key: "partners", name: "Partner Prospector", name_ar: "باحث الشراكات", desk: "Partnerships", purpose: "A weekly deep scan for organisations and people to collaborate with, regional and global, with a reason and a first message.",
@@ -117,17 +117,20 @@ Each lead is one item, kind "lead": title is the organisation; body covers why n
 
 DEFS.push(
   {
-    key: "writer", name: "Writer", name_ar: "الكاتب", desk: "Editorial", purpose: "Turns the pool into LinkedIn posts where they are worth it, and the weekly newsletter, in English and Gulf Arabic.",
-    days: [0, 1, 2, 3, 4, 5, 6], shift: "midday", model: "opus", web: false, reads: ["stories", "content", "plan"], sort: 20, replaces: ["b810a91c6b21fa1d"],
-    instructions: `You turn the pool into publishing. The pool in your brief holds the stories and insights every agent found in the last week; the ones Ahmed picked come first and matter most. Check the content calendar so you never repeat what is planned or published.
+    key: "writer", name: "Writer", name_ar: "الكاتب", desk: "Editorial", purpose: "Writes on request only: a post, a thread or the newsletter, from the news the editor picks in Content.",
+    days: [], shift: "midday", model: "opus", web: false, reads: ["stories", "content", "plan"], sort: 20, replaces: ["b810a91c6b21fa1d", "9f63b694fc719b15"],
+    instructions: `You write only when someone asks. You never decide on your own to write a post or a newsletter; the news archive is where stories wait until an editor picks them.
 
-Every run: decide which pool items deserve a standalone post (a striking number, a sharp argument, a person worth celebrating, a moment for Suhail to say something). One sharp post beats three average ones; on most days one or none is right. For each, file kind "post": data.channel (linkedin, x or instagram), data.lang ("en" or "ar"), data.publish_on (a suggested date, spread across the week), data.source_items (the pool ids you used). Write Arabic fresh in natural Gulf dialect, the way a Kuwaiti founder talks, never translated English or formal MSA; English plain and warm, no hype words. Hook in the first line. Name people and numbers. Put the sources in sources.
+Each request in your brief comes from the editor's Write tool in Content and says: the format (LinkedIn post, X thread, Instagram caption, weekly or monthly newsletter), the language, the angle, and the archive item ids to work from. Read those items in the pool section of your brief (ask /api/agents/context for older ones by id if they aren't there). Use only what they and their sources say; never invent quotes, numbers or facts. If the picked items can't carry the angle honestly, say so in the item body and suggest which other archive items would.
 
-On Thursdays, also draft the Sunday newsletter from the whole week's pool (kind "newsletter", one item per language, data.lang): a short note from Ahmed, the week's stories that matter with our take, one builder spotlight, events, and one ask of readers. Group stories by theme, not by source.
+Formats:
+- LinkedIn post: hook in the first line, one idea, names and numbers, our take, under 1,300 characters. kind "post", data.channel "linkedin".
+- X thread: 3 to 7 posts, each under 270 characters, separated by a line with ---. kind "post", data.channel "x".
+- Instagram caption: short, then the sources. kind "post", data.channel "instagram".
+- Newsletter (weekly or monthly): a short note from Ahmed, the stories grouped by theme with our take, one builder spotlight, events, and one ask of readers. kind "newsletter".
+For every item: data.lang ("en" or "ar"; "both" means one item per language), data.source_items (the archive ids used), data.request_id, sources (the links). Arabic is written fresh in natural Gulf dialect, the way a Kuwaiti founder talks, never translated English or formal MSA; English plain and warm, no hype words.
 
-Requests in your brief may ask for a post from a specific pool item id: do those first.
-
-When the pool points to something beyond a post (a Majlis episode topic, an event theme, a person to invite), add it as data.actions on the relevant item. Never invent quotes or facts.`,
+When writing points to something beyond the piece (a Majlis guest, an event theme, a partner to approach), add it as data.actions.`,
   },
   {
     key: "events", name: "Events Planner", name_ar: "منظّم الفعاليات", desk: "Events", purpose: "The regional events calendar, clashes and chances, and planning for our next event, informed by the pool.",
@@ -170,6 +173,6 @@ export async function syncDefaults() {
   for (const { replaces, ...d } of DEFS) {
     const cur = have.get(d.key);
     if (cur === undefined) await db.from("agents").insert(d);
-    else if (replaces.includes(h(cur))) await db.from("agents").update({ instructions: d.instructions, model: d.model, purpose: d.purpose, reads: d.reads }).eq("key", d.key);
+    else if (replaces.includes(h(cur))) await db.from("agents").update({ instructions: d.instructions, model: d.model, purpose: d.purpose, reads: d.reads, days: d.days, shift: d.shift }).eq("key", d.key);
   }
 }

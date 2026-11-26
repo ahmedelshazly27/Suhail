@@ -10,13 +10,14 @@ import type { ProjectLite } from "@/lib/data/shell";
 type Props = { lang: TLang; me: { name: string; avatar_url: string | null; team_role: string }; counts: Record<string, number>; projects: ProjectLite[]; m365: boolean };
 const TOP: [TKey, string, string?][] = [["home", "/team"], ["plan", "/team/plan"], ["agents", "/team/agents", "agents"], ["inbox", "/team/inbox", "inbox"], ["myWork", "/team/my-work"]];
 const WORK: [TKey, string, string?][] = [["projects", "/team/projects", "projects"], ["sprints", "/team/sprints"], ["applications", "/team/applications", "applications"],
-  ["relationships", "/team/relationships"], ["outreach", "/team/outreach"], ["members", "/team/members"], ["content", "/team/content"], ["newsletter", "/team/newsletter"], ["drive", "/team/drive"], ["finance", "/team/finance", "finance"]];
+  ["relationships", "/team/relationships"], ["members", "/team/members"], ["content", "/team/content"], ["drive", "/team/drive"], ["finance", "/team/finance", "finance"]];
 const DOTS = ["var(--st-review)", "var(--st-done)", "var(--muted)"];
 
 export function Sidebar({ lang, me, counts, projects, m365 }: Props) {
   // On team.suhail.build the address bar has no /team prefix (the proxy adds it), so match on the app path.
   const raw = usePathname(), path = raw.startsWith("/team") ? raw : `/team${raw === "/" ? "" : raw}`;
-  const cur = (href: string) => (href === "/team" ? path === "/team" : path === href || path.startsWith(href + "/"));
+  const ALSO: Record<string, string[]> = { "/team/relationships": ["/team/outreach"], "/team/content": ["/team/newsletter"] };
+  const cur = (href: string) => (href === "/team" ? path === "/team" : [href, ...(ALSO[href] || [])].some((h) => path === h || path.startsWith(h + "/")));
   const item = ([k, href, c]: [TKey, string, string?]) => (
     <Link key={href} href={href} className="side-item" data-tour={k} aria-current={cur(href) ? "page" : undefined}>
       <span>{tt(lang, k)}</span>{c && counts[c] ? <span className="n">{counts[c]}</span> : null}
