@@ -1,5 +1,5 @@
-import { ProfileForm, RemoveTrip, TripForm } from "@/components/members/Forms";
-import { requireMember } from "@/lib/members";
+import { PhotoField, ProfileForm, RemoveTrip, SignOut, TripForm } from "@/components/members/Forms";
+import { photos, requireMember } from "@/lib/members";
 import { mt } from "@/lib/members-i18n";
 import { supabaseServer } from "@/lib/supabase/server";
 
@@ -14,10 +14,12 @@ export default async function Me({ searchParams }: PageProps<"/members/me">) {
     <div className="mb-narrow mb-stack">
       <h1 className="mb-h1">{welcome ? t.welcome : t.profile}</h1>
       {welcome ? <p className="mb-lede">{t.welcomeLede}</p> : null}
-      <ProfileForm t={t} p={{ ...me, role: me.role as "Engineer", looking_for: me.looking_for as never[], links: me.links ?? {} }} />
+      <PhotoField t={t} src={(await photos([me]))[me.id]} has={!!me.photo_path} />
+      <ProfileForm t={t} p={{ ...me, links: me.links ?? {}, role: me.role as "Engineer", looking_for: me.looking_for as never[] }} />
       <h2 className="sect-h" id="trips">{t.trips}</h2>
       {(trips || []).map((x) => <div key={x.id} className="row-btns"><span>{x.city}{x.country ? `, ${x.country}` : ""} · {x.starts_on} → {x.ends_on}{x.note ? ` · ${x.note}` : ""}</span><RemoveTrip t={t} id={x.id} /></div>)}
       <TripForm t={t} />
+      <div className="mb-me-out"><SignOut t={t} /></div>
     </div>
   );
 }

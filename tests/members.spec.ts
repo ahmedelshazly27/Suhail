@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { signInOwner } from "./helpers/auth";
 
 // Suhail Members end to end: an invite becomes a membership through the email link, profiles show in the
 // directory, an introduction is double opt-in, and a member never sees the team dashboard.
@@ -46,6 +47,7 @@ test("an invite becomes a member, who fills a profile, invites the next person a
   await db.from("member_invites").insert({ code: `t${stamp}`.slice(0, 12), email: a.email });
   await join(page, a, `t${stamp}`.slice(0, 12));
   await expect(page).toHaveURL(/\/members\/me\?welcome=1/);
+  await page.waitForLoadState("networkidle");
   await page.getByLabel("Headline").fill("ML engineer in Riyadh");
   await page.getByLabel("City").first().fill("Riyadh");
   await page.getByLabel("A co-founder").check();
@@ -103,4 +105,51 @@ test("an invite becomes a member, who fills a profile, invites the next person a
   await page.goto("/team");
   await expect(page).toHaveURL(/\/team\/sign-in/);
   await pb.close();
+});
+
+test("a member uploads a photo, logs what they shipped, gets matched opportunities and an answer from the team", async ({ page, browser }) => {
+  test.setTimeout(120_000);
+  const db = admin(), who = { email: `d-${stamp}@example.com`, name: `Dana ${stamp}` };
+  await db.from("member_invites").insert({ code: `u${stamp}`.slice(0, 12), email: who.email });
+  await join(page, who, `u${stamp}`.slice(0, 12));
+  await expect(page).toHaveURL(/welcome=1/);
+  await page.waitForLoadState("networkidle");
+  // Photo uploads need Supabase Storage, which the local stack doesn't run; the GitHub picture is the fallback.
+  await page.getByLabel("GitHub").fill("https://github.com/octocat");
+  await page.getByLabel("Skills").fill("ai, cloud");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByRole("status")).toHaveText("Saved");
+  await expect(page.locator(".mb-photo-field img")).toHaveAttribute("src", "https://github.com/octocat.png?size=400");
+
+  // The team shares the starter list; the member's home leads with what matches them.
+  const team = await browser.newPage();
+  await team.context().addCookies([{ name: "team-lang", value: "en", url: "http://localhost:3000" }]);
+  await signInOwner(team);
+  await team.goto("/team/members");
+  await team.getByRole("button", { name: /^Opportunities/ }).click();
+  await team.getByRole("button", { name: "Add the starter list of credits and programs" }).click();
+  await expect(team.getByText(/added\.|Starter list checked/).first()).toBeVisible();
+  await page.goto("/members");
+  await expect(page.locator(".mb-forme .mb-opp-row").first()).toBeVisible();
+
+  // The weekly ritual: one line, and it's on the board.
+  await page.getByPlaceholder(/Launched Arabic search/).fill(`Shipped Arabic search ${stamp}`);
+  await page.getByRole("button", { name: "Post it" }).click();
+  await expect(page.locator(".mb-hello .chip")).toContainText("Shipped this week");
+
+  // Ask Suhail, answered by the team.
+  await page.goto("/members/ask");
+  await page.getByLabel("Who or what (optional)").fill("STV");
+  await page.getByLabel(/What do you need/).fill(`An intro to someone at STV about our seed round ${stamp}`);
+  await page.getByRole("button", { name: "Send to the team" }).click();
+  await expect(page.locator(".mb-ok")).toContainText("Sent");
+  await team.reload();
+  await team.getByRole("button", { name: /^Requests/ }).click();
+  const req = team.locator("form", { hasText: `seed round ${stamp}` });
+  await req.getByLabel(/Answer/).fill("Happy to. We will write to their platform lead this week.");
+  await req.getByRole("button", { name: "Send answer" }).click();
+  await expect(team.getByText("Answer sent.")).toBeVisible();
+  await page.reload();
+  await expect(page.getByText("We will write to their platform lead")).toBeVisible();
+  await team.close();
 });

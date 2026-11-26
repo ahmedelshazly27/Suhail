@@ -17,7 +17,7 @@ export default async function Board({ searchParams }: PageProps<"/members/board"
   return (
     <div className="mb-stack">
       <details className="card pad mb-new"><summary>{t.newPost}</summary><PostForm t={t} /></details>
-      <div className="mb-chips"><Link href="/members/board" className="pill-s" aria-pressed={!kind}>{t.seeAll}</Link>{POST_KINDS.map((k) => <Link key={k} href={`/members/board?kind=${k}`} className="pill-s" aria-pressed={kind === k}>{t.kinds[k]}</Link>)}</div>
+      <div className="mb-chips"><Link href="/members/board" className={`pill-s${!kind ? " on" : ""}`} aria-current={!kind ? "page" : undefined}>{t.seeAll}</Link>{POST_KINDS.map((k) => <Link key={k} href={`/members/board?kind=${k}`} className={`pill-s${kind === k ? " on" : ""}`} aria-current={kind === k ? "page" : undefined}>{t.kinds[k]}</Link>)}</div>
       <div className="mb-posts">{((data || []) as unknown as Row[]).map((p) => (
         <Link key={p.id} href={`/members/board/${p.id}`} className="card pad mb-post">
           <span className="mb-post-k"><span className="chip">{t.kinds[p.kind]}</span><span className="s">{p.author?.name}</span>{p.happens_at ? <span className="s">{new Date(p.happens_at).toLocaleString(me.lang === "ar" ? "ar" : "en-GB", { dateStyle: "medium", timeStyle: "short" })} · {p.city}</span> : null}</span>

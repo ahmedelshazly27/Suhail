@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useState, useTransition } from "react";
 import {
-  addComment, addTrip, applyForMembership, createInvite, createPost, decideIntro, deletePost, introContacts, joinWithInvite,
+  addComment, addTrip, applyForMembership, askSuhail, removePhoto, shipThisWeek, uploadPhoto, createInvite, createPost, decideIntro, deletePost, introContacts, joinWithInvite,
   memberSignOut, removeTrip, requestIntro, saveProfile, sendMemberLink, setMemberLang, toggle,
 } from "@/app/actions/members";
 import { mt, type MLang } from "@/lib/members-i18n";
@@ -192,5 +192,52 @@ export function InviteMaker({ t, remaining }: { t: T; remaining: number }) {
       </form> : null}
       <Err msg={err} />
     </div>
+  );
+}
+
+export function ShipBox({ t }: { t: T }) {
+  const { run, pending, err } = useRun();
+  const [done, setDone] = useState(false);
+  return (
+    <form className="mb-form" onSubmit={(e) => { e.preventDefault(); const f = e.currentTarget, d = new FormData(f); run(() => shipThisWeek(String(d.get("title")), String(d.get("link") || "")), () => { f.reset(); setDone(true); }); }}>
+      <label className="fld"><span className="vh-sr">{t.shipQ}</span><input name="title" required maxLength={160} placeholder={t.shipPh} dir="auto" onChange={() => setDone(false)} /></label>
+      <div className="mb-ship-row"><label className="fld"><span className="vh-sr">{t.shipLink}</span><input name="link" type="url" dir="ltr" placeholder={`${t.shipLink}: https://`} /></label><button className="b" disabled={pending}>{t.shipBtn}</button></div>
+      {done ? <span className="mb-ok-s" role="status">{t.saved}</span> : null}
+      <Err msg={err} />
+    </form>
+  );
+}
+
+export function PhotoField({ t, src, has }: { t: T; src?: string; has: boolean }) {
+  const { run, pending, err } = useRun();
+  return (
+    <div className="mb-photo-field">
+      <span className="mb-photo lg" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {src ? <img src={src} alt="" referrerPolicy="no-referrer" /> : <span className="mb-ini">+</span>}
+      </span>
+      <div className="mb-form">
+        <label className="fld"><span>{t.photo}</span><input type="file" accept="image/jpeg,image/png,image/webp" disabled={pending} onChange={(e) => { const f = e.target.files?.[0]; if (!f) return; const d = new FormData(); d.set("photo", f); run(() => uploadPhoto(d)); }} /></label>
+        <span className="s">{t.photoHelp}</span>
+        {has ? <button type="button" className="b ghost" disabled={pending} onClick={() => run(() => removePhoto())}>{t.removePhoto}</button> : null}
+        <Err msg={err} />
+      </div>
+    </div>
+  );
+}
+
+export function AskForm({ t }: { t: T }) {
+  const { run, pending, err } = useRun();
+  const [kind, setKind] = useState<"intro" | "help" | "feedback">("intro");
+  const [sent, setSent] = useState(false);
+  return (
+    <form className="mb-form" onSubmit={(e) => { e.preventDefault(); const f = e.currentTarget, d = new FormData(f); run(() => askSuhail({ kind, target: String(d.get("target") || ""), body: String(d.get("body")) }), () => { f.reset(); setSent(true); }); }}>
+      <div className="mb-kinds" role="group" aria-label={t.kind}>{Object.entries(t.askKinds).map(([k, v]) => <button key={k} type="button" className="pill-s" aria-pressed={kind === k} onClick={() => setKind(k as "intro")}>{v}</button>)}</div>
+      {kind === "intro" ? <label className="fld"><span>{t.askTarget}</span><input name="target" maxLength={200} placeholder={t.askTargetPh} dir="auto" /></label> : null}
+      <label className="fld"><span>{t.askBody}</span><textarea name="body" required minLength={10} maxLength={2000} rows={4} dir="auto" onChange={() => setSent(false)} /></label>
+      <button className="b" disabled={pending}>{t.askSend}</button>
+      {sent ? <p className="mb-ok" role="status">{t.asked}</p> : null}
+      <Err msg={err} />
+    </form>
   );
 }

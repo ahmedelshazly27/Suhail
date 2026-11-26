@@ -255,3 +255,99 @@ export async function setMemberStatus(id: string, status: "active" | "paused" | 
   if (error) throw new Error(error.message);
   revalidatePath("/team/members");
 }
+
+// ---------------------------------------------------------------- photo
+
+const PHOTO_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+/** Upload a profile photo (JPEG, PNG or WebP, up to 3 MB) to the private bucket; the old one is removed. */
+export async function uploadPhoto(form: FormData) {
+  const me = await requireMember();
+  const f = form.get("photo");
+  if (!(f instanceof File) || !PHOTO_TYPES[f.type]) throw new Error("Use a JPEG, PNG or WebP photo.");
+  if (f.size > 3 * 1024 * 1024) throw new Error("The photo must be under 3 MB.");
+  const admin = supabaseAdmin();
+  const path = `${me.id}/${newInviteCode()}.${PHOTO_TYPES[f.type]}`;
+  const { error } = await admin.storage.from("member-photos").upload(path, f, { contentType: f.type });
+  if (error) throw new Error(error.message);
+  if (me.photo_path) await admin.storage.from("member-photos").remove([me.photo_path]);
+  await admin.from("members").update({ photo_path: path }).eq("id", me.id);
+  revalidatePath("/members", "layout");
+}
+export async function removePhoto() {
+  const me = await requireMember();
+  if (me.photo_path) await supabaseAdmin().storage.from("member-photos").remove([me.photo_path]);
+  await supabaseAdmin().from("members").update({ photo_path: null }).eq("id", me.id);
+  revalidatePath("/members", "layout");
+}
+
+// ---------------------------------------------------------------- shipped this week, Ask Suhail
+
+/** The weekly ritual on Home: one line about what you shipped, posted to the board. */
+export async function shipThisWeek(title: string, link: string) {
+  return createPost({ kind: "shipped", title, link, body: "" });
+}
+
+const ask = z.object({ kind: z.enum(["intro", "help", "feedback"]), target: z.string().trim().max(200).default(""), body: z.string().trim().min(10).max(2000) });
+/** A member asks the Suhail team for something: an introduction to a partner or investor, help, or feedback. */
+export async function askSuhail(input: z.input<typeof ask>) {
+  const me = await requireMember();
+  const v = ask.parse(input);
+  if (!(await rateLimit("member-ask", 10, 86400))) throw new Error("That's a lot of requests today. Try again tomorrow.");
+  const { error } = await (await supabaseServer()).from("member_requests").insert({ member_id: me.id, ...v });
+  if (error) throw new Error(error.message);
+  revalidatePath("/members/ask");
+}
+
+/** The team answers a request; the member gets the answer in the app and by email. */
+export async function answerRequest(id: string, answer: string, close = false) {
+  const me = await requireAdmin();
+  const a = z.string().trim().max(4000).parse(answer);
+  const db = await supabaseServer();
+  const { data: r, error } = await db.from("member_requests").update({ answer: a, status: close && !a ? "closed" : "answered", answered_by: me.id, answered_at: new Date().toISOString() }).eq("id", z.string().uuid().parse(id)).select("member_id,body").single();
+  if (error) throw new Error(error.message);
+  if (a) {
+    const admin = supabaseAdmin();
+    const [{ data: m }, { data: p }] = await Promise.all([admin.from("members").select("name,lang").eq("id", r.member_id).single(), admin.from("member_private").select("email").eq("id", r.member_id).single()]);
+    if (m && p) {
+      const url = memberLink("/members/ask");
+      const ar = `${m.name}، رد فريق سهيل على طلبك:\n\n${a}\n\nطلبك كان:\n${r.body}\n\n${url}`;
+      const en = `${m.name}, the Suhail team answered your request:\n\n${a}\n\nYou asked:\n${r.body}\n\n${url}`;
+      await sendEmail({ to: p.email, subject: m.lang === "en" ? "Suhail answered your request" : "سهيل رد على طلبك", react: createElement(Templated, { lang: m.lang === "en" ? "en" : "ar", bodyAr: ar, bodyEn: en, vars: {} }), log: { template: "member-request-answer", created_by: me.id } });
+    }
+  }
+  revalidatePath("/team/members");
+}
+
+// ---------------------------------------------------------------- opportunities (team)
+
+const opp = z.object({
+  kind: z.enum(["perk", "grant", "job", "event", "call"]), title: z.string().trim().min(1).max(160), org: z.string().trim().max(120).default(""),
+  body: z.string().trim().max(3000).default(""), url: z.string().trim().url().max(600).or(z.literal("")).optional(), deadline: z.string().date().or(z.literal("")).optional(),
+  location: z.string().trim().max(120).default(""), tags: z.array(z.string().trim().toLowerCase().min(1).max(30)).max(10).default([]),
+});
+export async function saveOpportunity(id: string | null, input: z.input<typeof opp>) {
+  await requireAdmin();
+  const v = opp.parse(input);
+  const row = { ...v, url: v.url || null, deadline: v.deadline || null };
+  const db = await supabaseServer();
+  const { error } = id ? await db.from("member_opportunities").update(row).eq("id", z.string().uuid().parse(id)) : await db.from("member_opportunities").insert(row);
+  if (error) throw new Error(error.message);
+  revalidatePath("/team/members"); revalidatePath("/members", "layout");
+}
+export async function setOpportunityPublished(id: string, published: boolean) {
+  await requireAdmin();
+  await (await supabaseServer()).from("member_opportunities").update({ published }).eq("id", z.string().uuid().parse(id));
+  revalidatePath("/team/members"); revalidatePath("/members", "layout");
+}
+/** Adds the starter list of credits, grants and programs (content/members/opportunities.json); skips ones already there. */
+export async function importOpportunities() {
+  await requireAdmin();
+  const { default: list } = await import("@/content/members/opportunities.json");
+  const db = await supabaseServer();
+  const { data: have } = await db.from("member_opportunities").select("title");
+  const seen = new Set((have || []).map((h) => h.title.toLowerCase()));
+  const rows = (list as z.input<typeof opp>[]).map((o) => opp.parse(o)).filter((o) => !seen.has(o.title.toLowerCase())).map((o) => ({ ...o, url: o.url || null, deadline: o.deadline || null, source: "pack:2026-11" }));
+  if (rows.length) { const { error } = await db.from("member_opportunities").insert(rows); if (error) throw new Error(error.message); }
+  revalidatePath("/team/members"); revalidatePath("/members", "layout");
+  return rows.length;
+}

@@ -1,5 +1,5 @@
 import { MemberCard } from "@/components/members/Card";
-import { LOOKING, MEMBER_COLS, requireMember, ROLES, search, type Member } from "@/lib/members";
+import { LOOKING, MEMBER_COLS, photos, requireMember, ROLES, search, type Member } from "@/lib/members";
 import { mt } from "@/lib/members-i18n";
 import { supabaseServer } from "@/lib/supabase/server";
 
@@ -12,6 +12,7 @@ export default async function People({ searchParams }: PageProps<"/members/peopl
   const q = String(sp.q ?? ""), role = String(sp.role ?? ""), want = String(sp.looking ?? "");
   const { data } = await (await supabaseServer()).from("members").select(MEMBER_COLS).eq("status", "active").order("joined_at", { ascending: false }).limit(2000);
   const list = search((data || []) as Member[], q).filter((m) => m.id !== me.id && (!role || m.role === role) && (!want || m.looking_for.includes(want)));
+  const pics = await photos(list);
   return (
     <div className="mb-stack">
       <form className="mb-search" role="search">
@@ -21,7 +22,7 @@ export default async function People({ searchParams }: PageProps<"/members/peopl
         <button className="b">{t.search.split(/[,،]/)[0]}</button>
       </form>
       <p className="s">{t.searchHelp} · {list.length} {t.results}</p>
-      <div className="mb-grid">{list.map((m) => <MemberCard key={m.id} m={m} t={t} />)}</div>
+      <div className="mb-grid">{list.map((m) => <MemberCard key={m.id} m={m} t={t} src={pics[m.id]} />)}</div>
     </div>
   );
 }

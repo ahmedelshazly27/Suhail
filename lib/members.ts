@@ -16,10 +16,10 @@ export const INVITES_PER_MEMBER = 3;
 
 export type Member = {
   id: string; name: string; headline: string; building: string; role: string; company: string; city: string; country: string;
-  skills: string[]; looking_for: string[]; open_to_intros: boolean; links: Record<string, string>; avatar_url: string | null;
+  skills: string[]; looking_for: string[]; open_to_intros: boolean; links: Record<string, string>; avatar_url: string | null; photo_path: string | null;
   lang: "ar" | "en"; status: string; joined_at: string;
 };
-export const MEMBER_COLS = "id,name,headline,building,role,company,city,country,skills,looking_for,open_to_intros,links,avatar_url,lang,status,joined_at";
+export const MEMBER_COLS = "id,name,headline,building,role,company,city,country,skills,looking_for,open_to_intros,links,avatar_url,photo_path,lang,status,joined_at";
 
 export const membersUrl = () => (process.env.MEMBERS_HOST ? `https://${process.env.MEMBERS_HOST}` : `${env.siteUrl()}/members`);
 /** A path inside the app, as a full URL for emails. */
@@ -96,4 +96,44 @@ export async function inviteValid(code: string, email?: string) {
 export function homeDates() {
   const now = Date.now();
   return { today: new Date(now).toISOString().slice(0, 10), soon: new Date(now + 30 * 864e5).toISOString().slice(0, 10), week: new Date(now - 7 * 864e5).toISOString() };
+}
+
+/**
+ * Photo URLs for a set of members: their uploaded photo (a signed URL, valid for an hour), else their GitHub picture
+ * when they linked a GitHub profile, else nothing (the card shows initials).
+ */
+export async function photos(ms: Pick<Member, "id" | "photo_path" | "links">[]): Promise<Record<string, string>> {
+  const out: Record<string, string> = {};
+  const paths = [...new Set(ms.map((m) => m.photo_path).filter(Boolean))] as string[];
+  if (paths.length) {
+    const { data } = await supabaseAdmin().storage.from("member-photos").createSignedUrls(paths, 3600);
+    const byPath = new Map((data || []).filter((d) => d.signedUrl).map((d) => [d.path, d.signedUrl]));
+    for (const m of ms) if (m.photo_path && byPath.has(m.photo_path)) out[m.id] = byPath.get(m.photo_path)!;
+  }
+  for (const m of ms) {
+    const gh = /^https:\/\/github\.com\/([A-Za-z0-9-]{1,39})\/?$/.exec(m.links?.github || "");
+    if (!out[m.id] && gh) out[m.id] = `https://github.com/${gh[1]}.png?size=400`;
+  }
+  return out;
+}
+
+export type Opportunity = { id: string; kind: string; title: string; org: string; body: string; url: string | null; deadline: string | null; location: string; tags: string[]; created_at: string };
+export const OPP_COLS = "id,kind,title,org,body,url,deadline,location,tags,created_at";
+
+/** Opportunities ranked for one member: what matches their skills and needs first, then the nearest deadline. */
+export function forMember(me: Member, list: Opportunity[]) {
+  const mine = new Set([...me.skills, ...me.looking_for, me.role, me.city, me.country].map((s) => s.toLowerCase()).filter(Boolean));
+  const wantsJob = me.looking_for.includes("job"), student = me.role === "Student";
+  const score = (o: Opportunity) => o.tags.filter((t) => mine.has(t.toLowerCase())).length * 2 + (o.kind === "job" && wantsJob ? 3 : 0) + (student && o.tags.includes("students") ? 3 : 0) + (o.deadline ? 1 : 0);
+  return [...list].sort((a, b) => score(b) - score(a) || (a.deadline ?? "9999").localeCompare(b.deadline ?? "9999"));
+}
+
+/** Weeks in a row (ending this week or last) in which a member posted something they shipped. */
+export function streak(dates: string[], now = Date.now()) {
+  const week = (t: number) => Math.floor((t / 864e5 + 3) / 7); // weeks starting Monday
+  const weeks = new Set(dates.map((d) => week(Date.parse(d))));
+  let w = week(now), n = 0;
+  if (!weeks.has(w)) w -= 1;
+  while (weeks.has(w)) { n++; w--; }
+  return n;
 }

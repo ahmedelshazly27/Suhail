@@ -28,6 +28,12 @@ const en = {
   roles: { Engineer: "Engineer", Founder: "Founder", Researcher: "Researcher", Designer: "Designer", Product: "Product", Investor: "Investor", Operator: "Operator", Student: "Student" } as Record<string, string>,
   welcome: "Welcome to Suhail", welcomeLede: "Fill in your profile so the right people can find you. It takes two minutes.",
   skillsPh: "python, llms, payments, react", linksH: "Links",
+  opps: "Opportunities", oppsSub: "Credits, grants, jobs, events and calls, picked for what you do", oppsLede: "Shared with members by the Suhail team. Matches for your skills and needs come first.", apply2: "Open", deadline: "Deadline", noOpps: "Nothing open right now. The team adds new ones every week.",
+  oppKinds: { perk: "Credits", grant: "Grant", job: "Job", event: "Event", call: "Call" } as Record<string, string>, forYou: "For you",
+  ask: "Ask Suhail", askLede: "Want an introduction to a fund, a company or a partner? Need help or a second opinion? Tell the Suhail team. We'll find the right person through our network, or tell you honestly if we can't.", askKinds: { intro: "An introduction", help: "Help", feedback: "Feedback on what I'm building" } as Record<string, string>,
+  askTarget: "Who or what (optional)", askTargetPh: "STV, a Saudi bank, someone at HUMAIN", askBody: "What do you need, and why now?", askSend: "Send to the team", asked: "Sent. You'll get the answer here and by email.", yourAsks: "Your requests", answered: "Answered", open: "Open", closed: "Closed",
+  shipQ: "What did you ship this week?", shipPh: "Launched Arabic search in our app", shipLink: "Link (optional)", shipBtn: "Post it", shippedThisWeek: "Shipped this week", streakN: "weeks in a row", streak1: "Shipped this week", streakMany: "Shipped {n} weeks in a row", shipped2: "Shipped", shipNudge: "One line counts. It goes on the board, and the best make the Suhail newsletter.",
+  helpAsks: "Asks you could help with", helpAsksSub: "Questions from members that match your skills", pendingIntros: "introduction requests waiting for you", photo: "Photo", photoHelp: "A clear photo of your face. JPEG, PNG or WebP, up to 3 MB. Without one we use your GitHub picture.", upload: "Upload", removePhoto: "Remove photo", greeting: "Hello",
 };
 type Dict = typeof en;
 
@@ -58,6 +64,12 @@ const ar: Dict = {
   roles: { Engineer: "مهندس", Founder: "مؤسس", Researcher: "باحث", Designer: "مصمم", Product: "منتج", Investor: "مستثمر", Operator: "تشغيل", Student: "طالب" },
   welcome: "حيّاك في سهيل", welcomeLede: "عبّ ملفك عشان الناس الصح يلقونك. ياخذ دقيقتين.",
   skillsPh: "python, llms, payments, react", linksH: "الروابط",
+  opps: "الفرص", oppsSub: "رصيد، منح، وظائف، فعاليات ودعوات، مختارة حسب شغلك", oppsLede: "يشاركها فريق سهيل مع الأعضاء. اللي تناسب مهاراتك واحتياجك تطلع أول.", apply2: "افتح", deadline: "آخر موعد", noOpps: "ما فيه شي مفتوح الحين. الفريق يضيف فرص جديدة كل أسبوع.",
+  oppKinds: { perk: "رصيد", grant: "منحة", job: "وظيفة", event: "فعالية", call: "دعوة" }, forYou: "لك",
+  ask: "اطلب من سهيل", askLede: "تبي تعارف مع صندوق أو شركة أو شريك؟ تحتاج مساعدة أو رأي ثاني؟ قول لفريق سهيل. بندوّر لك على الشخص الصح عن طريق شبكتنا، أو نقول لك بصراحة إذا ما قدرنا.", askKinds: { intro: "تعارف", help: "مساعدة", feedback: "رأي في اللي أبنيه" },
+  askTarget: "مين أو وش (اختياري)", askTargetPh: "STV، بنك سعودي، أحد في HUMAIN", askBody: "وش تحتاج، وليش الحين؟", askSend: "أرسل للفريق", asked: "انرسل. بيوصلك الرد هنا وبالإيميل.", yourAsks: "طلباتك", answered: "تم الرد", open: "مفتوح", closed: "مقفل",
+  shipQ: "وش أطلقت هالأسبوع؟", shipPh: "أطلقنا البحث بالعربي في التطبيق", shipLink: "رابط (اختياري)", shipBtn: "انشره", shippedThisWeek: "أُطلق هالأسبوع", streakN: "أسابيع ورا بعض", streak1: "أطلق هالأسبوع", streakMany: "أطلق {n} أسابيع ورا بعض", shipped2: "أطلق", shipNudge: "سطر واحد يكفي. ينزل في اللوحة، والأفضل يطلع في نشرة سهيل.",
+  helpAsks: "أسئلة تقدر تساعد فيها", helpAsksSub: "أسئلة من الأعضاء تناسب مهاراتك", pendingIntros: "طلبات تعارف تنتظرك", photo: "الصورة", photoHelp: "صورة واضحة لوجهك. JPEG أو PNG أو WebP، أقل من ٣ ميغا. إذا ما فيه، نستخدم صورتك في GitHub.", upload: "ارفع", removePhoto: "احذف الصورة", greeting: "هلا",
 };
 
 export const M = { en, ar };
