@@ -100,18 +100,20 @@ Each person is one item, kind "person": title is their name and what they do; bo
   },
   {
     key: "partners", name: "Partner Prospector", name_ar: "باحث الشراكات", desk: "Partnerships", purpose: "A weekly deep scan for organisations and people to collaborate with, regional and global, with a reason and a first message.",
-    days: [0], shift: "early", model: "opus", web: true, reads: ["relationships", "plan", "events", "stories"], sort: 40, replaces: ["9a255e7de9009221", "13fbaf0334c33c09"],
+    days: [0], shift: "early", model: "opus", web: true, reads: ["relationships", "plan", "events", "stories"], sort: 40, replaces: ["9a255e7de9009221", "13fbaf0334c33c09", "6ea8f1ee42ee68fe"],
     instructions: `Once a week, map who Suhail should be working with and the specific person to talk to. Work every lane:
 1. Regional builders and funders: Coded, Bitroot Ventures, Plug and Play, Flat6Labs, Hub71, Sheraa, Astrolabs, 500 Global, Wamda, BECO, STV, Sanabil, Global Ventures, Nuwa, Kuwait's National Fund, KFAS, and others you find.
 2. Communities and universities: GDG, AWS and other user groups, AI clubs (Kuwait University, AUK, GUST and across the GCC), women in tech groups, Arabic NLP groups.
-3. AI labs and platforms: Anthropic, OpenAI, Google, Microsoft, AWS, NVIDIA, Hugging Face, Mistral, Cohere and others: their startup, education, developer-relations and credits programs, and the people who run them for the region (search LinkedIn posts for "MENA", "Middle East", "GCC" with the company name). Our offer: a regional stage, an Arabic-speaking builder community, hackathon visibility, research on Arabic and Gulf dialects.
+3. AI labs and platforms: Anthropic, OpenAI, Google, Microsoft, AWS, NVIDIA, Hugging Face, Mistral, Cohere and others: their startup, education, developer-relations and credits programs, and the people who run them for the region (search LinkedIn posts for "MENA", "Middle East", "GCC" with the company name). Our offer: an Arabic-first community of engineers and technical founders across the region and the diaspora.
 4. Corporates and government: telcos, banks with innovation labs, sovereign and investment agencies, digital ministries.
+
+What Suhail offers partners (pick what fits each one, never only one program by default): a curated jobs board and talent pool where companies list roles and reach vetted Arab engineers, including those abroad who want to come back; Suhail Members, an invite-only app with co-founder matching, introductions and opportunities (perks, credits, grants, jobs); firesides (Suhail Majlis, a weekly podcast on how things were built, and Suhail Nights, live in Ramadan); hackathons online and in person, including San'a; Suhail Season, a one-day conference planned for later; Al Freej, a live-in builder house; research (State of Arab Builders survey, The Map of Arab engineers at frontier labs, an open Arabic dialect AI scorecard); and the newsletter. What we ask for: hiring partnerships and roles, credits and infrastructure for Suhail and its members, sponsorship of hackathons, firesides, the house or the conference, speakers, judges and mentors, venues, data and media partnerships.
 
 Prefer leads with a reason to talk now: a new fund or program, a regional launch, a relevant hire, a post about wanting what we offer, an event in the Gulf. Start from the pool in your brief: this week's stories and insights from the other agents are full of reasons to talk now. Skip anyone already in Relationships unless something new happened (then say what).
 
 ${WATCHLIST}
 
-Each lead is one item, kind "lead": title is the organisation; body covers why now (with links), what we ask for (credits, sponsorship, judges, speakers, mentors, co-hosting, content), what they get, the warm path if any (shared investors, events, communities), and a draft first message under 120 words that is specific and has no flattery. data.org, data.url, data.type (Sponsor, Partner, Venue, Speaker), data.contact {name, title, url} from public professional pages only, data.next_step. Score by fit and timing.`,
+Each lead is one item, kind "lead": title is the organisation; body covers why now (with links), what we ask for (credits, sponsorship, judges, speakers, mentors, co-hosting, content), what they get, the warm path if any (shared investors, events, communities), and a draft first message under 120 words that is specific and has no flattery. data.org, data.url, data.type (Sponsor, Partner, Investor, Hiring, Media, Venue, Speaker), data.contact {name, title, url} from public professional pages only, data.next_step. Score by fit and timing.`,
   },
 ];
 

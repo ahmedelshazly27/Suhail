@@ -11,7 +11,7 @@ import { supabaseAdmin, supabaseServer } from "@/lib/supabase/server";
 
 const refresh = () => revalidatePath("/team/agents");
 const CHANNELS = ["linkedin", "instagram", "x", "newsletter", "podcast"];
-const REL_TYPES = ["Sponsor", "Partner", "Venue", "Speaker", "Podcast guest", "Judge", "Talent"];
+const REL_TYPES = ["Sponsor", "Partner", "Investor", "Hiring", "Media", "Venue", "Speaker", "Podcast guest", "Judge", "Talent"];
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullish().catch(null);
 const str = (v: unknown, n = 200) => (typeof v === "string" ? v.trim().slice(0, n) : "");
 
