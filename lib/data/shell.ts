@@ -8,7 +8,7 @@ export type ProjectLite = { id: string; slug: string; name: string; status: stri
 /** Everything the sidebar and pickers need, in one round of parallel queries. */
 export const getShell = cache(async (meId: string) => {
   const db = await supabaseServer();
-  const [people, projects, unread, newApps, pendingExp, projCount, agentNew, outReady] = await Promise.all([
+  const [people, projects, unread, newApps, pendingExp, projCount, agentNew] = await Promise.all([
     db.from("profiles").select("id,name,email,avatar_url,job_title,team_role,functions").eq("active", true).order("name"),
     db.from("projects").select("id,slug,name,status").in("status", ["active", "planned"]).order("sort").order("created_at"),
     db.from("notifications").select("id", { count: "exact", head: true }).eq("profile_id", meId).is("read_at", null),
@@ -16,11 +16,10 @@ export const getShell = cache(async (meId: string) => {
     db.from("expenses").select("id", { count: "exact", head: true }).eq("status", "pending"),
     db.from("projects").select("id", { count: "exact", head: true }).neq("status", "done"),
     db.from("agent_items").select("id", { count: "exact", head: true }).eq("status", "new").not("kind", "in", "(story,insight)").or(`for_id.eq.${meId},for_id.is.null`),
-    db.from("outreach").select("id", { count: "exact", head: true }).eq("status", "ready"),
   ]);
   return {
     people: (people.data || []) as Person[],
     projects: (projects.data || []) as ProjectLite[],
-    counts: { inbox: unread.count ?? 0, applications: newApps.count ?? 0, finance: pendingExp.count ?? 0, projects: projCount.count ?? 0, agents: agentNew.count ?? 0, outreach: outReady.count ?? 0 },
+    counts: { inbox: unread.count ?? 0, applications: newApps.count ?? 0, finance: pendingExp.count ?? 0, projects: projCount.count ?? 0, agents: agentNew.count ?? 0 },
   };
 });
