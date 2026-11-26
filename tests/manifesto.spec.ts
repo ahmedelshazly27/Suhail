@@ -16,9 +16,9 @@ for (const lang of ["ar", "en"] as const) {
     await expect(opening.locator("figcaption")).toContainText(lang === "ar" ? "روبرت إف. كينيدي الابن" : "Robert F. Kennedy Jr.");
     await expect(page.locator(".mf-quote blockquote")).toContainText(lang === "ar" ? "المغلوبُ مولعٌ أبداً بالاقتداء بالغالب" : "The defeated always love to imitate the victor");
     await expect(page.locator("#mf-q")).toContainText(lang === "ar" ? "إيش بنكون صنعنا" : "what will we have made");
-    await expect(page.locator(".mf-close")).not.toContainText(lang === "ar" ? "what will we have made" : "إيش بنكون صنعنا");
-    // The page ends on the question: no signup or call to action.
-    await expect(page.locator(".mf-close form, .mf-close a")).toHaveCount(0);
+    // The question is the last line of the text itself, not a separate closing block.
+    await expect(page.locator(".mf-words > :last-child")).toHaveId("mf-q");
+    await expect(page.locator(".mf-close")).toHaveCount(0);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/media\/manifesto\/poster\.jpg$/);
   });
 }
